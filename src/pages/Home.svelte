@@ -1,0 +1,114 @@
+<script lang="ts">
+    import Fa from 'svelte-fa/src/fa.svelte'
+    import { faCircleXmark } from '@fortawesome/free-regular-svg-icons'
+    import {fade} from "svelte/transition";
+    import { inview } from 'svelte-inview';
+
+    import { onMount } from 'svelte';
+    import {createScene, rebindScene, sceneInitialized} from "../lib/webgl/scene";
+    import WebGl from "three/examples/jsm/capabilities/WebGL.js";
+    import Title from "../lib/Home/Title.svelte";
+    import Footer from "../lib/Essentials/Footer.svelte";
+    import TeamLinkPanel from "../lib/Home/TeamLinkPanel.svelte";
+    import FeatureSection from "../lib/Home/HomeFeaturesReference.svelte";
+    import BlogSection from "../lib/Home/HomeBlogReference.svelte";
+    import {navigate} from "svelte-navigator";
+    import OfficeHours from "../lib/Misc/OfficeHours.svelte";
+
+    let el;
+    onMount(() => {
+        if (!sceneInitialized) {
+            createScene(el);
+        } else {
+            rebindScene(el);
+        }
+    });
+
+    let isInView = false;
+</script>
+
+
+<Footer>
+    {#if WebGl.isWebGLAvailable()}
+        <canvas bind:this={el} id='webgl_canvas'></canvas>
+    {:else}
+        <div id="webgl_error" class="font-medium text-xl lg:text-2xl text-center">
+            <div class="flex">
+                <Fa class="md:-mr-5" icon={faCircleXmark}/>
+                <p class="flex-grow">
+                    WebGl is not supported by your browser.<br>
+                    Try switching to a browser with WebGL support to use this website as intended.
+                </p>
+            </div>
+        </div>
+    {/if}
+    <Title/>
+    <div class="mt-[72vh] 2xl:mt-[74vh] mx-4 md:mx-10 pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black">
+        <TeamLinkPanel/>
+        <div use:inview on:enter={() => isInView = true} on:leave={() => isInView = false}>
+            {#if isInView}
+                <div in:fade={{duration: 700}}>
+                    <FeatureSection/>
+                    <BlogSection/>
+                    <div class="-mx-4 sm:-mx-6 lg:-mx-8">
+                        <div class="mb-0 pointer-events-none overflow-hidden">
+                            <svg class="overflow-hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 100" x="0" y="0">
+                                <polygon class="text-primary-100 dark:text-primary-800 fill-current" points="2560 0 2560 100 0 100"></polygon>
+                            </svg>
+                        </div>
+                        <div class="bg-primary-100 dark:bg-primary-800 mx-auto bg-slate flex justify-center rounded-b-lg">
+                            <div class="flex p-5 lg:p-7 mb-5">
+                                <OfficeHours/>
+                                <div class="my-auto">
+                                    <button on:click={() => navigate("/kontakt")} type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-base">Kontaktieren sie uns!</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {:else}
+                <div class="min-h-[50vh]"></div>
+            {/if}
+        </div>
+    </div>
+</Footer>
+
+
+<style lang="scss">
+  :root {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  $primary-color: #80d261;
+
+  #webgl_canvas {
+    margin: 0;
+    // Push to background
+    position: absolute;
+    top: 0;
+    left: 0;
+    // Disable side scrolling
+    max-height: 80%;
+    max-width: 100%;
+    overflow-x: hidden;
+    // Fade to bottom
+    mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+  }
+
+  #webgl_error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    position: absolute;
+    top: 35vh;
+    left: 0;
+    right: 0;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50px;
+    padding: 1em;
+    max-height: 80%;
+    max-width: 90%;
+  }
+</style>
