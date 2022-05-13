@@ -1,8 +1,8 @@
 <script>
-    import {deleteFeature} from "../../supabase/database.ts";
+    import {deleteFeature} from "../../../supabase/database.ts";
     import {createEventDispatcher} from "svelte";
-    import FeatureCard from "../Features/FeatureCard.svelte";
-    import Alert from "../../lib/Essentials/Alert.svelte";
+    import FeatureCard from "../../Features/FeatureCard.svelte";
+    import Alert from "../../Essentials/Alert.svelte";
 
 
     let submitted = false;

@@ -25,6 +25,7 @@ export interface AdminAction {
 export interface TeamMember {
     idName: string;
     name: string;
+    role: string;
     description: string;
     imageUrl: string;
     instagramUrl: string,
@@ -138,11 +139,11 @@ export const getTeamMember = async (idName: string, noCache?: boolean): Promise<
 }
 
 
-export const addTeamMember = async (idName: string, name: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
+export const addTeamMember = async (idName: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
         .from('TeamMember')
         .insert([
-            { idName: idName, name: name, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl },
+            { idName: idName, name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl },
         ])
         .single()
 
@@ -152,10 +153,10 @@ export const addTeamMember = async (idName: string, name: string, description: s
     return data;
 }
 
-export const updateTeamMember = async (idName: string, name: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
+export const updateTeamMember = async (idName: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
         .from('TeamMember')
-        .update({ name: name, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl })
+        .update({ name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl })
         .eq('idName', idName)
         .single()
 

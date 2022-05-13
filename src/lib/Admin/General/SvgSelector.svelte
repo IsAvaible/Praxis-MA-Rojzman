@@ -1,7 +1,7 @@
 <script lang="ts">
-    import Modal from "../Essentials/Modal.svelte";
+    import Modal from "../../Essentials/Modal.svelte";
     import PageTitle from "./PageTitle.svelte";
-    import Alert from "../Essentials/Alert.svelte";
+    import Alert from "../../Essentials/Alert.svelte";
     import {createEventDispatcher, onMount} from "svelte";
 
     let insertionCount = 0;

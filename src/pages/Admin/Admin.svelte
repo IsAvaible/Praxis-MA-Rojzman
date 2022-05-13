@@ -1,5 +1,5 @@
 <script lang="ts">
-    import ActionsTimeline from "../../lib/Admin/ActionsTimeline.svelte";
+    import ActionsTimeline from "../../lib/Admin/Home/ActionsTimeline.svelte";
 </script>
 
 

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {getFeatures, addFeature, updateFeature} from "../../supabase/database.ts";
+    import {getFeatures, addFeature, updateFeature} from "../../../supabase/database.ts";
     import {createEventDispatcher} from "svelte";
-    import Alert from "../Essentials/Alert.svelte";
-    import SvgSelector from "../../lib/Admin/SvgSelector.svelte";
-    import HTMLEditor from "./HTMLEditor.svelte";
+    import Alert from "../../Essentials/Alert.svelte";
+    import SvgSelector from "../General/SvgSelector.svelte";
+    import HTMLEditor from "../General/HTMLEditor.svelte";
 
     export let editMode: boolean = false;
     export let name = '';
@@ -16,9 +16,8 @@
     let names = [];
     getFeatures().then(v => names = v.map(f => f.name)).catch();
 
-    let nameValid = false;
-    $: name = name.match(/[a-z]*/g)?.join('');
-    $: nameValid = name === startName || names.findIndex(f => f == name) === -1;
+    let nameValid;
+    $: nameValid = (name === startName || names.findIndex(f => f == name) === -1) && name === (name = name.match(/[a-z\d-_+]*/g)?.join(''));
 
     let emptySvg = "M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5";
 
@@ -49,7 +48,7 @@
     <form on:submit|preventDefault={() => loading = submitted = true} class="{svgSelectorState?'invisible':''}">
         <input autocomplete="off" bind:value={title} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ein prägnanter Titel (*)" type="text" title={editMode?'Titel (*)':''} />
         <input autocomplete="off" bind:value={shortDescription} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Eine kurze Beschreibung (*)" type="text" title={editMode?'Kurzbeschreibung (*)':''}/>
-        <input autocomplete="off" bind:value={name} disabled={editMode} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none disabled:bg-gray-100 disabled:dark:bg-slate-800 {nameValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein einmaliger Name für die Leistung (URL) (*)" pattern="[a-z]+" title="Name der Leistung, Lediglich Kleinbuchstaben, keine Umlaute o.ä." type="text" id="featureName"/>
+        <input autocomplete="off" bind:value={name} disabled={editMode} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none disabled:bg-gray-100 disabled:dark:bg-slate-800 {nameValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein einmaliger Name für die Leistung (URL) (*)" pattern="[a-z0-9-_+]+" title="Name der Leistung, Lediglich Kleinbuchstaben, keine Umlaute o.ä." type="text" id="featureName"/>
         <div class="mb-6" on:mousedown={disableSubmitted} title={editMode?'Ausführliche Beschreibung (Optional)':''}>
             <HTMLEditor bind:saved={submitted} bind:editorData={longDescription} imageBucket="images" imagePath="feature/"/>
         </div>

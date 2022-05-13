@@ -1,7 +1,7 @@
 <script lang="ts">
-import {getAdminActions} from "../../supabase/database.ts";
+import {getAdminActions} from "../../../supabase/database.ts";
 import {fade} from "svelte/transition";
-import Alert from "../Essentials/Alert.svelte";
+import Alert from "../../Essentials/Alert.svelte";
 
 let actionsCount = 5;
 

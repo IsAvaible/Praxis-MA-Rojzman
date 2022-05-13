@@ -45,6 +45,16 @@ module.exports = {
       screens: {
           '4xl': '2048px',
           '5xl': '2304px'
+      },
+      animation: {
+          'reverse-spin': 'reverse-spin 1s linear infinite'
+      },
+      keyframes: {
+          "reverse-spin": {
+              from: {
+                  transform: 'rotate(360deg)'
+              },
+          }
       }
     },
   },

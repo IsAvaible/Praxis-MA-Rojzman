@@ -1,4 +1,4 @@
-<div class="max-w-screen-lg mx-auto fixed bg-white inset-x-5 p-5 bottom-40 rounded-lg drop-shadow-2xl flex gap-4 flex-wrap md:flex-nowrap text-center md:text-left items-center justify-center md:justify-between">
+<div class="max-w-screen-lg fixed bottom-10 -z-10 mx-auto bg-white inset-x-5 p-5 rounded-lg drop-shadow-2xl flex gap-4 flex-wrap md:flex-nowrap text-center md:text-left items-center justify-center md:justify-between">
     <div class="w-full">Diese Website nutzt Cookies um externe Inhalte wie Karten und Videos anzuzeigen.
         <a href="#" class="text-indigo-600 whitespace-nowrap  hover:underline">Learn more</a></div>
     <div class="flex gap-4 items-center flex-shrink-0">

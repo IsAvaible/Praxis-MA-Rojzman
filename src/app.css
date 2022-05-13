@@ -16,6 +16,14 @@
     @apply md:visible md:z-50;
 }
 
+/* Enable placeholders in content editable fields */
+[contenteditable=true]:empty:before{
+    content: attr(placeholder);
+    pointer-events: none;
+    display: block; /* For Firefox */
+    opacity: 80%;
+}
+
 @layer utilities {
     @layer responsive {
         .text-shadow {

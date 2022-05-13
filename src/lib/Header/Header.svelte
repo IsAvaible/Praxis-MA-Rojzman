@@ -17,10 +17,11 @@
     import Features from "../../pages/Features.svelte";
     import Admin from "../../pages/Admin/Admin.svelte";
     import Login from "../../pages/Admin/Login.svelte";
-    import Sidebar from "../Admin/Sidebar.svelte";
+    import Sidebar from "../Admin/General/Sidebar.svelte";
     import AdminFeatures from "../../pages/Admin/Features.svelte";
     import AdminTeam from '../../pages/Admin/Team.svelte'
     import Footer from "../Essentials/Footer.svelte";
+    import CookieBanner from "../Misc/CookieBanner.svelte";
 
     let bannerData = {
         mobileText: "Wir sind bis zum 26.04 im Urlaub!",

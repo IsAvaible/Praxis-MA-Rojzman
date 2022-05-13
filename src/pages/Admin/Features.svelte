@@ -2,10 +2,10 @@
     import {Feature, getFeatures} from "../../supabase/database";
     import {fade} from "svelte/transition";
     import FeatureCard from "../../lib/Features/FeatureCard.svelte";
-    import PageTitle from "../../lib/Admin/PageTitle.svelte";
+    import PageTitle from "../../lib/Admin/General/PageTitle.svelte";
     import Modal from "../../lib/Essentials/Modal.svelte";
-    import AddFeatureForm from "../../lib/Admin/AddFeatureForm.svelte";
-    import DeleteFeatureForm from "../../lib/Admin/DeleteFeatureForm.svelte";
+    import AddFeatureForm from "../../lib/Admin/Features/AddFeatureForm.svelte";
+    import DeleteFeatureForm from "../../lib/Admin/General/DeleteFeatureForm.svelte";
     import Alert from "../../lib/Essentials/Alert.svelte";
 
 
