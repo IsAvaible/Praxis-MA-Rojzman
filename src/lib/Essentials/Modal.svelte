@@ -2,14 +2,25 @@
     import { createEventDispatcher } from "svelte";
     import { fade } from "svelte/transition";
     import {circIn} from "svelte/easing";
-    import {clickOutside} from "../../utilities/clickOutside.ts";
+    import {clickOutside} from "../../scripts/ui/clickOutside.ts";
+    import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
 
     export let desktopCloseButton: boolean = true;
     export let hideOnClickOutside: boolean = true;
-    export let modalTopModal = false; // Whether the modal
+    export let modalTopModal: boolean = false; // Whether the modal should be able to display over another modal (hacky)
+    export let unsavedChangesCheck: boolean = true; // Whether the modal should display a confirm dialog if there are unsaved changes
 
     let dispatch = createEventDispatcher();
+    let unsavedChanges;
+    unsavedChangesStore.subscribe(value => unsavedChanges = value);
     const hide = () => {
+        if (unsavedChangesCheck && unsavedChanges) {
+            if (confirm('Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?')) {
+                unsavedChangesStore.set(false);
+            } else {
+                return
+            }
+        }
         dispatch('hide', true);
     }
 </script>
@@ -21,7 +32,7 @@
         <div in:fade={{duration: 200, easing: circIn}} out:fade={{duration: 300}} class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         {#if !modalTopModal}<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>{/if}
 
-        <div use:clickOutside on:click_outside={() => {if (hideOnClickOutside) {hide()}}} in:fade={{duration: 300*(modalTopModal?0:1)}} out:fade={{duration: 200*(modalTopModal?0:1), easing: circIn}} class="relative inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all {modalTopModal?'':'sm:my-8'} sm:align-middle {modalTopModal?'max-w-[99.9%] min-h-full':'sm:max-w-[80%] xl:max-w-7xl'} sm:p-6">
+        <div use:clickOutside on:clickOutside={() => {if (hideOnClickOutside) {hide()}}} in:fade={{duration: 300*(modalTopModal?0:1)}} out:fade={{duration: 200*(modalTopModal?0:1), easing: circIn}} class="relative inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all {modalTopModal?'':'sm:my-8'} sm:align-middle {modalTopModal?'max-w-[99.9%] min-h-full':'sm:max-w-[80%] xl:max-w-7xl'} sm:p-6">
             {#if desktopCloseButton}
                 <div class="hidden sm:block absolute top-0 right-0 pt-4 mx-4 my-5">
                     <button on:click={() => hide()} type="button" class="rounded-md text-gray-400 hover:text-gray-500 focus:text-gray-800 dark:text-slate-200 dark:hover:text-slate-100 dark:focus:text-white">

@@ -1,14 +1,19 @@
 <script lang="ts">
-
-import {darkModeListener} from "../utilities/DarkModeListener.ts";
-import {conditionalDateInputTypeReset} from "../utilities/conditionalDateInputTypeReset.ts";
+import {darkModeStore} from "../scripts/stores/darkModeStore.ts";
+import {prefersReducedMotionStore} from "../scripts/stores/prefersReducedMotionStore";
+import {conditionalInputTypeReset} from "../scripts/ui/conditionalInputTypeReset.ts";
 import Footer from "../lib/Essentials/Footer.svelte";
 import {fade, slide} from "svelte/transition";
 import HCaptcha from "svelte-hcaptcha/src/HCaptcha.svelte";
-import {removeItem} from "../utilities/arrayRemoveItem.ts";
+import {removeItem} from "../scripts/misc/arrayRemoveItem.ts";
+import {onMount} from "svelte";
 
 let darkMode: boolean;
-darkModeListener.subscribe((value) => darkMode = value);
+darkModeStore.subscribe((value) => darkMode = value);
+let prefersReducedMotion: boolean;
+prefersReducedMotionStore.subscribe((value) => prefersReducedMotion = value);
+
+onMount(() => scrollTo(0, 0)); // The HCaptcha is messing up the scroll
 
 let currentId: number = 1; // The id is used by svelte to identify each input field
 let recipes = [
@@ -28,6 +33,8 @@ const removeRecipe = (v) => {
 
 let captcha;
 let solved = false;
+let requiredInputValue;
+$: requiredInputValue = solved || undefined;
 const handleError = () => {captcha.reset()}
 const handleSuccess = () => {solved = true}
 
@@ -54,7 +61,7 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
                     <input bind:value={request.surname} required class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ihr Nachname (*)" type="text" id="name" />
                 </div>
                 <div class="mb-6">
-                    <input bind:value={request.birthday} required class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ihr Geburtsdatum (*)" type="text" id="date" onfocus="(this.type='date')" on:blur={conditionalDateInputTypeReset} />
+                    <input bind:value={request.birthday} required class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ihr Geburtsdatum (*)" type="text" id="date" onfocus="(this.type='date')" on:blur={conditionalInputTypeReset} />
                 </div>
                 <div class="mb-6">
                     <input bind:value={request.email} required class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ihre Email Adresse (*)" type="email" />
@@ -103,7 +110,8 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
                                     bind:this={captcha}
                                     on:error={handleError}
                                     on:success={handleSuccess}
-                            />
+                            ></HCaptcha>
+                            <input type="checkbox" bind:value={requiredInputValue} required class="relative top-0 opacity-0 pointer-events-none">
                         {/key}
                     </div>
                 </div>

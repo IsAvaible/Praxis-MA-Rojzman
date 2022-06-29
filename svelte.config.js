@@ -6,6 +6,6 @@ export default {
   // for more information about preprocessors
   preprocess: sveltePreprocess({
         postcss: {
-          plugins: [autoprefixer()]}
+            plugins: [autoprefixer()]}
       })
 }

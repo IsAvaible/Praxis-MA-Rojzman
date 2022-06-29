@@ -17,6 +17,10 @@ This repository contains the source code for the practice M.A. Rojzman located i
 ### Admin Tools
 - [x] Login
 - [ ] Overview / Shortcuts
+  - [ ] Banner
+  - [ ] Pop-Up
+  - [x] Admin Actions Panel
+  - [ ] Developer Contact
 - [x] Features
 - [x] Team
 - [ ] News

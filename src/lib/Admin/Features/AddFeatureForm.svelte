@@ -1,9 +1,10 @@
 <script lang="ts">
-    import {getFeatures, addFeature, updateFeature} from "../../../supabase/database.ts";
+    import {getFeatures, addFeature, updateFeature} from "../../../scripts/database/database.ts";
     import {createEventDispatcher} from "svelte";
     import Alert from "../../Essentials/Alert.svelte";
     import SvgSelector from "../General/SvgSelector.svelte";
     import HTMLEditor from "../General/HTMLEditor.svelte";
+    import {unsavedChangesStore} from "../../../scripts/stores/unsavedChangesStore";
 
     export let editMode: boolean = false;
     export let name = '';
@@ -12,6 +13,11 @@
     export let longDescription = '' || '<p>Eine ausführliche Beschreibung (Optional)</p>';
     export let svgPaths = undefined;
     export let startName = name;
+
+    // Checks whether the feature has been edited by comparing start and current values
+    let startTitle = title, startShortDescription = shortDescription, startLongDescription = longDescription, startSvgPaths = svgPaths;
+    $: edited = (startTitle != title || startShortDescription != shortDescription || startLongDescription != longDescription || startSvgPaths != svgPaths);
+    $: unsavedChangesStore.set(edited);
 
     let names = [];
     getFeatures().then(v => names = v.map(f => f.name)).catch();
@@ -36,6 +42,7 @@
 
     let dispatch = createEventDispatcher();
     const onModify = () => {
+        unsavedChangesStore.set(false);
         dispatch('modification');
         return '';
     }

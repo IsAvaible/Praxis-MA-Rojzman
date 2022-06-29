@@ -1,6 +1,6 @@
-let primary = { // This is just aliasing indigo
+let primary = {
     // Indigo
-    50:  '#eef2ff',
+    50: '#eef2ff',
     100: '#e0e7ff',
     200: '#c7d2fe',
     300: '#a5b4fc',
@@ -32,41 +32,41 @@ let primary = { // This is just aliasing indigo
     // 700: '#4d7c0f',
     // 800: '#3f6212',
     // 900: '#365314',
-    };
+};
 
 module.exports = {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
-  theme: {
-    extend: {
-      colors: {
-        'primary': primary,
-        transparent: 'transparent'
-      },
-      screens: {
-          '4xl': '2048px',
-          '5xl': '2304px'
-      },
-      animation: {
-          'reverse-spin': 'reverse-spin 1s linear infinite'
-      },
-      keyframes: {
-          "reverse-spin": {
-              from: {
-                  transform: 'rotate(360deg)'
-              },
-          }
-      }
+    content: ['./src/**/*.{html,js,svelte,ts}'],
+    theme: {
+        extend: {
+            colors: {
+                'primary': primary,
+                transparent: 'transparent'
+            },
+            screens: {
+                '4xl': '2048px',
+                '5xl': '2304px'
+            },
+            animation: {
+                'reverse-spin': 'reverse-spin 1s linear infinite'
+            },
+            keyframes: {
+                "reverse-spin": {
+                    from: {
+                        transform: 'rotate(360deg)'
+                    },
+                }
+            }
+        },
     },
-  },
-  plugins: [
-    require("tailwind-heropatterns")({
-      variants: [],
-      patterns: ["leaf"],
-      colors: {...primary, purple: '#6c50bd'},
-      opacity: {
-        default: "0.47",
-      }
-    }),
-   require("tailwind-gradient-mask-image")
-  ],
+    plugins: [
+        require("tailwind-heropatterns")({
+            variants: [],
+            patterns: ["leaf"],
+            colors: {...primary, purple: '#6c50bd'},
+            opacity: {
+                default: "0.47",
+            }
+        }),
+        require("tailwind-gradient-mask-image")
+    ],
 }

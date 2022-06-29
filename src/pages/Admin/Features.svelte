@@ -1,11 +1,11 @@
 <script lang="ts">
-    import {Feature, getFeatures} from "../../supabase/database";
+    import {Feature, getFeatures} from "../../scripts/database/database";
     import {fade} from "svelte/transition";
     import FeatureCard from "../../lib/Features/FeatureCard.svelte";
-    import PageTitle from "../../lib/Admin/General/PageTitle.svelte";
+    import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
     import Modal from "../../lib/Essentials/Modal.svelte";
     import AddFeatureForm from "../../lib/Admin/Features/AddFeatureForm.svelte";
-    import DeleteFeatureForm from "../../lib/Admin/General/DeleteFeatureForm.svelte";
+    import DeleteFeatureForm from "../../lib/Admin/Features/DeleteFeatureForm.svelte";
     import Alert from "../../lib/Essentials/Alert.svelte";
 
 
@@ -39,7 +39,7 @@
             {:else if activeOption === 1}
                 <AddFeatureForm editMode={true} {...selectedFeature.data} on:modification={() => modification=true}/>
             {:else if activeOption === 2}
-                <DeleteFeatureForm feature={selectedFeature}  on:modification={() => modification=true}/>
+                <DeleteFeatureForm feature={selectedFeature} on:modification={() => modification=true}/>
             {/if}
         </div>
     </Modal>

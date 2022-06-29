@@ -1,5 +1,5 @@
 <script>
-    import {clickOutside} from "../../utilities/clickOutside.ts";
+    import {clickOutside} from "../../scripts/ui/clickOutside.ts";
     import { createEventDispatcher } from 'svelte';
     import MenuBlogReference from "./MenuBlogReference.svelte";
     import {navigate} from "svelte-navigator";
@@ -22,7 +22,7 @@
     To: "opacity-0 translate-y-1"
 -->
 
-<div use:clickOutside on:click_outside={hide} class="absolute z-10 left-1/2 transform -translate-x-1/2 mt-3 px-2 w-screen max-w-md sm:px-0">
+<div use:clickOutside on:clickOutside={hide} class="absolute z-10 left-1/2 transform -translate-x-1/2 mt-3 px-2 w-screen max-w-md sm:px-0">
     <div class="rounded-lg shadow-lg ring-1 ring-black dark:ring-slate-900 ring-opacity-5 overflow-hidden">
         <div class="relative grid gap-6 bg-white dark:bg-slate-800 px-5 py-6 sm:gap-8 sm:p-8">
             <span on:click={() => navigate("/FAQ")} class="cursor-pointer -m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700">

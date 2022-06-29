@@ -1,4 +1,4 @@
-import {getUser, signOut} from "../supabase/database";
+import {getUser, signOut} from "./database";
 import {navigate} from "svelte-navigator";
 
 export const validateAuthentication = () => {

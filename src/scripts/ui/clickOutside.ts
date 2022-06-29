@@ -3,7 +3,7 @@ export function clickOutside(node) {
 
     const dispatch = () => {
         node.dispatchEvent(
-            new CustomEvent('click_outside', node)
+            new CustomEvent('clickOutside', node)
         )
     }
 

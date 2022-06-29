@@ -30,7 +30,6 @@
     align-items: flex-end;
 
     .box {
-      position: relative;
       display: flex;
       justify-content: center;
       flex-direction: column;

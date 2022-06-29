@@ -2,7 +2,8 @@
 import ProfileCard from "../lib/Team/ProfileCard.svelte";
 import Footer from "../lib/Essentials/Footer.svelte";
 import DarkModeGlow from "../lib/Misc/DarkModeGlow.svelte";
-import {getTeamMembers} from "../supabase/database.ts";
+import {getTeamMembers} from "../scripts/database/database.ts";
+import Alert from "../lib/Essentials/Alert.svelte";
 
 let title = "Unser Team";
 let subTitle = "Die Personen, welche ihren Aufenthalt in unserer Praxis zum bestmöglichen Erlebnis machen";
@@ -27,15 +28,16 @@ let team: { role: string; name: string; description: string; twitterLink?: strin
     {#await getTeamMembers() then team}
         <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 z-20 w-full px-10 pt-10 pb-10">
             <div class="container mx-auto">
-                <div role="list" aria-label="Mitarbeiter" class="md:flex items-center flex-wrap sm:justify-around">
+                <div role="list" aria-label="Mitarbeiter" class="md:flex items-center flex-wrap sm:justify-between">
                     {#each team as member, index}
                         <ProfileCard {...member}/>
-                        {#if index !== team.length - 1}
-                            <div class="mb-32 sm:mb-24"></div>
-                        {/if}
                     {/each}
                 </div>
             </div>
+        </div>
+    {:catch e}
+        <div class="self-center sm:px-6 lg:px-8 2xl:max-w-[80%] w-full flex-grow">
+            <Alert type={1} title="Fehler beim Laden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
         </div>
     {/await}
     <div class="min-h-0 flex-grow flex overflow-y-clip"> <!-- White space is a design element. Me: -->

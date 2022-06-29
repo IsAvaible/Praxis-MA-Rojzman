@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {Router, Route, Link, globalHistory} from "svelte-navigator";
+    import {Router, Route, Link, globalHistory, navigate} from "svelte-navigator";
     import { fade } from "svelte/transition";
-    import {bannerPushContent} from "../../utilities/BannerPushContent";
+    import {bannerPushContentStore} from "../../scripts/stores/bannerPushContentStore";
     // import FlyoutMenu1 from "./FlyoutMenu1.svelte";
     import FlyoutMenu2 from "./FlyoutMenu2.svelte";
     import MobileMenu from "./MobileMenu.svelte";
@@ -17,19 +17,25 @@
     import Features from "../../pages/Features.svelte";
     import Admin from "../../pages/Admin/Admin.svelte";
     import Login from "../../pages/Admin/Login.svelte";
-    import Sidebar from "../Admin/General/Sidebar.svelte";
+    import Sidebar from "../Admin/Navigation/Sidebar.svelte";
     import AdminFeatures from "../../pages/Admin/Features.svelte";
-    import AdminTeam from '../../pages/Admin/Team.svelte'
+    import AdminBlog from '../../pages/Admin/Blog.svelte';
+    import AdminTeam from '../../pages/Admin/Team.svelte';
     import Footer from "../Essentials/Footer.svelte";
     import CookieBanner from "../Misc/CookieBanner.svelte";
+    import {deviceOnlineStore} from "../../scripts/stores/deviceOnlineStore";
+    import {delay} from "../../scripts/misc/delay";
+    import Blog from "../../pages/Blog.svelte";
+    import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
 
     let bannerData = {
         mobileText: "Wir sind bis zum 26.04 im Urlaub!",
         desktopText: "Wir sind bis zum 26.04 im Urlaub!",
-        active: true,
-        navText: "Vertretung finden",
-        navLink: "/vertretung",
-        svgPath: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z",
+        active: false,
+        buttonText: "Vertretung finden",
+        buttonAction: () => navigate("/vertretung"),
+        svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
+        hideable: true,
     }
 
     let siteEnterPopUpData = {
@@ -41,25 +47,85 @@
         buttonLink: "/vertretung"
     };
 
+    let offlineBannerData = {
+        mobileText: "Internetverbindung unterbrochen.",
+        desktopText: "Ihr Gerät ist seit einigen Sekunden nicht mehr mit dem Internet verbunden.",
+        active: true,
+        buttonText: "Neu Laden",
+        buttonAction: () => window.location.reload(),
+        svgPaths: ["M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"],
+        hideable: false,
+        animateIn: true,
+        pulseIcon: true
+    }
+
     let bannerOpen = bannerData.active;
     let bannerNoPushContentPaths = ["/"]; // These are the paths where the banner should not occupy screen space
 
+    let offline = false;
+    let offlineBannerOpen = false;
+    deviceOnlineStore.subscribe(online => {
+        offline = !online;
+        if (online) {offlineBannerOpen = false}
+        else {delay(3000).then(() => {if (offline) offlineBannerOpen = true})}
+    })
+
     let pathname;
+    let lastPageKey;
     const onNavigate = (history) => {
-        pathname = history.location.pathname;
-        bannerPushContent.set(!bannerNoPushContentPaths.includes(pathname))
+        if (pathname !== history.location.pathname) {
+            pathname = history.location.pathname;
+            bannerPushContentStore.set(!bannerNoPushContentPaths.includes(pathname));
+        }
     }
+
+    globalHistory.listen(onNavigate);
+
+    let unsavedChanges;
+    unsavedChangesStore.subscribe(value => unsavedChanges = value)
 
     // Scroll to top when the site is switched
     history.pushState = new Proxy(history.pushState, {
         apply (target, thisArg, argumentsList) {
-            // scrollTo(0, 0) <-- order of operation can mather (ty, @t-lock)
+            // This will execute *before* the navigation (and may prevent it by returning early)
+            if (unsavedChanges) {
+                if (confirm('Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?')) {
+                    unsavedChangesStore.set(false);
+                } else {
+                    return;
+                }
+            }
+            // Render the new site
             Reflect.apply(target, thisArg, argumentsList);
+            // This will execute *after* the navigation
             if (history.state == undefined || history.state.scroll !== false) scrollTo(0, 0);
+            lastPageKey = history.state._key;
         }
     })
 
-    globalHistory.listen(onNavigate);
+    // Prevent refresh when there are unsaved changes
+    window.onbeforeunload = () => {
+        if (unsavedChanges) {
+            return false;
+        }
+    }
+
+    // Revert browser back and forward buttons when there are unsaved changes
+    window.onpopstate = event => {
+        if (unsavedChanges) {
+            if (confirm('Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?')) {
+                return
+            } else {
+                unsavedChangesStore.set(false); // To prevent a confirm dialog showing up before forwarding
+                if (lastPageKey != event.state._key) { // Don't ask why the if statement works this way
+                    window.history.forward();
+                } else {
+                    window.history.back();
+                }
+                delay(1).then(() =>  unsavedChangesStore.set(true)); // I #love JS
+            }
+        }
+    }
 
     let flyout1Open = false;
     const toggleFlyout1 = () => {
@@ -175,6 +241,9 @@
                 </div>
             {/if}
         </div>
+        {#if offlineBannerOpen}
+            <Banner {...offlineBannerData}/>
+        {/if}
         {#if bannerOpen}
             <Banner {...bannerData} on:hide={() => bannerOpen = false}/>
         {/if}
@@ -200,7 +269,7 @@
 
         <Route path="aktuelles/*">
             <Route path="/">
-                <NotFound/>
+                <Blog/>
             </Route>
             <Route path=":id" component={undefined}/>
         </Route>
@@ -236,6 +305,7 @@
                     <Sidebar>
                         <Route path="/"><Admin/></Route>
                         <Route path="/leistungen"><AdminFeatures/></Route>
+                        <Route path="/aktuelles"><AdminBlog/></Route>
                         <Route path="/team"><AdminTeam/></Route>
                         <Route path="/*"><NotFound redirectTo="/admin" withFooter={false}/></Route>
                     </Sidebar>

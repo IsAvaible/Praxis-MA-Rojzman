@@ -33,7 +33,7 @@
                             </div>
                             <div class="w-full">
                                 <h4 class="font-bold dark:text-slate-100 text-xl mb-1">Unsere Adresse</h4>
-                                <a href="https://www.google.com/maps/dir//MA+Rojzman+Fach%C3%A4rztin+f%C3%BCr+Allgemeinmedizin,+Kammstra%C3%9Fe+2,+65399+Kiedrich/" target="_blank" class="font-medium text-gray-600 hover:text-black dark:text-slate-300 dark:hover:text-slate-100">
+                                <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" class="font-medium text-gray-600 hover:text-black dark:text-slate-300 dark:hover:text-slate-100">
                                     Kammstr. 2, 65399 Kiedrich, Hessen DE
                                 </a>
                             </div>

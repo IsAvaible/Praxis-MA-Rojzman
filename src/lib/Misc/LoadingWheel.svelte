@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {delay} from "../../utilities/delay.ts";
+    import {delay} from "../../scripts/misc/delay.ts";
 
     export let showAfter: number = 0;
     export let size: number = 5;

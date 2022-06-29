@@ -1,6 +1,6 @@
 <script lang="ts">
     import Modal from "../../Essentials/Modal.svelte";
-    import PageTitle from "./PageTitle.svelte";
+    import PageTitle from "../Navigation/PageTitle.svelte";
     import Alert from "../../Essentials/Alert.svelte";
     import {createEventDispatcher, onMount} from "svelte";
 
@@ -29,7 +29,7 @@
 
 </script>
 
-<Modal on:hide={close} modalTopModal={modalTopModal}>
+<Modal on:hide={close} modalTopModal={modalTopModal} unsavedChangesCheck={false}>
     <div bind:this={contentElm} class="flex flex-col flex-grow w-full sm:w-screen">
         <PageTitle titleAccent="Icon Selector" subTitle='Kopieren sie ein Icon als SVG aus der "Outline" Sektion und fügen sie es anschliessend mit dem untenstehenden Knopf ein.' showTitle={false}/>
         <iframe src="https://heroicons.com/" allow="clipboard-write" class="rounded-lg mb-4" style="min-height: {iframeHeight}"></iframe>

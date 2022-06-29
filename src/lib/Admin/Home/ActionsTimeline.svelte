@@ -1,9 +1,10 @@
 <script lang="ts">
-import {getAdminActions} from "../../../supabase/database.ts";
+import {getAdminActions} from "../../../scripts/database/database.ts";
 import {fade} from "svelte/transition";
 import Alert from "../../Essentials/Alert.svelte";
 
 let actionsCount = 5;
+let increaseBy = actionsCount;
 
 let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6']},
     {section: 'Leistungen', paths: ['M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z']},
@@ -15,9 +16,9 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
 
 <div class="flow-root">
     <ul role="list" class="mb my-5" in:fade={{duration: 500}}>
-        {#await getAdminActions(5)}
+        {#await getAdminActions(actionsCount)}
             {#each Array(actionsCount) as _, i}
-                <li>
+                <li in:fade={{duration: 500}}>
                     <div class="ml-2 relative pb-8 animate-pulse">
                         {#if i+1 !== actionsCount}<span class="absolute top-4 left-4 -ml-px h-[75%] w-0.5 bg-gray-200" aria-hidden="true"></span>{/if}
                         <div class="relative flex space-x-3">
@@ -27,6 +28,7 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
                                     <div class="h-2 bg-slate-200 rounded col-span-2"></div>
                                     <div class="h-2 bg-slate-200 rounded col-span-1"></div>
                                 </div>
+                            <div class="h-2 bg-slate-200 rounded col-span-1 max-w-[30%]"></div>
                             </div>
                         </div>
                     </div>
@@ -34,7 +36,7 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
             {/each}
         {:then actions}
             {#each actions as action, i}
-                <li>
+                <li in:fade={{duration: 300}}>
                     <div class="ml-2 relative pb-8">
                         {#if i+1 !== actions.length}<span class="absolute top-4 left-4 -ml-px h-[75%] w-0.5 bg-gray-200" aria-hidden="true"></span>{/if}
                         <div class="relative flex space-x-3">
@@ -50,7 +52,7 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
                             <div class="flex-1 space-y-1">
                                 <div class="flex items-center justify-between">
                                     <h3 class="text-sm font-medium">{action.description}</h3>
-                                    <p class="text-sm text-gray-500 dark:text-slate-300">{action.performed_at.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit'})}</p>
+                                    <p class="text-sm text-gray-500 dark:text-slate-300">{action.performedAt.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit'})}</p>
                                 </div>
                                 <p class="text-sm text-gray-500  dark:text-slate-300">Account: {action.author}</p>
                             </div>
@@ -60,6 +62,30 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
             {:else}
                 <Alert type={1} title={'Achtung:'} description={'Es wurden noch keine Admin Aktionen aufgezeichnet.'}/>
             {/each}
+            {#if actions}
+                <li>
+                    <div class="relative flex justify-center items-center space-x-10">
+                        <div in:fade={{duration: 300}} on:click={() => actionsCount += increaseBy} class="flex space-x-3 items-center group cursor-pointer">
+                            <span class="h-8 w-8 rounded-full bg-primary-400 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 group-hover:bg-primary-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </span>
+                            <h3 class="text-sm font-medium">Mehr anzeigen</h3>
+                        </div>
+                        {#if actionsCount !== increaseBy}
+                            <div in:fade={{duration: 300}} on:click={() => actionsCount -= increaseBy} class="flex space-x-3 items-center group cursor-pointer">
+                                <span class="h-8 w-8 rounded-full bg-primary-400 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 group-hover:bg-primary-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+                                    </svg>
+                                </span>
+                                <h3 class="text-sm font-medium">Weniger anzeigen</h3>
+                            </div>
+                        {/if}
+                    </div>
+                </li>
+            {/if}
         {:catch e}
             <Alert type={0} title={'Error!'} description={e.message}/>
         {/await}

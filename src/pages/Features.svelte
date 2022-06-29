@@ -1,9 +1,10 @@
 <script lang="ts">
-    import {getFeatures} from "../supabase/database.ts";
+    import {getFeatures} from "../scripts/database/database.ts";
     import { fade } from "svelte/transition";
     import { useParams } from 'svelte-navigator'
     import FeaturePopUp from "../lib/Features/FeaturePopUp.svelte";
     import FeatureCard from "../lib/Features/FeatureCard.svelte";
+    import Alert from "../lib/Essentials/Alert.svelte";
 
     let features: {title: string, description: string, svgPath: string}[];
     let title = 'Unsere Leistungen';
@@ -32,7 +33,7 @@
                     {/each}
                 </div>
             {:catch e}
-                <p>Wir sind auf einen Fehler gestoßen. <a href="">Nochmal versuchen?</a></p>
+                <Alert type={1} title="Fehler beim Laden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
             {/await}
         </div>
     </div>

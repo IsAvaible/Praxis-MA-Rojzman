@@ -2,8 +2,8 @@
     import {fade} from "svelte/transition";
     import {createEventDispatcher} from "svelte";
     import { navigate } from "svelte-navigator";
-    import {clickOutside} from "../../../utilities/clickOutside.ts";
-    import {getUser, signOut} from "../../../supabase/database.ts";
+    import {clickOutside} from "../../../scripts/ui/clickOutside.ts";
+    import {getUser, signOut} from "../../../scripts/database/database.ts";
 
     let dispatch = createEventDispatcher();
     function hide() {

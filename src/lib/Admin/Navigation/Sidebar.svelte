@@ -1,8 +1,8 @@
 <script lang="ts">
     import MobileMenu from "./MobileMenu.svelte";
     import {globalHistory, navigate} from "svelte-navigator";
-    import {signOut} from "../../../supabase/database.ts";
-    import {validateAuthentication} from "../../../utilities/validateAuthentication.ts";
+    import {signOut} from "../../../scripts/database/database.ts";
+    import {validateAuthentication} from "../../../scripts/database/validateAuthentication.ts";
     let user = validateAuthentication();
 
     let mobileMenuOpen = false;
@@ -39,14 +39,14 @@
                 </div>
                 <nav class="mt-5 flex-1 px-2 bg-white dark:bg-slate-900 space-y-1">
                     {#each links as link, i}
-                        <span on:click={() => {navigate(link.link, {state: {scroll: false}})}} class="{activeLinkIndex === i ? 'bg-gray-100 text-gray-900 dark:bg-slate-600 dark:text-slate-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-slate-300 dark:hover:text-slate-200 dark:hover:bg-slate-700'} cursor-pointer group flex items-center px-2 py-2 text-base font-medium rounded-md">
+                        <a href={link.link} on:click|preventDefault={() => {navigate(link.link, {state: {scroll: false}})}} class="{activeLinkIndex === i ? 'bg-gray-100 text-gray-900 dark:bg-slate-600 dark:text-slate-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-slate-300 dark:hover:text-slate-200 dark:hover:bg-slate-700'} cursor-pointer group flex items-center px-2 py-2 text-base font-medium rounded-md">
                             <svg class="{activeLinkIndex === i ? 'text-gray-500 dark:text-slate-300' : 'text-gray-400 group-hover:text-gray-500 dark:text-slate-300 dark:group-hover:text-slate-300'} mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 {#each link.svgPaths as path}
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={path} />
                                 {/each}
                             </svg>
                             {link.title}
-                        </span>
+                        </a>
                     {/each}
                 </nav>
             </div>

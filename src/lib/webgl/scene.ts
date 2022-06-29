@@ -5,6 +5,7 @@ import {vertexShader, fragmentShader} from "./shaders";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import { MathUtils } from 'three';
 import WEBGL from "three/examples/jsm/capabilities/WebGL";
+import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
 
 export let sceneInitialized = false;
 
@@ -24,6 +25,8 @@ const gltfLoader = new GLTFLoader();
 
 let virus: THREE.Group;
 
+let prefersReducedMotion;
+prefersReducedMotionStore.subscribe((b) => prefersReducedMotion = b);
 
 const init = () => {
   // @ts-ignore
@@ -71,8 +74,8 @@ const animate = () => {
 
 const update = () => {
   if (virus != undefined) {
-    virus.rotation.x += 0.001;
-    virus.rotation.z += 0.001;
+    virus.rotation.x += prefersReducedMotion ? 0.0001 : 0.001;
+    virus.rotation.z += prefersReducedMotion ? 0.0001 : 0.001;
   }
 }
 

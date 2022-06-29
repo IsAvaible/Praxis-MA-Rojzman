@@ -3,7 +3,7 @@ export function keyEsc(node) {
 
     const dispatch = () => {
         node.dispatchEvent(
-            new CustomEvent('key_esc', node)
+            new CustomEvent('keyEsc', node)
         )
     }
 

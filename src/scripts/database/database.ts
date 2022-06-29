@@ -1,11 +1,13 @@
-import {createClient, User} from '@supabase/supabase-js'
+import {createClient} from '@supabase/supabase-js'
+import type {User} from '@supabase/gotrue-js';
+import type {SearchOptions} from '@supabase/storage-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL.toString();
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY.toString();
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-export interface Feature {
+export type Feature = {
     name: string;
     title: string;
     shortDescription: string;
@@ -13,17 +15,17 @@ export interface Feature {
     svgPaths: string[];
 }
 
-export interface AdminAction {
+export type AdminAction = {
     id: number;
-    performed_at: Date;
+    performedAt: Date;
     section: string;
     action: string;
     description: string;
     author: string;
 }
 
-export interface TeamMember {
-    idName: string;
+export type TeamMember = {
+    id: string;
     name: string;
     role: string;
     description: string;
@@ -33,12 +35,20 @@ export interface TeamMember {
     flexUrl: string
 }
 
+export type BlogEntry = {
+    id: string;
+    createdAt: Date;
+    title: string;
+    content: string;
+    previewImageUrl: string;
+}
+
 let getFeaturesCache; // This results in each client only requesting the data once.
 export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
     if (getFeaturesCache != undefined && !noCache) return getFeaturesCache
 
     let {data, error} = await supabase
-        .from('Feature')
+        .from<Feature>('Feature')
         .select('*')
         .order('title')
 
@@ -54,7 +64,7 @@ export const getFeature = async (name: string, noCache?: boolean): Promise<Featu
     if (!noCache && (find = (await getFeatures()).find(e => e.name == name)) != undefined) return find
 
     let {data, error} = await supabase
-        .from('Feature')
+        .from<Feature>('Feature')
         .select('*')
         .eq('name', name)
         .single();
@@ -67,7 +77,7 @@ export const getFeature = async (name: string, noCache?: boolean): Promise<Featu
 
 export const addFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
     const { data, error } = await supabase
-        .from('Feature')
+        .from<Feature>('Feature')
         .insert([
             { name: name, title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths },
         ])
@@ -82,7 +92,7 @@ export const addFeature = async (name: string, title: string, shortDescription: 
 export const updateFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
 
     const { data, error } = await supabase
-        .from('Feature')
+        .from<Feature>('Feature')
         .update({ title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths })
         .eq('name', name)
         .single()
@@ -95,7 +105,7 @@ export const updateFeature = async (name: string, title: string, shortDescriptio
 
 export const deleteFeature = async (name: string) => {
     const { data, error } = await supabase
-        .from('Feature')
+        .from<Feature>('Feature')
         .delete()
         .eq('name', name)
         .single()
@@ -112,7 +122,7 @@ export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> =
     if (getTeamMembersCache != undefined && !noCache) return getTeamMembersCache
 
     let {data, error} = await supabase
-        .from('TeamMember')
+        .from<TeamMember>('Team-Member')
         .select('*')
         .order('name')
 
@@ -123,14 +133,14 @@ export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> =
 }
 
 
-export const getTeamMember = async (idName: string, noCache?: boolean): Promise<TeamMember> => {
+export const getTeamMember = async (id: string, noCache?: boolean): Promise<TeamMember> => {
     let find; // Only if the team member can not be found in the cache, a new request is sent.
-    if (!noCache && (find = (await getTeamMembers()).find(e => e.idName == idName)) != undefined) return find
+    if (!noCache && (find = (await getTeamMembers()).find(e => e.id == id)) != undefined) return find
 
     let {data, error} = await supabase
-        .from('TeamMember')
+        .from<TeamMember>('Team-Member')
         .select('*')
-        .eq('idName', idName)
+        .eq('id', id)
         .single();
 
     if (error) throw error;
@@ -139,63 +149,65 @@ export const getTeamMember = async (idName: string, noCache?: boolean): Promise<
 }
 
 
-export const addTeamMember = async (idName: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
+export const addTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
-        .from('TeamMember')
+        .from<TeamMember>('Team-Member')
         .insert([
-            { idName: idName, name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl },
+            { id: id, name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl },
         ])
         .single()
 
     if (error) throw error;
 
-    await addAdminAction('Team', 'insert', `Das Team Mitglied mit dem Namen "${idName}" wurde hinzugefügt.`);
+    await addAdminAction('Team', 'insert', `Das Team Mitglied mit dem Namen "${id}" wurde hinzugefügt.`);
     return data;
 }
 
-export const updateTeamMember = async (idName: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
+export const updateTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
-        .from('TeamMember')
+        .from<TeamMember>('Team-Member')
         .update({ name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl })
-        .eq('idName', idName)
+        .eq('id', id)
         .single()
 
     if (error) throw error;
 
-    await addAdminAction('Team', 'update', `Das Team Mitglied mit dem Namen "${idName}" wurde bearbeitet.`);
+    await addAdminAction('Team', 'update', `Das Team Mitglied mit der ID "${id}" und dem Namen "${name}" wurde bearbeitet.`);
     return data;
 }
 
-export const deleteTeamMember = async (idName: string) => {
+export const deleteTeamMember = async (id: string) => {
     const { data, error } = await supabase
-        .from('TeamMember')
+        .from<TeamMember>('Team-Member')
         .delete()
-        .eq('idName', idName)
+        .eq('id', id)
         .single()
 
     if (error) throw error;
 
-    await addAdminAction('Team', 'delete', `Das Team Mitglied mit dem Namen "${idName}" wurde gelöscht.`);
+    await addAdminAction('Team', 'delete', `Das Team Mitglied mit dem Namen "${id}" wurde gelöscht.`);
     return data;
 }
+
+
 
 
 export const getAdminActions = async (count: number): Promise<AdminAction[]> => {
     let { data, error } = await supabase
-        .from('Admin-Action')
+        .from<AdminAction>('Admin-Action')
         .select('*')
-        .order('performed_at', {ascending: false})
+        .order('performedAt', {ascending: false})
         .limit(count)
 
     if (error) throw error;
 
-    data.forEach((a) => a.performed_at = new Date(a.performed_at));
+    data.forEach((a) => a.performedAt = new Date(a.performedAt));
     return data;
 }
 
 export const addAdminAction = async (section: string, action: string, description: string, author?: string) => {
     const { data, error } = await supabase
-        .from('Admin-Action')
+        .from<AdminAction>('Admin-Action')
         .insert([
             { section: section, action: action, description: description, author: author || getUser().email },
         ])
@@ -230,11 +242,24 @@ export const deleteFiles = async (bucket: string, paths: string[]) => {
 }
 
 export const getPublicFileUrl = async (bucket: string, path: string) => {
-    const { publicURL, error } = supabase.storage.from(bucket).getPublicUrl(path)
+    const { publicURL, error } = supabase.storage.from(bucket).getPublicUrl(path);
 
     if (error) throw error;
 
     return publicURL;
+}
+
+
+// Lists all the files within a bucket.
+export const listFiles = async (bucket: string, path?: string, searchOptions?: SearchOptions) => {
+    const { data, error } = await supabase
+        .storage
+        .from(bucket)
+        .list(path, searchOptions)
+
+    if (error) throw error;
+
+    return data;
 }
 
 export const signIn = async (email: string, password: string) => {

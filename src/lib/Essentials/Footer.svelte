@@ -18,14 +18,15 @@
             </span>
         </div>
         <ul class="flex flex-wrap lg:justify-end mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0 lg:flex-1">
+            <!--   Using the navigate() method is faster than the href attribute   -->
             <li>
-                <span on:click={() => navigate("/datenschutzerklaerung")} class="mr-4 hover:underline md:mr-6 cursor-pointer">Datenschutzerklärung</span>
+                <a href="/datenschutzerklaerung" on:click|preventDefault={() => navigate("/datenschutzerklaerung")} class="mr-4 hover:underline md:mr-6 cursor-pointer">Datenschutzerklärung</a>
             </li>
             <li>
                 <span class="mr-4 hover:underline md:mr-6 cursor-pointer">Lizensierung</span>
             </li>
             <li>
-                <span on:click={() => navigate("/impressum")} class="hover:underline cursor-pointer">Impressum</span>
+                <a href="/impressum" on:click|preventDefault={() => navigate("/impressum")} class="hover:underline cursor-pointer">Impressum</a>
             </li>
         </ul>
     </footer>

@@ -2,8 +2,8 @@
     import Cropper from "svelte-easy-crop";
     import Modal from "../../Essentials/Modal.svelte";
     import {createEventDispatcher} from "svelte";
-    import PageTitle from "./PageTitle.svelte";
-    import getCroppedImg from "../../../utilities/cropUtils.ts";
+    import PageTitle from "../Navigation/PageTitle.svelte";
+    import getCroppedImg from "../../../scripts/media/cropUtils.ts";
     import LoadingWheel from "../../Misc/LoadingWheel.svelte";
 
     export let image;
@@ -38,7 +38,7 @@
             <PageTitle showTitle={false} titleAccent="Bild Zuschneiden"/>
         </div>
         <div class="mx-auto" style="width: {cropperSize + 40}px; height: {cropperSize}px">
-            <input bind:value={zoom} min="1" max="4" step="0.01" type="range" orient="vertical" class="float-right bg-primary-500 text-primary-600 focus:outline-none focus:ring-0 focus:shadow-none">
+            <input bind:value={zoom} min="1" max="4" step="0.005" type="range" orient="vertical" class="float-right bg-primary-500 text-primary-600 focus:outline-none focus:ring-0 focus:shadow-none">
             <div class="mx-auto relative" style="width: {cropperSize}px; height: {cropperSize}px">
                 <Cropper {image} aspect={1} maxZoom={4} zoomSpeed={0.5} cropShape={'round'} on:cropcomplete={e => pixelCrop = e.detail.pixels} bind:crop bind:zoom/>
             </div>

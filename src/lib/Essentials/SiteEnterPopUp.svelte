@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import { clickOutside } from "../../utilities/clickOutside.ts";
-    import {shown} from "../../utilities/siteEnterPopupStore";
+    import { clickOutside } from "../../scripts/ui/clickOutside.ts";
+    import {shown} from "../../scripts/stores/siteEnterPopupStore";
     import {navigate} from "svelte-navigator";
     import { fade } from "svelte/transition";
 
@@ -33,7 +33,7 @@
 
             <!-- This element is to trick the browser into centering the modal contents. -->
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div use:clickOutside on:click_outside={hide} class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div use:clickOutside on:clickOutside={hide} class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <div class="bg-white dark:bg-slate-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 dark:bg-primary-500 sm:mx-0 sm:h-10 sm:w-10">

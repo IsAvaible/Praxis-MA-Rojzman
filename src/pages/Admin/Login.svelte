@@ -4,9 +4,9 @@
     import HCaptcha from "svelte-hcaptcha/src/HCaptcha.svelte";
     import {fade} from "svelte/transition";
     import {navigate} from "svelte-navigator";
-    import {signIn, signUp} from "../../supabase/database.ts";
-    import {longpress} from "../../utilities/longpress.ts";
-    import {darkModeListener} from "../../utilities/DarkModeListener.ts";
+    import {signIn, signUp} from "../../scripts/database/database.ts";
+    import {longpress} from "../../scripts/ui/longpress.ts";
+    import {darkModeStore} from "../../scripts/stores/darkModeStore.ts";
     import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
 
     let email: string;
@@ -18,7 +18,7 @@
     let maxFailsBeforeCaptcha: number = 3;
 
     let darkMode: boolean;
-    darkModeListener.subscribe((value) => darkMode = value);
+    darkModeStore.subscribe((value) => darkMode = value);
     let captcha;
     let captchaSolved;
     $: captchaSolved = failedAttempts < maxFailsBeforeCaptcha;

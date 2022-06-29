@@ -43,7 +43,7 @@
         </div>
     {/if}
     <Title/>
-    <div class="mt-[72vh] 2xl:mt-[74vh] mx-4 md:mx-10 pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black">
+    <div class="mt-[72vh] 4xl:mt-[74vh] mx-4 md:mx-10 pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black">
         <TeamLinkPanel/>
         <div use:inview on:enter={() => isInView = true} on:leave={() => isInView = false}>
             {#if isInView}
@@ -59,8 +59,11 @@
                         <div class="bg-primary-100 dark:bg-primary-800 mx-auto bg-slate flex justify-center rounded-b-lg">
                             <div class="flex p-5 lg:p-7 mb-5">
                                 <OfficeHours/>
-                                <div class="my-auto">
-                                    <button on:click={() => navigate("/kontakt")} type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-base">Kontaktieren sie uns!</button>
+                                <div class="my-auto grid grid-cols-1 items-center ml-3">
+                                        <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" class="hidden md:flex mx-auto mb-2 font-medium text-gray-900 dark:text-slate-100">
+                                            <p>Kammstr. 2, 65399 Kiedrich</p>
+                                        </a>
+                                    <a href="/kontakt" on:click|preventDefault={() => navigate("/kontakt")} class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white hover:bg-primary-700 focus:outline-none sm:w-auto sm:text-base">Kontaktieren sie uns!</a>
                                 </div>
                             </div>
                         </div>
@@ -79,8 +82,6 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
-
-  $primary-color: #80d261;
 
   #webgl_canvas {
     margin: 0;
