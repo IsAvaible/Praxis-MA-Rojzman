@@ -1,5 +1,6 @@
 <script lang="ts">
     import ActionsTimeline from "../../lib/Admin/Home/ActionsTimeline.svelte";
+    import SiteEnterPopUpConfigurator from "../../lib/Admin/Home/SiteEnterPopUpConfigurator.svelte";
 </script>
 
 

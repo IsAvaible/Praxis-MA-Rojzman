@@ -1,20 +1,35 @@
 <script lang="ts">
+    import {fade} from "svelte/transition";
+    import {createEventDispatcher, onMount} from "svelte";
     export let id: string;
-    export let title: string = 'Flüchtlingshilfe in Zeiten des Ukrainekriegs';
-    export let content: string = '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto assumenda autem cumque dolores eos error, eum, id itaque iure maxime minima molestiae pariatur provident rerum saepe? Enim eum inventore laborum!</p>';
-    export let createdAt: Date = new Date();
-    export let readingTime: number;
+    export let author: string;
+    export let title: string;
+    export let previewText: string;
+    export let content: string;
+    export let previewImageUrl: string;
+    export let createdAt: Date;
+    export let expanded: boolean;
 
-
+    let animationDuration: number = 0;
+    let dispatch = createEventDispatcher();
+    onMount(() => dispatch('mount'));
 </script>
 
-<div>
-    <p class="text-sm text-gray-500 dark:text-slate-300">
-        <time datetime={createdAt.toISOString()}>{createdAt.toLocaleDateString()}</time>
-    </p>
-    <div class="mt-2 block">
-        <p class="text-xl font-semibold text-gray-900 dark:text-slate-100">{title}</p>
-        <p class="mt-3 text-base dark:text-slate-200">{@html content}</p>
+<div class="w-full flex rounded-lg overflow-clip" style="max-height: inherit">
+    {#if previewImageUrl && !expanded}
+        <img src="{previewImageUrl}" alt="Image with the URL {previewImageUrl}" class="bg-primary-50 rounded-md h-full aspect-video mr-3" in:fade style="max-height: inherit; max-width: 20%"/>
+    {/if}
+    <div>
+        <p class="text-sm text-gray-500 dark:text-slate-300">
+            <time datetime={createdAt.toISOString()}>{createdAt.toLocaleDateString()}</time>
+        </p>
+        <div class="mt-2 block">
+            <p class="text-xl font-semibold text-gray-900 dark:text-slate-100">{title}</p>
+            {#if expanded}
+                <p in:fade class="mt-3 text-base dark:text-slate-200 ck-content">{@html content}</p>
+            {:else}
+                <p in:fade class="mt-3 text-base dark:text-slate-200">{previewText}</p>
+            {/if}
+        </div>
     </div>
 </div>
-

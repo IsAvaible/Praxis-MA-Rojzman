@@ -195,7 +195,7 @@
 {#if showImageCropper}<ImageCropperPopUp image={currentEditFile} on:submit={(e) => imageUrl = e.detail} on:close={() => showImageCropper = false}/>{/if}
 
 {#if !deleted}
-<div use:filedrop={fileDropOptions} on:filedrop={e => {fileDropFiles = e.detail.files}} on:filedragover={() => fileDragOver = true} on:filedragleave={() => fileDragOver = false} in:fade={{duration: 500}} out:scale={{duration: deleted ? 400 : 0}} role="listitem" class="{deleted ? 'hidden' : ''} relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800">
+<div use:filedrop={fileDropOptions} on:filedrop={e => {fileDropFiles = e.detail.files}} on:filedragover={() => fileDragOver = true} on:filedragleave={() => fileDragOver = false} in:fade={{duration: 500}} out:scale|local={{duration: deleted ? 400 : 0}} role="listitem" class="{deleted ? 'hidden' : ''} relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800">
     <div class="rounded overflow-hidden shadow-md">
         <div class="absolute -mt-20 w-full flex justify-center">
             <div in:scale={{easing: sineInOut, start: 0.3, duration: 500}} class="h-32 w-32 rounded-full overflow-hidden">
@@ -208,7 +208,7 @@
                     <div class="{readerLoading ? 'hidden' : 'block'} h-full">
                         <img bind:this={avatarImage} src="{imageUrl}" alt="Profilbild von {name}" class="rounded-full object-cover h-full w-full drop-shadow-xl bg-white" />
                         <label on:focusin={() => mouseFocus = true} on:keydown={() => mouseFocus = false} on:mouseenter={() => removeImageToggle = false} on:click={() => {if (removeImageToggle) {imageUrl = defaultImageUrl; delay(1).then(() => removeImageToggle = false)}}} on:contextmenu|preventDefault={() => removeImageToggle = !removeImageToggle} bind:this={avatarLabel} for="avatar-input-{id}" class="has-tooltip absolute cursor-pointer inset-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center text-sm font-medium text-white opacity-0 hover:opacity-100 focus-within:opacity-100 {fileDragOver ? 'opacity-100' : ''}">
-                            <span class="{removeImageToggle ? 'hidden' : ''} font-medium">Ändern</span>
+                            <span class="{removeImageToggle ? 'hidden' : ''} text-md font-medium">Ändern</span>
                             <span class="sr-only {removeImageToggle ? 'hidden' : ''}"> sie das Profilbild</span>
                             <input disabled={removeImageToggle} bind:this={avatarInput} bind:files on:focus={() => {if (inputFocusCount++%2!==0 && mouseFocus) avatarInput.blur()}} type="file" accept="image/*" id="avatar-input-{id}" name="avatar" class="absolute opacity-0 w-0">
                             {#if removeImageToggle}
@@ -269,7 +269,7 @@
                 </div>
             </div>
             {#if submitState > 1}
-                <div class="mb-2" in:slide={{duration: 300}} out:slide={{duration: 300}}>
+                <div class="mb-2" in:slide={{duration: 300}} out:slide|local={{duration: 300}}>
                     <Alert type={submitState === 3 ? 0 : 2} title={submitState === 3 ? "Fehler:" : "Gespeichert!"} description={submitMessage}/>
                 </div>
             {/if}

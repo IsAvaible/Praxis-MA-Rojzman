@@ -39,7 +39,7 @@
     }
 
     let siteEnterPopUpData = {
-        svgPath: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z",
+        svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
         title: "Wir sind im Urlaub!",
         content: "Die Praxis ist deshalb bis zum 26.04 geschlossen. Falls sie während dieser Zeit medizinische Beratung benötigen, finden sie mithilfe des untenstehenden Knopf unsere Vertretungsmöglichkeiten.",
         active: false,
@@ -231,7 +231,7 @@
                     </div>
                 </nav>
                 <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-                    <p on:click={toggleOfficeHoursPopUp} class="cursor-pointer whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-slate-400"> Sprechzeiten </p>
+                    <p on:click={toggleOfficeHoursPopUp} class="cursor-pointer whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-slate-400" tabindex="1"> Sprechzeiten </p>
                     <Link to="kontakt"><span class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700"> Kontakt </span></Link>
                 </div>
             </div>
@@ -247,6 +247,7 @@
         {#if bannerOpen}
             <Banner {...bannerData} on:hide={() => bannerOpen = false}/>
         {/if}
+<!--        <CookieBanner/>-->
         <SiteEnterPopUp {...siteEnterPopUpData}/>
     </div>
     <div id="#Routes">
@@ -271,7 +272,12 @@
             <Route path="/">
                 <Blog/>
             </Route>
-            <Route path=":id" component={undefined}/>
+            <Route path=":id">
+                <Blog/>
+            </Route>
+            <Route path="/*/*">
+                <NotFound/>
+            </Route>
         </Route>
 
         <Route path="kontakt">

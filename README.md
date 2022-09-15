@@ -8,7 +8,7 @@ This repository contains the source code for the practice M.A. Rojzman located i
 - [x] Home
 - [x] Features
 - [x] Team
-- [ ] News
+- [x] Blog
 - [x] Contact
 - [ ] Substitute
 - [x] Prescription request
@@ -19,11 +19,12 @@ This repository contains the source code for the practice M.A. Rojzman located i
 - [ ] Overview / Shortcuts
   - [ ] Banner
   - [ ] Pop-Up
+  - [ ] Office Hours
   - [x] Admin Actions Panel
   - [ ] Developer Contact
 - [x] Features
 - [x] Team
-- [ ] News
+- [x] News
 - [ ] Texts
 - [ ] Images
 - [x] Supabase Integration
@@ -33,6 +34,8 @@ Homepage
 ![Homepage](https://i.imgur.com/A9bcYdA.png)
 Admin: Features
 ![Admin: Features](https://i.imgur.com/LZIcKpi.jpg)
+Admin: Blog
+![Admin: Blog](https://i.imgur.com/3YMa0Kw.png)
 Admin: Team 
 ![Admin: Team](https://i.imgur.com/64rQvon.jpg)
 

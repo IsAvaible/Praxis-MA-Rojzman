@@ -5,6 +5,7 @@
     import FeaturePopUp from "../lib/Features/FeaturePopUp.svelte";
     import FeatureCard from "../lib/Features/FeatureCard.svelte";
     import Alert from "../lib/Essentials/Alert.svelte";
+    import Footer from "../lib/Essentials/Footer.svelte";
 
     let features: {title: string, description: string, svgPath: string}[];
     let title = 'Unsere Leistungen';
@@ -20,6 +21,8 @@
         <FeaturePopUp name={$params.name} on:hide={() => detailPopUpActive = false}/>
     {/if}
 {/key}
+
+<Footer>
 <div class="relative py-8 lg:py-12">
     <div class="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
         <h1 class="text-gray-500 dark:text-slate-100 text-lg text-center font-normal pb-3 uppercase">{title}</h1>
@@ -38,3 +41,4 @@
         </div>
     </div>
 </div>
+</Footer>

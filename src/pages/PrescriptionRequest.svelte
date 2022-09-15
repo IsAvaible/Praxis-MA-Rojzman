@@ -70,8 +70,8 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
                     <input bind:value={request.phoneNumber} class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ihre Telefonnummer" type="text" />
                 </div>
                 {#each recipes as recipe, n (recipe.id)}
-                    <div in:fade={{duration: (n!==0)*100}} out:fade={{duration: 250}}> <!-- The first recipe does not have entering animations (prevent instant rescaling on site enter) -->
-                        <div class="mb-6 flex" in:slide={{duration: (n!==0)*300}} out:slide={{duration: 300}}>
+                    <div in:fade={{duration: (n!==0)*100}} out:fade|local={{duration: 250}}> <!-- The first recipe does not have entering animations (prevent instant rescaling on site enter) -->
+                        <div class="mb-6 flex" in:slide={{duration: (n!==0)*300}} out:slide|local={{duration: 300}}>
                             <input
                                     class="flex-grow dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 resize-none outline-none focus-visible:shadow-none focus:border-primary"
                                     placeholder="Das {n+1}. gewünschte Präperat"

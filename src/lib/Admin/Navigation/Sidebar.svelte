@@ -58,7 +58,7 @@
                         </div>
                         <div class="ml-3">
                             <p class="text-sm font-medium text-gray-700 group-hover:text-gray-800 dark:text-slate-200 dark:group-hover:text-slate-200">{user && user.email}</p>
-                            <p on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 group-hover:text-gray-700 cursor-pointer dark:text-slate-300 dark:group-hover:text-slate-200">Ausloggen</p>
+                            <p on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 hover:text-gray-800 cursor-pointer dark:text-slate-300 dark:hover:text-slate-200">Ausloggen</p>
                         </div>
                     </div>
                 </div>

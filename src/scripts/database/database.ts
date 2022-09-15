@@ -38,10 +38,16 @@ export type TeamMember = {
 export type BlogEntry = {
     id: string;
     createdAt: Date;
+    author: string;
     title: string;
+    previewText: string;
     content: string;
     previewImageUrl: string;
 }
+
+
+// >>> Feature <<<
+
 
 let getFeaturesCache; // This results in each client only requesting the data once.
 export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
@@ -58,7 +64,6 @@ export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
     return data;
 }
 
-
 export const getFeature = async (name: string, noCache?: boolean): Promise<Feature> => {
     let find; // Only if the feature can not be found in the cache, a new request is sent.
     if (!noCache && (find = (await getFeatures()).find(e => e.name == name)) != undefined) return find
@@ -73,7 +78,6 @@ export const getFeature = async (name: string, noCache?: boolean): Promise<Featu
 
     return data;
 }
-
 
 export const addFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
     const { data, error } = await supabase
@@ -90,7 +94,6 @@ export const addFeature = async (name: string, title: string, shortDescription: 
 }
 
 export const updateFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
-
     const { data, error } = await supabase
         .from<Feature>('Feature')
         .update({ title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths })
@@ -117,6 +120,89 @@ export const deleteFeature = async (name: string) => {
 }
 
 
+// >>> Blog-Entry <<<
+
+
+let getBlogEntriesCache; // This results in each client only requesting the data once.
+export const getBlogEntries = async (noCache?: boolean, count?: number): Promise<BlogEntry[]> => {
+    if (typeof count === undefined) count = -1;
+    if (getBlogEntriesCache != undefined && !noCache) return getBlogEntriesCache.limit(count)
+
+    let {data, error} = await supabase
+        .from<BlogEntry>('Blog-Entry')
+        .select('*')
+        .order('createdAt', {ascending: false})
+        .limit(count)
+
+    if (error) { throw error; }
+
+    data.forEach((b) => b.createdAt = new Date(b.createdAt));
+    if (count == -1) getBlogEntriesCache = data;
+
+    return data;
+}
+
+export const getBlogEntry = async (id: string, noCache?: boolean): Promise<BlogEntry> => {
+    let find; // Only if the feature can not be found in the cache, a new request is sent.
+    if (!noCache && (find = (await getBlogEntries()).find(e => e.id == id)) != undefined) return find
+
+    let {data, error} = await supabase
+        .from<BlogEntry>('Blog-Entry')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) throw error;
+
+    data.createdAt = new Date(data.createdAt);
+
+    return data;
+}
+
+export const addBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
+    const { data, error } = await supabase
+        .from<BlogEntry>('Blog-Entry')
+        .insert([
+            { id: id, author: author, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl },
+        ])
+        .single()
+
+    if (error) throw error;
+
+    await addAdminAction('Aktuelles', 'insert', `Der Blog Eintrag mit der id "${id}" wurde hinzugefügt.`);
+    return data;
+}
+
+export const updateBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
+    const { data, error } = await supabase
+        .from<BlogEntry>('Blog-Entry')
+        .update( { id: id, author: author, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl })
+        .eq('id', id)
+        .single()
+
+    if (error) throw error;
+
+    await addAdminAction('Aktuelles', 'update', `Der Blog Eintrag mit der id "${id}" wurde bearbeitet.`);
+    return data;
+}
+
+export const deleteBlogEntry = async (id: string) => {
+    const { data, error } = await supabase
+        .from<BlogEntry>('Blog-Entry')
+        .delete()
+        .eq('id', id)
+        .single()
+
+    if (error) throw error;
+
+    await addAdminAction('Aktuelles', 'delete', `Der Blog Eintrag mit der id "${name}" wurde gelöscht.`);
+    return data;
+}
+
+
+// >>> Team-Member <<<
+
+
 let getTeamMembersCache; // This results in each client only requesting the data once.
 export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> => {
     if (getTeamMembersCache != undefined && !noCache) return getTeamMembersCache
@@ -131,7 +217,6 @@ export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> =
 
     return data;
 }
-
 
 export const getTeamMember = async (id: string, noCache?: boolean): Promise<TeamMember> => {
     let find; // Only if the team member can not be found in the cache, a new request is sent.
@@ -148,7 +233,6 @@ export const getTeamMember = async (id: string, noCache?: boolean): Promise<Team
     return data;
 }
 
-
 export const addTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
         .from<TeamMember>('Team-Member')
@@ -159,7 +243,7 @@ export const addTeamMember = async (id: string, name: string, role: string, desc
 
     if (error) throw error;
 
-    await addAdminAction('Team', 'insert', `Das Team Mitglied mit dem Namen "${id}" wurde hinzugefügt.`);
+    await addAdminAction('Team', 'insert', `Das Team Mitglied mit der ID "${id}" und dem Namen "${name}" wurde hinzugefügt.`);
     return data;
 }
 
@@ -185,14 +269,17 @@ export const deleteTeamMember = async (id: string) => {
 
     if (error) throw error;
 
-    await addAdminAction('Team', 'delete', `Das Team Mitglied mit dem Namen "${id}" wurde gelöscht.`);
+    await addAdminAction('Team', 'delete', `Das Team Mitglied mit der ID "${id}" und dem Namen "${data.name}" wurde gelöscht.`);
     return data;
 }
 
 
+// >>> Admin-Action <<<
 
 
-export const getAdminActions = async (count: number): Promise<AdminAction[]> => {
+export const getAdminActions = async (count?: number): Promise<AdminAction[]> => {
+    if (typeof count === undefined) count = -1;
+
     let { data, error } = await supabase
         .from<AdminAction>('Admin-Action')
         .select('*')
@@ -216,6 +303,10 @@ export const addAdminAction = async (section: string, action: string, descriptio
 
     return data
 }
+
+
+// >>> File Related <<<
+
 
 export const uploadFile = async (bucket: string, path: string, file) => {
     const { data, error } = await supabase.storage.from(bucket).upload(path, file)
@@ -249,8 +340,7 @@ export const getPublicFileUrl = async (bucket: string, path: string) => {
     return publicURL;
 }
 
-
-// Lists all the files within a bucket.
+/// Lists all the files within a bucket.
 export const listFiles = async (bucket: string, path?: string, searchOptions?: SearchOptions) => {
     const { data, error } = await supabase
         .storage
@@ -262,6 +352,10 @@ export const listFiles = async (bucket: string, path?: string, searchOptions?: S
     return data;
 }
 
+
+// >>> User Authentication <<<
+
+
 export const signIn = async (email: string, password: string) => {
     let {user, error} = await supabase.auth.signIn({
         email: email,
@@ -271,6 +365,13 @@ export const signIn = async (email: string, password: string) => {
     if (error) throw error;
 
     return user;
+}
+
+export const signOut = async () => {
+    let { error } = await supabase.auth.signOut();
+
+    if (error) throw error;
+    else return true
 }
 
 export const signUp = async (email: string, password: string) => {
@@ -287,9 +388,3 @@ export const getUser = (): User | null => {
     return supabase.auth.user();
 }
 
-export const signOut = async () => {
-    let { error } = await supabase.auth.signOut();
-
-    if (error) throw error;
-    else return true
-}

@@ -37,7 +37,7 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
         {:then actions}
             {#each actions as action, i}
                 <li in:fade={{duration: 300}}>
-                    <div class="ml-2 relative pb-8">
+                    <div class="mx-2 relative pb-8">
                         {#if i+1 !== actions.length}<span class="absolute top-4 left-4 -ml-px h-[75%] w-0.5 bg-gray-200" aria-hidden="true"></span>{/if}
                         <div class="relative flex space-x-3">
                             <div>

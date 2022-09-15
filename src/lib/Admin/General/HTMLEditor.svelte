@@ -24,6 +24,8 @@
     let imageUploader = undefined;
     let uploads = [];
 
+    // Add lazy loading attribute to img tags
+    $: editorData = editorData.replace(/<img (loading="lazy"){0} .*>/, match => match.replace(/<img/, '<img loading="lazy"'));
 
     // If needed, custom editor config can be passed through to the component
     // Uncomment the custom editor config if you need to customise the editor.
@@ -93,7 +95,7 @@
             if (!saved) { // Clear all newly uploaded Images if the Editor is closed without saving
                 deleteFiles(imageBucket, imageUploader.uploads.concat(uploads).map(key => key.substring(imageBucket.length + 1)))
                     .then(data => {if (data) console.log("Successfully deleted all uploaded Images:", data)})
-                    .catch(e => console.log("Failed to delete uploaded Images."))
+                    .catch(() => console.log("Failed to delete uploaded Images."))
             }
         }
         if (saved) {

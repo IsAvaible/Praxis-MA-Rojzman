@@ -46,43 +46,41 @@ $: unsavedChangesStore.set(anyEdit || addingMember);
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
         {:then teamMembers}
-            {#if editStates = Array(teamMembers.length).fill(false)}
-                <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 z-20 w-full px-10 pt-10 pb-16">
-                    <div class="container mx-auto">
-                        <div role="list" aria-label="Mitarbeiter" class="md:flex items-center flex-wrap sm:justify-around">
-                            {#each teamMembers as member, i}
-                                <EditableProfileCard {...member} on:edited={event => editStates[i] = event.detail}/>
-                            {/each}
-                            <!-- Not really great way to prevent new members from resetting edits on old members -->
-                            {#each addedTeamMembers as member, i}
-                                <EditableProfileCard {...member} on:edited={event => editStates[i] = event.detail}/>
-                            {/each}
-                            <div role="listitem" class="relative mt-24 mx-2 sm:min-w-[300px] md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800">
-                                <div class="rounded overflow-hidden shadow-md h-full">
-                                    <div class="px-6 w-full my-20 text-primary-500 group cursor-pointer">
-                                        <div class="hover:text-primary-600">
-                                            <svg on:click={() => handleTeamMemberAdd()} xmlns="http://www.w3.org/2000/svg" class="h-40 w-40 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d={addingMember ? (id ? "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" : "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z") : "M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"}/>
-                                            </svg>
-                                            <p class="font-medium text-center text-xl">Mitglied Hinzufügen</p>
-                                        </div>
-                                        {#if addingMember}
-                                            <div out:fade={{duration: 250}} class="w-full flex">
-                                                <input bind:value={id} in:slide={{duration: 300}} out:slide={{duration: 300}} on:keydown={(e) => {if (e.keyCode === 10 || e.keyCode === 13) {e.preventDefault(); handleTeamMemberAdd()}}} on:keyup={e => {if (e.which === 27) {addingMember = false}}}
-                                                       autocomplete="off" pattern="[a-z0-9-_+]+" required class="text-center mt-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none {nameValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein identifizierender Name (ID)" type="text" />
-                                            </div>
-                                        {/if}
+            <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 z-20 w-full px-10 pt-10 pb-16">
+                <div class="container mx-auto">
+                    <div role="list" aria-label="Mitarbeiter" class="md:flex items-center flex-wrap sm:justify-around">
+                        {#each teamMembers as member, i}
+                            <EditableProfileCard {...member} on:edited={event => editStates[i] = event.detail}/>
+                        {:else}
+                            <Alert type={1} title='Hinweis:' description='Es wurden noch keine Team Mitglieder angelegt.'/>
+                        {/each}
+                        <!-- Not really great way to prevent new members from resetting edits on old members -->
+                        {#each addedTeamMembers as member, i}
+                            <EditableProfileCard {...member} on:edited={event => editStates[i] = event.detail}/>
+                        {/each}
+                        <div role="listitem" class="relative mt-24 mx-2 sm:min-w-[300px] md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800">
+                            <div class="rounded overflow-hidden shadow-md h-full">
+                                <div class="px-6 w-full my-20 text-primary-500 group cursor-pointer">
+                                    <div class="hover:text-primary-600">
+                                        <svg on:click={() => handleTeamMemberAdd()} xmlns="http://www.w3.org/2000/svg" class="h-40 w-40 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d={addingMember ? (id ? "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" : "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z") : "M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"}/>
+                                        </svg>
+                                        <p class="font-medium text-center text-xl">Mitglied Hinzufügen</p>
                                     </div>
+                                    {#if addingMember}
+                                        <div out:fade|local={{duration: 250}} class="w-full flex">
+                                            <input bind:value={id} in:slide={{duration: 300}} out:slide|local={{duration: 300}} on:keydown={(e) => {if (e.keyCode === 10 || e.keyCode === 13) {e.preventDefault(); handleTeamMemberAdd()}}} on:keyup={e => {if (e.which === 27) {addingMember = false}}}
+                                                   autocomplete="off" pattern="[a-z0-9-_+]+" required class="text-center mt-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none {nameValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein identifizierender Name (ID)" type="text" />
+                                        </div>
+                                    {/if}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            {:else}
-                <Alert type={1} title='Information:' description='Es wurden noch keine Team Mitglieder angelegt.'/>
-            {/if}
+            </div>
         {:catch e}
-            <Alert type={0} title="Team konnten nicht geladen werden!" description="Error: {e.message}"/>
+            <Alert type={0} title="Team konnte nicht geladen werden!" description="Error: {e.message}"/>
         {/await}
     {/key}
 </div>

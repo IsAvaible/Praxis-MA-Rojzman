@@ -19,12 +19,12 @@
     <!--
       Off-canvas menu overlay
     -->
-    <div in:fade={{duration: 300}} out:fade={{duration: 300}} class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
+    <div in:fade={{duration: 300}} out:fade|local={{duration: 300}} class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
 
     <!--
       Off-canvas menu, show/hide based on off-canvas menu state.
     -->
-    <div in:fade={{duration: 300}} out:fade={{duration: 300}}  use:clickOutside on:clickOutside={hide} class="rounded-lg z-20 flex flex-col min-w-full mx-auto bg-white dark:bg-slate-800">
+    <div in:fade={{duration: 300}} out:fade|local={{duration: 300}}  use:clickOutside on:clickOutside={hide} class="rounded-lg z-20 flex flex-col min-w-full mx-auto bg-white dark:bg-slate-800">
         <!--
           Close button, show/hide based on off-canvas menu state.
         -->

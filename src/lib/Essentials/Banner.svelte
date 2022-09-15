@@ -42,7 +42,7 @@
                         <span class="hidden md:inline"> {desktopText} </span>
                     </p>
                 </div>
-                {#if buttonText !== undefined && buttonAction !== undefined}
+                {#if buttonText && buttonAction}
                     <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
                         <span on:click={buttonAction} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-primary-50"> {buttonText} </span>
                     </div>

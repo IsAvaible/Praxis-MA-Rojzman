@@ -27,7 +27,7 @@
 
 
 <Footer>
-    {#if !WebGl.isWebGLAvailable()}
+    {#if WebGl.isWebGLAvailable()}
         <canvas bind:this={el} id='webgl_canvas'></canvas>
     {:else}
         <div id="webgl_error" class="font-medium text-xl lg:text-2xl text-center">
@@ -45,7 +45,7 @@
     <Title/>
     <div class="mt-[72vh] 4xl:mt-[74vh] mx-4 md:mx-10 pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black">
         <TeamLinkPanel/>
-        <div use:inview on:enter={() => isInView = true} on:leave={() => isInView = false}>
+        <div use:inview={{unobserveOnEnter: true}} on:enter={() => isInView = true}>
             {#if isInView}
                 <div in:fade={{duration: 700}}>
                     <FeatureSection/>

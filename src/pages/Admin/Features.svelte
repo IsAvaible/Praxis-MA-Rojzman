@@ -18,8 +18,6 @@
     let selectedFeature: {index: number, data: Feature} = {index: -1, data: undefined};
     let refreshFeatures = 0; // Refresh features on increment
     let modification = false; // Whether the features were actually modified
-
-    let tmp = true;
 </script>
 
 <!--{#if tmp}-->

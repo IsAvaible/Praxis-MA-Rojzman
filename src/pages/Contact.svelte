@@ -77,7 +77,7 @@
                                 <p class="text-gray-600 font-medium dark:text-slate-300">Bei akutem Behandlungsbedarf außerhalb von Praxiszeiten empfehlen wir
                                     die Kontaktierung des <a href="https://www.116117.de/de/index.php" class="hover:text-black dark:hover:text-slate-100">ärztlichen Bereitschaftsdienstes</a>
                                     (<a href="tel:116117" class="text-gray-800 dark:text-slate-200 hover:text-black dark:hover:text-slate-100">116 117</a>) oder in schwereren Fällen
-                                    des <a href="https://www.aok.de/pk/magazin/familie/eltern/im-notfall-116-117-anrufen-oder-besser-den-notruf-112/" class="hover:text-black dark:hover:text-slate-100">Notdienstes</a>
+                                    des <a href="https://www.aok.de/pk/magazin/familie/eltern/im-notfall-116-117-anrufen-oder-besser-den-notruf-112/" target="_blank" class="hover:text-black dark:hover:text-slate-100">Notdienstes</a>
                                     (<a href="tel:112" class="text-gray-800 dark:text-slate-200 hover:text-black dark:hover:text-slate-100">112</a>). </p>
                             </div>
                         </div>
