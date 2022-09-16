@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import { fade } from "svelte/transition";
     import {circIn} from "svelte/easing";
-    import {clickOutside} from "../../scripts/ui/clickOutside.ts";
+    import {clickOutside} from "../../scripts/ui/clickOutside";
     import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
 
     export let desktopCloseButton: boolean = true;

@@ -47,8 +47,8 @@
 </script>
 
 <script context="module" lang="ts">
-    import {deleteFiles, getPublicFileUrl, uploadFile} from "../../../scripts/database/database.ts";
-    import {compressImage} from "../../../scripts/media/Compressor.ts";
+    import {deleteFiles, getPublicFileUrl, uploadFile} from "../../../scripts/database/database";
+    import {compressImage} from "../../../scripts/media/Compressor";
 
     let imageUrl;
 

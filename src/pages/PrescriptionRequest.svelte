@@ -1,11 +1,11 @@
 <script lang="ts">
-import {darkModeStore} from "../scripts/stores/darkModeStore.ts";
+import {darkModeStore} from "../scripts/stores/darkModeStore";
 import {prefersReducedMotionStore} from "../scripts/stores/prefersReducedMotionStore";
-import {conditionalInputTypeReset} from "../scripts/ui/conditionalInputTypeReset.ts";
+import {conditionalInputTypeReset} from "../scripts/ui/conditionalInputTypeReset";
 import Footer from "../lib/Essentials/Footer.svelte";
 import {fade, slide} from "svelte/transition";
 import HCaptcha from "svelte-hcaptcha/src/HCaptcha.svelte";
-import {removeItem} from "../scripts/misc/arrayRemoveItem.ts";
+import {removeItem} from "../scripts/misc/arrayRemoveItem";
 import {onMount} from "svelte";
 
 let darkMode: boolean;

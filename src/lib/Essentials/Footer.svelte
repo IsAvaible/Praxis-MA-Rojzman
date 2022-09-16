@@ -34,7 +34,7 @@
                 <a href="/datenschutzerklaerung" on:click|preventDefault={() => navigate("/datenschutzerklaerung")} class="mr-4 hover:underline md:mr-6 cursor-pointer">Datenschutzerklärung</a>
             </li>
             <li>
-                <span class="mr-4 hover:underline md:mr-6 cursor-pointer">Lizensierung</span>
+                <a href="/lizensierung" on:click|preventDefault={() => navigate("/lizensierung")}  class="mr-4 hover:underline md:mr-6 cursor-pointer">Lizensierung</a>
             </li>
             <li>
                 <a href="/impressum" on:click|preventDefault={() => navigate("/impressum")} class="hover:underline cursor-pointer">Impressum</a>

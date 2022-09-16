@@ -1,5 +1,5 @@
 <script>
-    import {conditionalInputTypeReset} from "../../scripts/ui/conditionalInputTypeReset.ts";
+    import {conditionalInputTypeReset} from "../../scripts/ui/conditionalInputTypeReset";
 </script>
 
 <div class="w-full lg:w-1/2 xl:w-5/12 px-4">

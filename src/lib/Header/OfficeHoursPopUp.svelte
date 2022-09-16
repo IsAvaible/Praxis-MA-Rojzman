@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { clickOutside } from "../../scripts/ui/clickOutside.ts";
+    import { clickOutside } from "../../scripts/ui/clickOutside";
     import { createEventDispatcher } from 'svelte';
     import {navigate} from "svelte-navigator";
     import OfficeHours from "../Misc/OfficeHours.svelte";

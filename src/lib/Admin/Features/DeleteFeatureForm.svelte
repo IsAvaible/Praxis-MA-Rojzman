@@ -1,5 +1,5 @@
 <script>
-    import {deleteFeature} from "../../../scripts/database/database.ts";
+    import {deleteFeature} from "../../../scripts/database/database";
     import {createEventDispatcher} from "svelte";
     import FeatureCard from "../../Features/FeatureCard.svelte";
     import Alert from "../../Essentials/Alert.svelte";

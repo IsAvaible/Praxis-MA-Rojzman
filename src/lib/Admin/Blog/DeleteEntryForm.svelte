@@ -1,5 +1,5 @@
 <script>
-    import {deleteBlogEntry} from "../../../scripts/database/database.ts";
+    import {deleteBlogEntry} from "../../../scripts/database/database";
     import {createEventDispatcher} from "svelte";
     import Alert from "../../Essentials/Alert.svelte";
     import BlogEntryComponent from "../../Blog/BlogEntry.svelte";

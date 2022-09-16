@@ -2,10 +2,10 @@
     import Ckeditor from "./Ckeditor.svelte";
     import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document/build/ckeditor";
     import '@ckeditor/ckeditor5-build-decoupled-document/build/translations/de.js';
-    import {ImageUploader} from "../../../scripts/media/ImageUploader.ts";
+    import {ImageUploader} from "../../../scripts/media/ImageUploader";
     import { onDestroy } from 'svelte';
-    import {deleteFiles} from "../../../scripts/database/database.ts";
-    import {escapeString} from "../../../scripts/misc/escapeString.ts";
+    import {deleteFiles} from "../../../scripts/database/database";
+    import {escapeString} from "../../../scripts/misc/escapeString";
 
     export let imageBucket;
     export let imagePath;

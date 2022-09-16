@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Feature, getFeatures} from "../../scripts/database/database";
+    import {getFeatures} from "../../scripts/database/database";
     import {fade} from "svelte/transition";
     import FeatureCard from "../../lib/Features/FeatureCard.svelte";
     import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
@@ -15,7 +15,7 @@
         {title: 'Leistung Löschen', shortDescription: 'Löschen sie die ausgewählte Leistungen.', svgPaths: ['M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0']},
     ];
     let activeOption: number = -1;
-    let selectedFeature: {index: number, data: Feature} = {index: -1, data: undefined};
+    let selectedFeature: {index: number, data} = {index: -1, data: undefined};
     let refreshFeatures = 0; // Refresh features on increment
     let modification = false; // Whether the features were actually modified
 </script>

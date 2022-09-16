@@ -3,7 +3,7 @@ import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
 import EditableProfileCard from "../../lib/Admin/Team/EditableProfileCard.svelte";
 import Alert from "../../lib/Essentials/Alert.svelte";
 import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
-import {getTeamMembers} from "../../scripts/database/database.ts";
+import {getTeamMembers} from "../../scripts/database/database";
 import {slide, fade} from "svelte/transition";
 import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
 

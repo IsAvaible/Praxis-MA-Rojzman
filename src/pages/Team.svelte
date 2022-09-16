@@ -2,18 +2,11 @@
 import ProfileCard from "../lib/Team/ProfileCard.svelte";
 import Footer from "../lib/Essentials/Footer.svelte";
 import DarkModeGlow from "../lib/Misc/DarkModeGlow.svelte";
-import {getTeamMembers} from "../scripts/database/database.ts";
+import {getTeamMembers} from "../scripts/database/database";
 import Alert from "../lib/Essentials/Alert.svelte";
 
 let title = "Unser Team";
 let subTitle = "Die Personen, welche ihren Aufenthalt in unserer Praxis zum bestmöglichen Erlebnis machen";
-
-// imgLink info: Use https://compressimage.io/ with 70% quality, 500px and webp enabled for best results
-let team: { role: string; name: string; description: string; twitterLink?: string; instagramLink?: string}[] = [
-    {name: "Marie-Anne Rojzman", role: "Fachärztin für Allgemeinmedizin", description: "Ihre behandelnde Ärztin Frau Rojzman lässt sich Zeit für ihre Probleme und findet dank langjähriger Erfahrung eine passende Behandlung.", imgLink: "assets/MARojzman.webp", instagramLink: "https://www.instagram.com/marieannerojzman/", twitterLink: "/"},
-    {name: "Lara Schäfer", role: "Medizinische Fachangestellte", description: "Lara sorgt als Mutter von zwei Kindern für eine angenehme Atmosphäre bereits beim Empfang. Scheuen sie sich nicht vor persönlichen Gesprächen!", imgLink: undefined, instagramLink: ""},
-    {name: "Anja Tellez Nitzling", role: "Medizinische Fachangestellte", description: "Anja beehrt und zwar nur einmal die Woche macht an diesen Tagen jedoch eine umso bessere Arbeit.", imgLink: undefined, twitterLink: ""},
-];
 </script>
 
 <Footer>
@@ -37,7 +30,7 @@ let team: { role: string; name: string; description: string; twitterLink?: strin
         </div>
     {:catch e}
         <div class="self-center sm:px-6 lg:px-8 2xl:max-w-[80%] w-full flex-grow">
-            <Alert type={1} title="Fehler beim Laden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
+            <Alert type={1} title="Team konnte nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
         </div>
     {/await}
     <div class="min-h-0 flex-grow flex overflow-y-clip"> <!-- White space is a design element. Me: -->

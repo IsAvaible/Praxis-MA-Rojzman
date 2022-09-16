@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getFeatures, addFeature, updateFeature} from "../../../scripts/database/database.ts";
+    import {getFeatures, addFeature, updateFeature} from "../../../scripts/database/database";
     import {createEventDispatcher} from "svelte";
     import Alert from "../../Essentials/Alert.svelte";
     import SvgSelector from "../General/SvgSelector.svelte";
