@@ -7,8 +7,8 @@
         updateTeamMember,
         deleteTeamMember,
         uploadFile, deleteFiles, getPublicFileUrl, getTeamMembers
-    } from "../../../scripts/database/database.ts";
-    import {longpress} from "../../../scripts/ui/longpress.ts";
+    } from "../../../scripts/database/database";
+    import {longpress} from "../../../scripts/ui/longpress";
     import TwitterIcon from "../../Icons/TwitterIcon.svelte";
     import FlexIcon from "../../Icons/FlexIcon.svelte";
     import InstagramIcon from "../../Icons/InstagramIcon.svelte";
@@ -84,7 +84,7 @@
                 }
 
                 let image = await fetch(avatarImage.src).then(r => r.blob()).then(blobFile => new File([blobFile], `${id}.png`, { type: "image/png" }));
-                let cImage = await compressImage(image, 1.0, 192, 192);
+                let cImage = await compressImage(image, 0.95, 192, 192);
                 await uploadFile('images', filePath, cImage);
                 serverUrl = await getPublicFileUrl('images', filePath) + `?t=${Date.now()}`;
             } else { // The old avatar is used

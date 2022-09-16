@@ -1,8 +1,8 @@
 <script lang="ts">
     import MobileMenu from "./MobileMenu.svelte";
     import {globalHistory, navigate} from "svelte-navigator";
-    import {signOut} from "../../../scripts/database/database.ts";
-    import {validateAuthentication} from "../../../scripts/database/validateAuthentication.ts";
+    import {signOut} from "../../../scripts/database/database";
+    import {validateAuthentication} from "../../../scripts/database/validateAuthentication";
     let user = validateAuthentication();
 
     let mobileMenuOpen = false;

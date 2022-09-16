@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getFeatures} from "../scripts/database/database.ts";
+    import { getFeatures } from "../scripts/database/database";
     import { fade } from "svelte/transition";
     import { useParams } from 'svelte-navigator'
     import FeaturePopUp from "../lib/Features/FeaturePopUp.svelte";
@@ -36,7 +36,7 @@
                     {/each}
                 </div>
             {:catch e}
-                <Alert type={1} title="Fehler beim Laden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
+                <Alert type={1} title="Leistungen konnten nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
             {/await}
         </div>
     </div>

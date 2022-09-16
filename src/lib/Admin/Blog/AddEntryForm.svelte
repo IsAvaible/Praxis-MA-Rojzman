@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getBlogEntries, addBlogEntry, updateBlogEntry, getUser} from "../../../scripts/database/database.ts";
+    import {getBlogEntries, addBlogEntry, updateBlogEntry, getUser} from "../../../scripts/database/database";
     import {createEventDispatcher} from "svelte";
     import Alert from "../../Essentials/Alert.svelte";
     import HTMLEditor from "../General/HTMLEditor.svelte";

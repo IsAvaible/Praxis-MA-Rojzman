@@ -1,7 +1,7 @@
 <script lang="ts">
     import Modal from "../Essentials/Modal.svelte";
     import { createEventDispatcher } from "svelte";
-    import { getFeature } from "../../scripts/database/database.ts";
+    import { getFeature } from "../../scripts/database/database";
     import Alert from "../Essentials/Alert.svelte";
 
 

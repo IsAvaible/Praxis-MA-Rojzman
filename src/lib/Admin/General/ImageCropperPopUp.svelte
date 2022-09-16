@@ -3,7 +3,7 @@
     import Modal from "../../Essentials/Modal.svelte";
     import {createEventDispatcher} from "svelte";
     import PageTitle from "../Navigation/PageTitle.svelte";
-    import getCroppedImg from "../../../scripts/media/cropUtils.ts";
+    import getCroppedImg from "../../../scripts/media/cropUtils";
     import LoadingWheel from "../../Misc/LoadingWheel.svelte";
 
     export let image;

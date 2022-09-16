@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getBlogEntries} from "../scripts/database/database.ts";
+    import {getBlogEntries} from "../scripts/database/database";
     import {navigate, useParams} from "svelte-navigator";
     import {delay} from "../scripts/misc/delay";
     import {slide} from "svelte/transition";
@@ -23,7 +23,7 @@
             urlID = $params.id;
             let element = document.getElementById(urlID);
             if (element) {
-                delay(50).then(() => scrollToElement(element));
+                delay(100).then(() => scrollToElement(element));
             } else {
                 console.log(`Der Beitrag mit der ID "${urlID}" konnte nicht in der Datenbank gefunden werden.`)
                 showErrorAlertDialog = true;
@@ -34,7 +34,7 @@
 
     const scrollToElement = (element: HTMLElement) => {
         let elementPosition = element.getBoundingClientRect().top;
-        delay(50).then(() => window.scrollBy({top: elementPosition - 65, behavior: "smooth"}));
+        window.scrollBy({top: elementPosition - 65, behavior: "smooth"});
     }
 
     let expandedEntryIndex: number = undefined;
@@ -61,7 +61,7 @@
 </script>
 
 <Footer><div class="relative">
-<div class="mx-4 md:mx-10 min-h-[87vh] pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto w-full rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black flex flex-col items-center">
+<div class="mx-4 md:mx-10 min-h-[87vh] pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black flex flex-col items-center">
     <div class="w-full flex justify-center items-center flex-col my-2 border-b border-gray-200 md:border-none pb-2">
         <h1 class="mb-4 text-3xl sm:text-4xl tracking-tight text-slate-900 font-extrabold dark:text-slate-200">
             Aktuelles
@@ -91,8 +91,8 @@
                         <div class="mb-10 pt-10 relative {(expanded ? '':'cursor-pointer')}" on:click={() => {if (!expanded) {onEntryExpandClick(blogEntry.id, i)}}}
                              id={blogEntry.id}>
                             <BlogEntry {...blogEntry} expanded={expanded} on:mount={() => {if (i === blogEntries.length-1) onBlogEntriesMount()}}/>
-                            <div class="w-full absolute bottom-0 rounded-md flex justify-end">
-                                <a href={`aktuelles/${blogEntry.id}`} on:click|preventDefault|stopPropagation={() => onEntryExpandClick(blogEntry.id, i)} class="underline text-sm">
+                            <div class="w-full absolute bottom-0 rounded-md flex {expanded?'':'hidden'} lg:flex justify-end">
+                                <a href={`aktuelles/${blogEntry.id}`} on:click|preventDefault|stopPropagation={() => onEntryExpandClick(blogEntry.id, i)} class="underline text-sm font-semibold dark:font-medium">
                                 Beitrag {(expanded) ? 'einklappen' : 'lesen'}
                                 </a>
                             </div>
@@ -103,7 +103,7 @@
                 </div>
             </div>
         {:catch e}
-            <Alert type={0} title="Blog konnte nicht geladen werden!" description="Error: {e.message}"/>
+            <Alert type={1} title="Blog konnte nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
         {/await}
     </div>
 </div>

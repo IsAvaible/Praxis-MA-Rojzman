@@ -4,9 +4,9 @@
     import HCaptcha from "svelte-hcaptcha/src/HCaptcha.svelte";
     import {fade} from "svelte/transition";
     import {navigate} from "svelte-navigator";
-    import {signIn, signUp} from "../../scripts/database/database.ts";
-    import {longpress} from "../../scripts/ui/longpress.ts";
-    import {darkModeStore} from "../../scripts/stores/darkModeStore.ts";
+    import {signIn, signUp} from "../../scripts/database/database";
+    import {longpress} from "../../scripts/ui/longpress";
+    import {darkModeStore} from "../../scripts/stores/darkModeStore";
     import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
 
     let email: string;

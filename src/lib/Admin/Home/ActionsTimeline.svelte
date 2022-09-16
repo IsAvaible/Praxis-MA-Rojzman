@@ -1,5 +1,5 @@
 <script lang="ts">
-import {getAdminActions} from "../../../scripts/database/database.ts";
+import {getAdminActions} from "../../../scripts/database/database";
 import {fade} from "svelte/transition";
 import Alert from "../../Essentials/Alert.svelte";
 

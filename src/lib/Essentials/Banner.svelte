@@ -2,7 +2,7 @@
     import {createEventDispatcher} from "svelte";
     import { slide } from "svelte/transition";
     import { backInOut } from "svelte/easing";
-    import {bannerPushContentStore} from "../../scripts/stores/bannerPushContentStore.ts";
+    import {bannerPushContentStore} from "../../scripts/stores/bannerPushContentStore";
 
     export let mobileText: string;
     export let desktopText: string;

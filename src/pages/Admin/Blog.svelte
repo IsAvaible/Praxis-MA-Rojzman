@@ -1,6 +1,6 @@
 <script lang="ts">
 import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
-import {getBlogEntries, BlogEntry} from "../../scripts/database/database.ts";
+import { getBlogEntries } from "../../scripts/database/database";
 import { fade } from "svelte/transition";
 import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
 import Alert from "../../lib/Essentials/Alert.svelte";
@@ -19,7 +19,7 @@ let options = [
 
 let currentHover: number = -1;
 let activeOption: number = -1;
-let currentEntry: BlogEntry = undefined;
+let currentEntry = undefined;
 let expandedEntryIndex: number = -1;
 let refreshEntries = 0; // Refresh blog entries on increment
 let modification = false; // Whether the current blog entry was modified
@@ -39,12 +39,12 @@ const addEntry = () => {
 }
 
 
-const editEntry = (blogEntry: BlogEntry) => {
+const editEntry = (blogEntry) => {
     currentEntry = blogEntry;
     activeOption = 1;
 }
 
-const deleteEntry = (blogEntry: BlogEntry) => {
+const deleteEntry = (blogEntry) => {
     currentEntry = blogEntry;
     activeOption = 2;
 }
