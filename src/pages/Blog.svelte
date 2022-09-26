@@ -1,6 +1,6 @@
 <script lang="ts">
     import {getBlogEntries} from "../scripts/database/database";
-    import {navigate, useParams} from "svelte-navigator";
+    import {useParams} from "svelte-navigator";
     import {delay} from "../scripts/misc/delay";
     import {slide} from "svelte/transition";
     import {prefersReducedMotionStore} from "../scripts/stores/prefersReducedMotionStore";
@@ -52,7 +52,7 @@
         if (expandedEntryIndex == index) {
             history.replaceState({}, '', `aktuelles/${id}`)
             urlID = id;
-            delay(0).then(() => scrollToElement(document.getElementById(id)));
+            delay(50).then(() => scrollToElement(document.getElementById(id)));
         } else {
             history.replaceState({}, '', 'aktuelles')
             urlID = undefined;
@@ -91,9 +91,9 @@
                         <div class="mb-10 pt-10 relative {(expanded ? '':'cursor-pointer')}" on:click={() => {if (!expanded) {onEntryExpandClick(blogEntry.id, i)}}}
                              id={blogEntry.id}>
                             <BlogEntry {...blogEntry} expanded={expanded} on:mount={() => {if (i === blogEntries.length-1) onBlogEntriesMount()}}/>
-                            <div class="w-full absolute bottom-0 rounded-md flex {expanded?'':'hidden'} lg:flex justify-end">
+                            <div class="w-full absolute {expanded ? '-bottom-3' : 'bottom-0'} rounded-md flex {expanded?'':'hidden'} lg:flex justify-end">
                                 <a href={`aktuelles/${blogEntry.id}`} on:click|preventDefault|stopPropagation={() => onEntryExpandClick(blogEntry.id, i)} class="underline text-sm font-semibold dark:font-medium">
-                                Beitrag {(expanded) ? 'einklappen' : 'lesen'}
+                                Beitrag {expanded ? 'einklappen' : 'lesen'}
                                 </a>
                             </div>
                         </div>

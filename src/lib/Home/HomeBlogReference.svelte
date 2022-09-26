@@ -3,6 +3,7 @@ import {navigate} from "svelte-navigator";
 import {getBlogEntries} from "../../scripts/database/database";
 
 import Alert from "../Essentials/Alert.svelte";
+import LoadingWheel from "../Misc/LoadingWheel.svelte";
 
 const prettifyDate = (date: Date) => {
     let day, month, year;
@@ -19,8 +20,12 @@ const prettifyDate = (date: Date) => {
             <h2 class="text-3xl tracking-tight font-extrabold text-primary-600 dark:text-slate-100 sm:text-4xl">Unsere neusten Beiträge</h2>
             <p class="mt-3 text-xl text-gray-500 sm:mt-4 dark:text-slate-200">In unsere Kategorie <span on:click={() => navigate("/aktuelles")} class="cursor-pointer hover:text-gray-800 dark:hover:text-slate-100">"Aktuelles"</span> halten wir sie stets über Neuigkeiten rund um die Praxis und Gesundheit auf dem Laufenden.</p>
         </div>
-        {#await getBlogEntries(false, 4) then blogEntries}
-            <div class="mt-12 grid gap-16 pt-12 md:grid-cols-2 2xl:grid-cols-4 lg:gap-x-5 lg:gap-y-12">
+        {#await getBlogEntries(false, 4)}
+            <div class="w-full mt-12 pt-12 flex justify-center">
+                <LoadingWheel size={25} showAfter={1000}/>
+            </div>
+        {:then blogEntries}
+            <div class="mt-12 grid gap-16 pt-12 md:grid-cols-2 xl:grid-cols-4 lg:gap-x-5 lg:gap-y-12">
                 {#each blogEntries as entry, i}
                     <a on:click|preventDefault={() => navigate(`/aktuelles/${entry.id}`)} href={`/aktuelles/${entry.id}`} class="shadow-md hover:shadow-lg rounded-md p-4 {i > 2?'hidden':''} md:flex flex-col"> <!-- Only show 3 posts on small devices -->
                         <div class="justify-center">

@@ -1,9 +1,11 @@
-// This is used by the HTMLEditor
-// https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/upload-adapter.html
-
 import {getPublicFileUrl, uploadFile, listFiles} from "../database/database";
 import {compressImage} from "./Compressor";
 
+/**
+ * This class is used to upload images to the database.
+ * It is used by the HTMLEditor.
+ * See: https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/upload-adapter.html
+ */
 export class ImageUploader {
     loader;
     bucket: string;

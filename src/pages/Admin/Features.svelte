@@ -7,6 +7,7 @@
     import AddFeatureForm from "../../lib/Admin/Features/AddFeatureForm.svelte";
     import DeleteFeatureForm from "../../lib/Admin/Features/DeleteFeatureForm.svelte";
     import Alert from "../../lib/Essentials/Alert.svelte";
+    import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
 
 
     let options = [
@@ -57,8 +58,12 @@
             <p class="mt-3 text-xl text-gray-500 dark:text-slate-400 sm:mt-4">Um eine der bisherigen Leistung auszuwählen, einfach diese anklicken.</p>
         </div>
         {#key refreshFeatures}
-            {#await getFeatures(true) then features}
-                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 py-5">
+            {#await getFeatures(true)}
+                <div class="w-full mt-6 pt-6 flex justify-center">
+                    <LoadingWheel size={25} showAfter={1000}/>
+                </div>
+            {:then features}
+                <div class="mt-6 pt-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 py-5">
                     {#each features as feature, i}
                         <div in:fade={{duration: 500}} on:click={() => selectedFeature = selectedFeature.index === i ? {index: -1, data: undefined} : {index: i, data: feature}} class="mx-4 cursor-pointer h-full my-auto rounded-lg p-1 {selectedFeature.index===i?'bg-primary-300':''}">
                             {#if selectedFeature.index === i}<span class="float-right h-3 w-3 mr-1 mt-1 justify-center inline-flex h-full w-full rounded-full bg-primary-500 opacity-100"></span>{/if}

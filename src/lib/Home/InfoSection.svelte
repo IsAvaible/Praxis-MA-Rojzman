@@ -9,13 +9,13 @@ import {navigate} from "svelte-navigator";
             <h2 class="text-3xl font-extrabold text-primary-600 sm:text-4xl">
                 <span class="block">Liebe Patientinnen und Patienten</span>
             </h2>
-            <p class="mt-4 text-lg leading-6 text-gray-500 dark:text-slate-200">Mein Team und ich freuen uns, daß Sie auf unsere Homepage aufmerksam geworden sind und möchten Sie einladen,  sich hier über unsere Leistungen und Sprechzeiten zu informieren.</p>
+            <p class="mt-4 text-lg leading-6 text-gray-500 dark:text-slate-200">Mein <a on:click|preventDefault={() => navigate('/team')} href="/team" class="underline text-primary-500">Team</a> und ich freuen uns, daß Sie auf unsere Homepage aufmerksam geworden sind und möchten Sie einladen,  sich hier über unsere Leistungen und Sprechzeiten zu informieren.</p>
             <p class="mt-4 text-lg leading-6 text-gray-500 dark:text-slate-200">Durch einen freundlichen Empfang und einen vertrauensvollen Umgang mit unseren Patienten vermitteln wir Ihnen das Gefühl, daß Sie in unserer Praxis  gut aufgehoben sind.</p>
             <p class="mt-4 text-lg leading-6 text-gray-500 dark:text-slate-200">Mein Ziel als Hausärztin ist es, für Sie Ansprechpartner und Begleiter in allen Gesundheitsfragen zu sein.</p>
             <p class="mt-4 text-lg leading-6 text-gray-500 dark:text-slate-200">Wir freuen uns auf Ihren Besuch!</p>
             <span class="mt-8 cursor-pointer border border-transparent rounded-md shadow px-5 py-3 inline-flex items-center text-base font-medium bg-primary-600 text-white hover:bg-primary-700 dark:text-slate-100"
-                  on:click={() => navigate('/team')}
-            >Entdecken sie unser Team</span>
+                  on:click={() => navigate('/kontakt')}
+            >Kontaktieren Sie uns</span>
         </div>
     </div>
     <div class="-mt-6 aspect-w-5 aspect-h-3 md:aspect-w-2 md:aspect-h-1 ">

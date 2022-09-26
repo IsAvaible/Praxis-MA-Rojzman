@@ -58,7 +58,7 @@
         <input autocomplete="off" bind:value={shortDescription} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Eine kurze Beschreibung (*)" type="text" title={editMode?'Kurzbeschreibung (*)':''}/>
         <input autocomplete="off" bind:value={name} disabled={editMode} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none disabled:bg-gray-100 disabled:dark:bg-slate-800 {nameValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein einmaliger Name für die Leistung (URL) (*)" pattern="[a-z0-9-_+]+" title="Name der Leistung, Lediglich Kleinbuchstaben, -, _ und +, keine Umlaute o.ä." type="text" id="featureName"/>
         <div class="mb-6" on:mousedown={disableSubmitted} title={editMode?'Ausführliche Beschreibung (Optional)':''}>
-            <HTMLEditor bind:saved={submitted} bind:editorData={longDescription} imageBucket="images" imagePath="feature/"/>
+            <HTMLEditor bind:saved={submitted} bind:editorData={longDescription} imageBucket="images" imagePath="feature/content/"/>
         </div>
         <div class="flex justify-center mb-6">
             <input required bind:value={svgPaths} class="absolute opacity-0 pointer-events-none">

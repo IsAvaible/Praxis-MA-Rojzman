@@ -1,4 +1,8 @@
-/** Dispatch event when the escape key is pressed anywhere in the document */
+/**
+ * Dispatch an event when the escape key is pressed anywhere in the document except in input and textarea fields
+ * Usage: <node use:keyEsc on:keyEsc={escFunction}></node>
+ * @param node The node to dispatch the event on
+ * */
 export function keyEsc(node) {
 
     const dispatch = () => {

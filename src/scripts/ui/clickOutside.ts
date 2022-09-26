@@ -1,4 +1,7 @@
-/** Dispatch event on click outside of node */
+/**
+ * Dispatch event on click outside of node
+ * @param node The node to check for clicks outside of
+ **/
 export function clickOutside(node) {
 
     const dispatch = () => {

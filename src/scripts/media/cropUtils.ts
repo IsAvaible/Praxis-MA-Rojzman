@@ -1,3 +1,7 @@
+/**
+ *
+ * @param url
+ */
 export const createImage = (url): Promise<HTMLImageElement> =>
     new Promise((resolve, reject) => {
         const image = new Image();
@@ -7,6 +11,10 @@ export const createImage = (url): Promise<HTMLImageElement> =>
         image.src = url;
     });
 
+/**
+ * Convert degrees to radians
+ * @param degreeValue The value in degrees
+ */
 export function getRadianAngle(degreeValue) {
     return (degreeValue * Math.PI) / 180;
 }
@@ -27,6 +35,7 @@ export function rotateSize(width, height, rotation) {
 
 /**
  * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
+ * It rotates an image and returns it as a Blob.
  */
 export default async function getCroppedImg(
     imageSrc,

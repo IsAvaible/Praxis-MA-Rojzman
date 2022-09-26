@@ -6,6 +6,7 @@
     import FeatureCard from "../lib/Features/FeatureCard.svelte";
     import Alert from "../lib/Essentials/Alert.svelte";
     import Footer from "../lib/Essentials/Footer.svelte";
+    import LoadingWheel from "../lib/Misc/LoadingWheel.svelte";
 
     let features: {title: string, description: string, svgPath: string}[];
     let title = 'Unsere Leistungen';
@@ -29,7 +30,11 @@
         <h2 class="xl:text-4xl text-3xl text-center text-gray-800 dark:text-slate-200 font-extrabold sm:w-4/6 w-5/6 mx-auto focus:outline-transparent">{subtitle}</h2>
         <p class="mt-5 max-w-prose mx-auto text-xl text-gray-500 dark:text-slate-300">{description}</p>
         <div class="mt-12">
-            {#await getFeatures() then features}
+            {#await getFeatures()}
+                <div class="w-full flex justify-center">
+                    <LoadingWheel size={25} showAfter={1000}/>
+                </div>
+            {:then features}
                 <div in:fade={{duration: 500}} class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     {#each features as feature}
                         <FeatureCard {...feature} on:popUpShow={() => detailPopUpActive = true}/>

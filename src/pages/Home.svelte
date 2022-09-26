@@ -7,7 +7,7 @@
     import WebGl from "three/examples/jsm/capabilities/WebGL.js";
     import Title from "../lib/Home/Title.svelte";
     import Footer from "../lib/Essentials/Footer.svelte";
-    import TeamLinkPanel from "../lib/Home/TeamLinkPanel.svelte";
+    import IntroSection from "../lib/Home/InfoSection.svelte";
     import FeatureSection from "../lib/Home/HomeFeaturesReference.svelte";
     import BlogSection from "../lib/Home/HomeBlogReference.svelte";
     import {navigate} from "svelte-navigator";
@@ -43,8 +43,8 @@
         </div>
     {/if}
     <Title/>
-    <div class="mt-[72vh] 4xl:mt-[74vh] mx-4 md:mx-10 pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black">
-        <TeamLinkPanel/>
+    <div class="mt-[68vh] 4xl:mt-[74vh] mx-4 md:mx-10 pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black">
+        <IntroSection/>
         <div use:inview={{unobserveOnEnter: true}} on:enter={() => isInView = true}>
             {#if isInView}
                 <div in:fade={{duration: 700}}>

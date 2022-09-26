@@ -20,7 +20,6 @@
     let startTitle = title, startPreviewText = previewText, startContent = content, startPreviewImageUrl = previewImageUrl;
     $: edited = (startTitle != title || startPreviewText != previewText || startContent != content || startPreviewImageUrl != previewImageUrl);
     $: unsavedChangesStore.set(edited);
-    $: console.log(previewImageUrl);
 
     let ids = [];
     getBlogEntries().then(v => ids = v.map(f => f.id)).catch();
@@ -59,7 +58,7 @@
         <input autocomplete="off" bind:value={id} disabled={editMode} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none disabled:bg-gray-100 disabled:dark:bg-slate-800 {nameValid?'focus:border-primary-500':'border-red-500'}" placeholder="Eine einmalige ID für den Beitrag (URL) (*)" pattern="[a-z0-9-_+]+" title="ID der Leistung, Lediglich Kleinbuchstaben, -, _ und +, keine Umlaute o.ä." type="text" id="featureName"/>
         <input autocomplete="off" bind:value={previewText} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Eine kurze Zusammenfassung des Inhalts (*)" type="text" title={editMode?'Kurze Zusammenfassung des Inhalts (*)':''} />
         <div class="mb-6" on:mousedown={disableSubmitted} title={editMode?'Inhalt des Beitrags':''}>
-            <HTMLEditor bind:saved={submitted} bind:editorData={content} imageBucket="images" imagePath="feature/"/>
+            <HTMLEditor bind:saved={submitted} bind:editorData={content} imageBucket="images" imagePath="blog/content/"/>
         </div>
         <div class="flex justify-center mb-6">
             <input required bind:value={previewImageUrl} class="absolute opacity-0 pointer-events-none">
@@ -74,7 +73,7 @@
     </form>
     {#if submitted}
         <div class="mt-4">
-            {#await uploadCurrent(`blog/${id}.webp`, id, {quality: 0.9, maxWidth: 600, maxHeight: 338}) then previewImageUrl}
+            {#await uploadCurrent(`blog/preview/${id}.webp`, id, {quality: 0.9, maxWidth: 600, maxHeight: 338}) then previewImageUrl}
                 {#await (editMode?updateBlogEntry:addBlogEntry)(id, getUser().email, title, previewText, content, previewImageUrl) then data}
                     <Alert type={2} title="Erfolg!{disableLoading()+onModify()}" description='Der Beitrag mit der ID "{id}" wurde erfolgreich {editMode?"bearbeitet":"hinzugefügt"}.'/>
                 {:catch e}

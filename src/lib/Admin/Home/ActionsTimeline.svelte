@@ -15,7 +15,8 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
 </script>
 
 <div class="flow-root">
-    <ul role="list" class="mb my-5" in:fade={{duration: 500}}>
+    {#key actionsCount}
+        <ul role="list" class="my-6" in:fade={{duration: 500}}>
         {#await getAdminActions(actionsCount)}
             {#each Array(actionsCount) as _, i}
                 <li in:fade={{duration: 500}}>
@@ -64,24 +65,14 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
             {/each}
             {#if actions}
                 <li>
-                    <div class="relative flex justify-center items-center space-x-10">
-                        <div in:fade={{duration: 300}} on:click={() => actionsCount += increaseBy} class="flex space-x-3 items-center group cursor-pointer">
-                            <span class="h-8 w-8 rounded-full bg-primary-400 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 group-hover:bg-primary-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                </svg>
-                            </span>
-                            <h3 class="text-sm font-medium">Mehr anzeigen</h3>
-                        </div>
+                    <div class="relative flex justify-center items-center space-x-5">
+                        <button on:click={() => actionsCount += increaseBy} class="whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700">
+                            <span class="text-sm font-medium">Mehr anzeigen</span>
+                        </button>
                         {#if actionsCount !== increaseBy}
-                            <div in:fade={{duration: 300}} on:click={() => actionsCount -= increaseBy} class="flex space-x-3 items-center group cursor-pointer">
-                                <span class="h-8 w-8 rounded-full bg-primary-400 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 group-hover:bg-primary-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
-                                    </svg>
-                                </span>
-                                <h3 class="text-sm font-medium">Weniger anzeigen</h3>
-                            </div>
+                            <button on:click={() => actionsCount -= increaseBy} class="whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700">
+                                <span class="text-sm font-medium">Weniger anzeigen</span>
+                            </button>
                         {/if}
                     </div>
                 </li>
@@ -90,4 +81,5 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
             <Alert type={0} title={'Error!'} description={e.message}/>
         {/await}
     </ul>
+    {/key}
 </div>

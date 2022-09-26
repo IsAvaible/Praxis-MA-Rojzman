@@ -1,4 +1,7 @@
 <script lang="ts">
+    import {calculateEndTime, getOfficeHours} from "../../scripts/database/database.js";
+    import {formatHHMM} from "../../scripts/misc/dateFormat";
+
     export let officeHours: { weekday: number; timePeriods: { start: Date; end: Date }[] }[] = [
         {weekday: 0, timePeriods: [{start: new Date(), end: new Date()}, {start: new Date(), end: new Date()}]},
         {weekday: 1, timePeriods: [{start: new Date(), end: new Date()}]},
@@ -6,6 +9,7 @@
         {weekday: 3, timePeriods: [{start: new Date(), end: new Date()}, {start: new Date(), end: new Date()}]},
         {weekday: 4, timePeriods: [{start: new Date(), end: new Date()}]}
     ];
+
     let weekdays: string[] = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
 </script>
 
@@ -20,12 +24,21 @@
         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-slate-100" id="modal-title">Unsere Sprech- und Praxiszeiten</h3>
             <div class="mt-2">
-                {#each officeHours as day}
-                    <p class="font-medium text-md text-gray-500 dark:text-slate-200">{weekdays[day.weekday]}</p>
-                    {#each day.timePeriods as period}
-                        <p class="font-light text-md text-gray-500 dark:text-slate-200">{period.start.toLocaleTimeString('de-DE').substring(0, 5)} - {period.start.toLocaleTimeString('de-DE').substring(0, 5)}</p>
+                <!-- Use noCache if the office hours are opened while the user is in the admin section -->
+                {#await getOfficeHours(window.location.href.replace(/^(?:\/\/|[^/]+)*\//, '').startsWith('admin')) then officeHours}
+                    {#each officeHours as day}
+                        {#if day.timePeriods.length > 0}
+                            <p class="font-medium text-md text-gray-600 dark:text-slate-200">
+                                {weekdays[day.weekday]}
+                                {#if day.comment}<span class="text-sm text-gray-500 dark:text-slate-300"> - {day.comment}</span>{/if}
+                            </p>
+                            {#each day.timePeriods as period}
+                                <p class="font-light text-md text-gray-500 dark:text-slate-200">{formatHHMM(period.startTime)} - {formatHHMM(calculateEndTime(period.startTime, period.duration))}</p>
+                            {/each}
+                        {/if}
                     {/each}
-                {/each}
+                {/await}
+
             </div>
         </div>
     </div>

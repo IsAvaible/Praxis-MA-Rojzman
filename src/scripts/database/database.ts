@@ -45,6 +45,18 @@ export type BlogEntry = {
     previewImageUrl: string;
 }
 
+export type OfficeHour = {
+    weekday: number;
+    timePeriods: TimePeriod[];
+    comment: string;
+}
+
+export type TimePeriod = {
+    id: number;
+    startTime: Date;
+    duration: number;
+}
+
 
 // >>> Feature <<<
 
@@ -159,6 +171,7 @@ export const getBlogEntry = async (id: string, noCache?: boolean): Promise<BlogE
     return data;
 }
 
+// Adds a new blog entry to the database.
 export const addBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
     const { data, error } = await supabase
         .from<BlogEntry>('Blog-Entry')
@@ -173,6 +186,7 @@ export const addBlogEntry = async (id: string, author: string, title: string, pr
     return data;
 }
 
+// Updates the blog entry with the given id.
 export const updateBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
     const { data, error } = await supabase
         .from<BlogEntry>('Blog-Entry')
@@ -186,6 +200,7 @@ export const updateBlogEntry = async (id: string, author: string, title: string,
     return data;
 }
 
+// Deletes the blog entry with the given id.
 export const deleteBlogEntry = async (id: string) => {
     const { data, error } = await supabase
         .from<BlogEntry>('Blog-Entry')
@@ -204,6 +219,7 @@ export const deleteBlogEntry = async (id: string) => {
 
 
 let getTeamMembersCache; // This results in each client only requesting the data once.
+// Get all team members. The noCache parameter is used to force a new request.
 export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> => {
     if (getTeamMembersCache != undefined && !noCache) return getTeamMembersCache
 
@@ -218,6 +234,7 @@ export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> =
     return data;
 }
 
+// Select the team member with the given id. The noCache parameter can be used to force a new request.
 export const getTeamMember = async (id: string, noCache?: boolean): Promise<TeamMember> => {
     let find; // Only if the team member can not be found in the cache, a new request is sent.
     if (!noCache && (find = (await getTeamMembers()).find(e => e.id == id)) != undefined) return find
@@ -233,6 +250,7 @@ export const getTeamMember = async (id: string, noCache?: boolean): Promise<Team
     return data;
 }
 
+// Adds the team member to the database.
 export const addTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
         .from<TeamMember>('Team-Member')
@@ -247,6 +265,7 @@ export const addTeamMember = async (id: string, name: string, role: string, desc
     return data;
 }
 
+// Updates the team member with the given id.
 export const updateTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
         .from<TeamMember>('Team-Member')
@@ -260,6 +279,10 @@ export const updateTeamMember = async (id: string, name: string, role: string, d
     return data;
 }
 
+/**
+ * Deletes the team member with the given id.
+ * @param id The id of the team member.
+ */
 export const deleteTeamMember = async (id: string) => {
     const { data, error } = await supabase
         .from<TeamMember>('Team-Member')
@@ -271,6 +294,217 @@ export const deleteTeamMember = async (id: string) => {
 
     await addAdminAction('Team', 'delete', `Das Team Mitglied mit der ID "${id}" und dem Namen "${data.name}" wurde gelöscht.`);
     return data;
+}
+
+
+// >>> Time-Period <<<
+
+/**
+ * Get the time period with the given id.
+ * @param id The id of the time period.
+ */
+export const getTimePeriod = async (id: number): Promise<TimePeriod> => {
+    let {data, error} = await supabase
+        .from<TimePeriod>('Time-Period')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) throw error;
+
+    dataToTimePeriod(data);
+    return data;
+}
+
+/**
+ * Adds a new time period to the database.
+ * @param startTime The start time of the time period.
+ * @param duration The duration of the time period.
+ */
+export const addTimePeriod = async (startTime: Date, duration: number): Promise<TimePeriod> => {
+    // Convert the date to a string in the format "HH:mm:ss" using the toLocaleTimeString function.
+    let startTimeString = startTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const { data, error } = await supabase
+        .from('Time-Period')
+        .insert([
+            { startTime: startTimeString, duration: duration },
+        ])
+        .single()
+
+    if (error) throw error;
+
+    dataToTimePeriod(data);
+    return data;
+}
+
+/**
+ * Updates the time period with the given id.
+ * @param id The id of the time period.
+ * @param startTime The new start time of the time period.
+ * @param duration The new duration of the time period.
+ */
+export const updateTimePeriod = async (id: number, startTime: Date, duration: number): Promise<TimePeriod> => {
+    // Convert the date to a string in the format "HH:mm:ss" using the toLocaleTimeString function.
+    let startTimeString = startTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const { data, error } = await supabase
+        .from('Time-Period')
+        .update({ startTime: startTimeString, duration: duration })
+        .eq('id', id)
+        .single()
+
+    if (error) throw error;
+
+    dataToTimePeriod(data);
+    return data;
+}
+
+/*
+ * Delete the time period with the given id.
+ * @param id The id of the time period.
+ */
+export const deleteTimePeriod = async (id: number) => {
+    const { data, error } = await supabase
+        .from<TimePeriod>('Time-Period')
+        .delete()
+        .eq('id', id)
+        .single()
+
+    if (error) throw error;
+    return data;
+}
+
+/**
+ * Calculates the end time given a start time and a duration.
+ * @param startTime The start time.
+ * @param duration The duration in minutes.
+ */
+export const calculateEndTime = (startTime: Date, duration: number): Date => {
+    let endTime = new Date(startTime);
+    endTime.setMinutes(endTime.getMinutes() + duration);
+    return endTime;
+}
+
+/**
+ * Calculates the distance between two dates in minutes.
+ * @param startTime
+ * @param endTime
+ */
+export const calculateDateDistance = (startTime: Date, endTime: Date): number => {
+    return Math.round((endTime.getTime() - startTime.getTime()) / 1000 / 60);
+}
+
+/**
+ * Converts a row (data) from the Time-Period table to a TimePeriod object, by converting the startTime string to a Date object.
+ * @param data The row from the Time-Period table.
+ */
+const dataToTimePeriod = (data) => {
+    data.startTime = new Date(Date.parse("1970-01-01T" + data.startTime.toString()));
+    return data;
+}
+
+// >>> Office-Hour <<<
+
+let getOfficeHoursCache: OfficeHour[] = null;
+/**
+ * Get all office hours.
+ * @param noCache If true, the office hours will be reloaded from the database.
+ */
+export const getOfficeHours = async (noCache: boolean = false): Promise<OfficeHour[]> => {
+    if (getOfficeHoursCache && !noCache) return getOfficeHoursCache;
+
+    let {data, error} = await supabase
+        .from<OfficeHour>('Office-Hour')
+        .select('*')
+        .order('weekday', {ascending: true});
+
+    if (error) throw error;
+
+    data = await Promise.all(data.map(formatDataToOfficeHour));
+    getOfficeHoursCache = data;
+    return data;
+}
+
+
+/**
+ * Get the office hours on the given week day.
+ * @param weekday The week day.
+ */
+export const getOfficeHourByWeekday = async (weekday: number): Promise<OfficeHour> => {
+    let { data, error } = await supabase
+        .from('Office-Hour')
+        .select('*')
+        .eq('weekday', weekday)
+        .single()
+
+    if (error) throw error;
+
+    return await formatDataToOfficeHour(data);
+}
+
+/**
+ * Updates the office hours on the given week day.
+ * @param weekday The week day.
+ * @param timePeriods The time periods.
+ * @param comment A comment field that can be used to annotate the data.
+ */
+export const updateOfficeHour = async (weekday: number, timePeriods: TimePeriod[], comment: string): Promise<OfficeHour> => {
+    // This uploads the time periods to the database and stores the ids in a list.
+    let timePeriodIds = timePeriods.map(timePeriod => timePeriod.id)
+
+    const { data, error } = await supabase
+        .from('Office-Hour')
+        .update({ timePeriodIds: timePeriodIds, comment: comment })
+        .eq('weekday', weekday)
+        .single()
+
+    if (error) {
+        //  If an error occurs, the time periods are deleted again.
+        await Promise.all(timePeriodIds.map(async timePeriodId => deleteTimePeriod(timePeriodId)));
+        throw error;
+    }
+
+    return await formatDataToOfficeHour(data);
+}
+
+/**
+ * Updates the comment on the given week day.
+ * @param weekday The week day.
+ * @param comment The comment.
+ */
+export const updateOfficeHourComment = async (weekday: number, comment: string): Promise<OfficeHour> => {
+    const { data, error } = await supabase
+        .from('Office-Hour')
+        .update({ comment: comment })
+        .eq('weekday', weekday)
+        .single()
+
+    if (error) throw error;
+
+    return await formatDataToOfficeHour(data);
+}
+
+/**
+ * Formats a row from the table Office-Hour to an office hour object.
+ * @param data The row from the table Office-Hour.
+ */
+const formatDataToOfficeHour = async (data: any): Promise<OfficeHour> => {
+    return {
+        weekday: data.weekday,
+        timePeriods: await Promise.all(data.timePeriodIds.map(id => getTimePeriod(id))),
+        comment: data.comment
+    } as OfficeHour;
+}
+
+/**
+ * Formats an office hour object to a row (data) for the table Office-Hour.
+ * @param officeHour The office hour object.
+ */
+const formatOfficeHourToData = (officeHour: OfficeHour): any => {
+    return {
+        weekday: officeHour.weekday,
+        timePeriodIds: officeHour.timePeriods.map(timePeriod => timePeriod.id),
+        comment: officeHour.comment
+    }
 }
 
 
