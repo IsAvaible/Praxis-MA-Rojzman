@@ -7,6 +7,7 @@ import {fade, slide} from "svelte/transition";
 import HCaptcha from "svelte-hcaptcha/src/HCaptcha.svelte";
 import {removeItem} from "../scripts/misc/arrayRemoveItem";
 import {onMount} from "svelte";
+import PageTitle from "../lib/Admin/Navigation/PageTitle.svelte";
 
 let darkMode: boolean;
 darkModeStore.subscribe((value) => darkMode = value);
@@ -46,13 +47,8 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
     <div class="bg w-full sm:px-4 flex justify-center bg-primary-300 dark:bg-primary-600 flex-grow">
         <div class="sm: flex-1"></div>
         <div class="contact-form bg-white dark:bg-slate-800 sm:rounded-lg p-10 flex-grow shadow-lg self-center sm:my-5">
-            <h2 class="font-medium dark:text-slate-100 mb-6 uppercase font-bold text-center text-[32px] sm:text-left sm:text-[40px] lg:text-[36px] xl:text-[40px] focus:outline-none">
-                Rezeptanforderung
-            </h2>
-            <p class="dark:text-slate-200 font-medium leading-relaxed mb-9 max-w-4xl">
-                Auf diesem Wege können Sie ein Folgerezept für eine bestehende Dauermedikation beantragen, welche wir anschliessend vorbereiten und zur Abholung bereit legen.
-                Wir können auf diesem Weg keine Rezepte für akute Erkrankungen ausstellen, da eine persönliche Vorstellung und Untersuchung unumgänglich sind.
-            </p>
+            <PageTitle title="Rezeptanforderung" subTitle="Hier können Sie ein Folgerezept für eine bestehende Dauermedikation beantragen, welche wir anschliessend vorbereiten und zur Abholung bereit legen.
+                Wir können auf diesem Weg keine Rezepte für akute Erkrankungen ausstellen, da eine persönliche Vorstellung und Untersuchung unumgänglich sind."/>
             <form>
                 <div class="mb-6">
                     <input bind:value={request.name} required class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ihr Vorname (*)" type="text" id="forename" />

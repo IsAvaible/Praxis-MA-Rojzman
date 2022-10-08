@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {getFeatures} from "../../scripts/database/database";
+    import {getFeatures, getShowcasedFeatures} from "../../scripts/database/database";
     import {fade} from "svelte/transition";
     import FeatureCard from "../../lib/Features/FeatureCard.svelte";
     import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
@@ -33,13 +33,15 @@
     <Modal on:hide={() => {activeOption = -1; if (modification) refreshFeatures++; modification = false; selectedFeature={index: -1, data: undefined}}}>
         <div class="flex flex-col">
             <PageTitle titleAccent="{options[activeOption].title}" subTitle={options[activeOption].shortDescription} showTitle={false}/>
-            {#if activeOption === 0}
-                <AddFeatureForm on:modification={() => modification=true}/>
-            {:else if activeOption === 1}
-                <AddFeatureForm editMode={true} {...selectedFeature.data} on:modification={() => modification=true}/>
-            {:else if activeOption === 2}
-                <DeleteFeatureForm feature={selectedFeature} on:modification={() => modification=true}/>
-            {/if}
+            {#key refreshFeatures}{#await getShowcasedFeatures() then showcasedFeatures}
+                {#if activeOption === 0}
+                    <AddFeatureForm {showcasedFeatures} on:modification={() => modification=true}/>
+                {:else if activeOption === 1}
+                    <AddFeatureForm editMode={true} {...selectedFeature.data} {showcasedFeatures} on:modification={() => modification=true} />
+                {:else if activeOption === 2}
+                    <DeleteFeatureForm feature={selectedFeature} on:modification={() => modification=true}/>
+                {/if}
+            {/await}{/key}
         </div>
     </Modal>
 {/if}
@@ -63,14 +65,37 @@
                     <LoadingWheel size={25} showAfter={1000}/>
                 </div>
             {:then features}
-                <div class="mt-6 pt-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 py-5">
-                    {#each features as feature, i}
-                        <div in:fade={{duration: 500}} on:click={() => selectedFeature = selectedFeature.index === i ? {index: -1, data: undefined} : {index: i, data: feature}} class="mx-4 cursor-pointer h-full my-auto rounded-lg p-1 {selectedFeature.index===i?'bg-primary-300':''}">
-                            {#if selectedFeature.index === i}<span class="float-right h-3 w-3 mr-1 mt-1 justify-center inline-flex h-full w-full rounded-full bg-primary-500 opacity-100"></span>{/if}
-                            <FeatureCard {...feature}></FeatureCard>
+                {#if features.length === 0}
+                    <Alert type={1} title="Keine Leistungen vorhanden." description="Es sind noch keine Leistungen vorhanden. Bitte fügen sie eine Leistung hinzu."/>
+                {:else}
+                    {#await getShowcasedFeatures(true)}
+                        <div class="w-full mt-6 pt-6 flex justify-center">
+                            <LoadingWheel size={25} showAfter={1000}/>
                         </div>
-                    {/each}
-                </div>
+                    {:then showcasedFeatures}
+                        {#if showcasedFeatures.length !== 3}
+                            <div class="pt-6">
+                                <Alert type={1} title="Zu wenige Leistungen auf der Startseite." description="Monentan werden nur {showcasedFeatures.length} Leistungen auf der Startseite angezeigt. Bitte setzen sie mehr Leistungen auf die Startseite um die Anzahl auf 3 zu erhöhen."/>
+                            </div>
+                        {/if}
+                        <div class="mt-6 pt-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 py-5">
+                        {#each features as feature, i}
+                            <div in:fade={{duration: 500}} on:click={() => selectedFeature = selectedFeature.index === i ? {index: -1, data: undefined} : {index: i, data: feature}} class="mx-4 cursor-pointer h-full my-auto rounded-lg p-1 {selectedFeature.index===i?'bg-primary-300':''}">
+                                <!--  If the feature is showcased on the homepage, show a star icon in the top left corner -->
+                                {#if showcasedFeatures.map(f => f.name).includes(feature.name)}
+                                    <div class="float-left h-3 w-3 rounded-full ml-1 mt-1 text-yellow-400 flex justify-start items-start">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                {/if}
+                                {#if selectedFeature.index === i}<span class="float-right h-3 w-3 mr-1 mt-1 justify-center inline-flex h-full w-full rounded-full bg-primary-500 opacity-100"></span>{/if}
+                                <FeatureCard {...feature}></FeatureCard>
+                            </div>
+                        {/each}
+                    </div>
+                    {/await}
+                {/if}
             {:catch e}
                 <Alert type={0} title="Leistungen konnten nicht geladen werden!" description="Error: {e.message}"/>
             {/await}

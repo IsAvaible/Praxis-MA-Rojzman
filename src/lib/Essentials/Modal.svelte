@@ -34,7 +34,7 @@
 
         <div use:clickOutside on:clickOutside={() => {if (hideOnClickOutside) {hide()}}} in:fade={{duration: 300*(modalTopModal?0:1)}} out:fade|local={{duration: 200*(modalTopModal?0:1), easing: circIn}} class="relative inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all {modalTopModal?'':'sm:my-8'} sm:align-middle {modalTopModal?'max-w-[99.9%] min-h-full':'sm:max-w-[80%] xl:max-w-7xl'} sm:p-6">
             {#if desktopCloseButton}
-                <div class="hidden sm:block absolute top-0 right-0 pt-4 mx-4 my-5">
+                <div class="absolute top-0 right-0 pt-1 pr-1 mx-4 my-5">
                     <button on:click={() => hide()} type="button" class="rounded-md text-gray-400 hover:text-gray-500 focus:text-gray-800 dark:text-slate-200 dark:hover:text-slate-100 dark:focus:text-white">
                         <span class="sr-only">Close</span>
                         <!-- Heroicon name: outline/x -->

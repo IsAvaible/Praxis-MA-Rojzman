@@ -31,7 +31,7 @@
             <p class="mt-5 text-base text-gray-500 dark:text-slate-300">{shortDescription}</p>
         </div>
     </div>
-    {#if longDescription} <!-- Long Description ID -->
+    {#if longDescription} <!-- If a long description is provided, show a button that allows reading it -->
         <div class="w-full flex justify-end -mt-7 pr-1">
             <a href={'leistungen/' + name} on:click|preventDefault={() => {navigate('leistungen/' + name, {state: {scroll: false}}); popUpShow()}}>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 hover:text-gray-800 dark:text-slate-300 dark:hover:text-slate-100 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

@@ -8,7 +8,7 @@
     export let editor = null;
     export let value = "";
     export let config = () => ({});
-    export let disabled = false;
+    export const disabled = false;
 
     // Instance variables
     let instance = null;

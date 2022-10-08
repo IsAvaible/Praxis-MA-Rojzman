@@ -2,6 +2,7 @@
     import ActionsTimeline from "../../lib/Admin/Home/ActionsTimeline.svelte";
     import OfficeHoursConfigurator from "../../lib/Admin/Home/OfficeHoursConfigurator.svelte";
     import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
+    import AllowRegistrationConfigurator from "../../lib/Admin/Home/AllowRegistrationConfigurator.svelte";
 </script>
 
 
@@ -10,6 +11,7 @@
     <div class="flex flex-col divide-y divide-gray-200 w-full">
         <ActionsTimeline/>
         <OfficeHoursConfigurator/>
+        <AllowRegistrationConfigurator/>
     </div>
 </div>
 

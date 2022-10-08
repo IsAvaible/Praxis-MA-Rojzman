@@ -23,7 +23,7 @@
                 <path fill-rule="evenodd" d={svgPath} clip-rule="evenodd" />
             </svg>
         </div>
-        <div class="ml-3 inline-flex">
+        <div class="ml-3 inline-flex overflow-auto">
             <h3 class="text-sm font-medium {titleColor} w-fit">{title}</h3>
             <p class="ml-1 text-sm {textColor}">{description}</p>
             <slot/>

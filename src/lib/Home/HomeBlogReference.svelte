@@ -1,15 +1,11 @@
 <script lang="ts">
 import {navigate} from "svelte-navigator";
+import {formatDDMMYYYY} from "../../scripts/misc/dateFormat";
 import {getBlogEntries} from "../../scripts/database/database";
+import {readTime} from "../../scripts/misc/readTime";
 
 import Alert from "../Essentials/Alert.svelte";
 import LoadingWheel from "../Misc/LoadingWheel.svelte";
-
-const prettifyDate = (date: Date) => {
-    let day, month, year;
-    [day, month, year] = date.toLocaleTimeString('de-DE', { year: 'numeric', month: 'short', day: 'numeric' }).replace(/[.,]/g, '').split(' ');
-    return `${day}. ${month}, ${year}`;
-}
 
 </script>
 
@@ -20,6 +16,7 @@ const prettifyDate = (date: Date) => {
             <h2 class="text-3xl tracking-tight font-extrabold text-primary-600 dark:text-slate-100 sm:text-4xl">Unsere neusten Beiträge</h2>
             <p class="mt-3 text-xl text-gray-500 sm:mt-4 dark:text-slate-200">In unsere Kategorie <span on:click={() => navigate("/aktuelles")} class="cursor-pointer hover:text-gray-800 dark:hover:text-slate-100">"Aktuelles"</span> halten wir sie stets über Neuigkeiten rund um die Praxis und Gesundheit auf dem Laufenden.</p>
         </div>
+        <!-- The four most recent blog entries are queried -->
         {#await getBlogEntries(false, 4)}
             <div class="w-full mt-12 pt-12 flex justify-center">
                 <LoadingWheel size={25} showAfter={1000}/>
@@ -37,9 +34,9 @@ const prettifyDate = (date: Date) => {
                             <p class="mt-3 text-base text-gray-500 dark:text-slate-200">{entry.previewText}</p>
                         </div>
                         <div class="flex space-x-1 text-sm text-gray-500 dark:text-slate-400">
-                            <time datetime="{entry.createdAt.toISOString().split('T')[0]}"> {prettifyDate(entry.createdAt)} </time>
+                            <time datetime="{entry.createdAt.toISOString().split('T')[0]}"> {formatDDMMYYYY(entry.createdAt)} </time>
                             <span aria-hidden="true"> &middot; </span>
-                            <span> x Min. Lesezeit</span>
+                            <span> ~{Math.max(1, Math.ceil(readTime(entry.content).duration))} Min. Lesezeit</span>
                         </div>
                     </a>
                 {/each}

@@ -1,6 +1,7 @@
 import {createClient} from '@supabase/supabase-js'
 import type {User} from '@supabase/gotrue-js';
 import type {SearchOptions} from '@supabase/storage-js';
+import {deleteImagesFromHTML, publicUrlToKey} from "./databaseHtmlImageTools";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL.toString();
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY.toString();
@@ -13,6 +14,11 @@ export type Feature = {
     shortDescription: string;
     longDescription: string | undefined;
     svgPaths: string[];
+}
+
+export type ShowcasedFeature = {
+    name: string;
+    setAt: Date;
 }
 
 export type AdminAction = {
@@ -119,6 +125,11 @@ export const updateFeature = async (name: string, title: string, shortDescriptio
 }
 
 export const deleteFeature = async (name: string) => {
+    let feature = await getFeature(name, true);
+
+    // Delete all images in the long description of the feature
+    await deleteImagesFromHTML(feature.longDescription)
+
     const { data, error } = await supabase
         .from<Feature>('Feature')
         .delete()
@@ -128,6 +139,57 @@ export const deleteFeature = async (name: string) => {
     if (error) throw error;
 
     await addAdminAction('Leistungen', 'delete', `Die Leistung mit dem Namen "${name}" wurde gelöscht.`);
+    return data;
+}
+
+
+// >>> Showcased Feature <<<
+
+
+let getShowcasedFeaturesCache;
+export const getShowcasedFeatures = async (noCache?: boolean): Promise<ShowcasedFeature[]> => {
+    if (getShowcasedFeaturesCache != undefined && !noCache) return getShowcasedFeaturesCache
+
+    let {data, error} = await supabase
+        .from<ShowcasedFeature>('Showcased-Feature')
+        .select('*')
+        .order('setAt', {ascending: false})
+
+    if (error) throw error;
+
+    data.map(e => e.setAt = new Date(e.setAt));
+    getShowcasedFeaturesCache = data;
+
+    return data;
+}
+
+export const addShowcasedFeature = async (name: string): Promise<ShowcasedFeature> => {
+    const { data, error } = await supabase
+        .from<ShowcasedFeature>('Showcased-Feature')
+        .insert([
+            { name: name },
+        ])
+        .single()
+
+    if (error) throw error;
+
+    data.setAt = new Date(data.setAt);
+
+    await addAdminAction('Leistungen', 'insert', `Die Leistung mit dem Namen "${name}" wurde auf die Startseite gesetzt.`);
+    return data;
+}
+
+export const deleteShowcasedFeature = async (name: string) => {
+    const { data, error } = await supabase
+        .from<ShowcasedFeature>('Showcased-Feature')
+        .delete()
+        .eq('name', name)
+        .single()
+
+    if (error) throw error;
+    data.setAt = new Date(data.setAt);
+
+    await addAdminAction('Leistungen', 'delete', `Die Leistung mit dem Namen "${name}" wurde von der Startseite entfernt.`);
     return data;
 }
 
@@ -202,6 +264,15 @@ export const updateBlogEntry = async (id: string, author: string, title: string,
 
 // Deletes the blog entry with the given id.
 export const deleteBlogEntry = async (id: string) => {
+    let blogEntry = await getBlogEntry(id, true);
+
+    // Delete all images in the content of the blog entry
+    await deleteImagesFromHTML(blogEntry.content)
+
+    // Deletes the preview image from the database
+    let key = publicUrlToKey(blogEntry.previewImageUrl);
+    await deleteFiles(key.bucket, [key.path.match(/(.*)\?t=.*/)[1]]);
+
     const { data, error } = await supabase
         .from<BlogEntry>('Blog-Entry')
         .delete()
@@ -210,7 +281,7 @@ export const deleteBlogEntry = async (id: string) => {
 
     if (error) throw error;
 
-    await addAdminAction('Aktuelles', 'delete', `Der Blog Eintrag mit der id "${name}" wurde gelöscht.`);
+    await addAdminAction('Aktuelles', 'delete', `Der Blog Eintrag mit der id "${id}" wurde gelöscht.`);
     return data;
 }
 

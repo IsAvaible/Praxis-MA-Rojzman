@@ -1,16 +1,16 @@
 import * as THREE from 'three';
-import { InteractionManager } from "three.interactive";
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import {vertexShader, fragmentShader} from "./shaders";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import { MathUtils } from 'three';
 import WEBGL from "three/examples/jsm/capabilities/WebGL";
+// import { InteractionManager } from "three.interactive";
+// import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import {vertexShader, fragmentShader} from "./shaders";
 import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
 
 export let sceneInitialized = false;
 
 let renderer: THREE.WebGLRenderer;
-let interaction: InteractionManager;
+// let interaction: InteractionManager;
 let clock: THREE.Clock;
 let frameTime = 0;
 let frameRate = 1 / 60;
@@ -31,7 +31,7 @@ prefersReducedMotionStore.subscribe((b) => prefersReducedMotion = b);
 const init = () => {
   // @ts-ignore
   // controls = new OrbitControls(camera, renderer.domElement);
-  interaction = new InteractionManager(renderer, camera, renderer.domElement, false);
+  // interaction = new InteractionManager(renderer, camera, renderer.domElement, false);
   clock = new THREE.Clock();
 
   camera.position.z = 5;
@@ -47,10 +47,11 @@ const init = () => {
     u_mouse: { type: "v2", value: new THREE.Vector2() }
   };
 
-  document.onmousemove = function(e){
-    uniforms.u_mouse.value.x = e.pageX
-    uniforms.u_mouse.value.y = e.pageY
-  }
+  // This part of the code may be used to add mouse interactivity to the shader
+  // document.onmousemove = function(e){
+  //   uniforms.u_mouse.value.x = e.pageX / renderer.domElement.clientWidth;
+  //   uniforms.u_mouse.value.y = e.pageY / renderer.domElement.clientHeight;
+  // }
 
   // const room = new RoomEnvironment();
   // room.position.set(0.0, -4, 0.0);
@@ -67,7 +68,7 @@ const animate = () => {
     frameTime %= frameRate;
     update();
     uniforms.u_time.value += clock.getDelta();
-    interaction.update();
+    // interaction.update();
     renderer.render(scene, camera);
   }
 };
@@ -143,7 +144,7 @@ const loadVirus = () => {
         virus.scale.setScalar(2);
         virus.position.setX(1);
         scene.add(virus);
-        interaction.add(virus);
+        // interaction.add(virus);
         // virus.addEventListener("mousedown", (event => centerMaterial.wireframe = !centerMaterial.wireframe));
       }
   );

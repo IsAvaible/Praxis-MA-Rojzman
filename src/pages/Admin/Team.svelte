@@ -12,17 +12,17 @@ let addedTeamMembers = [];
 
 let addingMember = false;
 let id = '';
-$: nameValid = (!addedTeamMembers || addedTeamMembers.findIndex(m => m.id == id) === -1) && id === (id = id.match(/[a-z-_+]*/g)?.join(''));
+$: idValid = (!addedTeamMembers || addedTeamMembers.findIndex(m => m.id == id) === -1) && id === (id = id.match(/[a-z-_+]*/g)?.join(''));
 
 const handleTeamMemberAdd = () => {
     if (addingMember) {
-        if (nameValid && id.length) {
+        if (idValid && id.length) {
             addedTeamMembers.push({id: id, newMember: true});
             addedTeamMembers = addedTeamMembers;
             addingMember = false;
             id = '';
         } else if (id.length) {
-            nameValid = false;
+            idValid = false;
         } else {
             addingMember = false;
         }
@@ -70,7 +70,7 @@ $: unsavedChangesStore.set(anyEdit || addingMember);
                                     {#if addingMember}
                                         <div out:fade|local={{duration: 250}} class="w-full flex">
                                             <input bind:value={id} in:slide={{duration: 300}} out:slide|local={{duration: 300}} on:keydown={(e) => {if (e.keyCode === 10 || e.keyCode === 13) {e.preventDefault(); handleTeamMemberAdd()}}} on:keyup={e => {if (e.which === 27) {addingMember = false}}}
-                                                   autocomplete="off" pattern="[a-z0-9-_+]+" required class="text-center mt-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none {nameValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein identifizierender Name (ID)" type="text" />
+                                                   autocomplete="off" pattern="[a-z0-9-_+]+" required class="text-center mt-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none {idValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein identifizierender Name (ID)" type="text" />
                                         </div>
                                     {/if}
                                 </div>

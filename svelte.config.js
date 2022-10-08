@@ -2,10 +2,15 @@ import sveltePreprocess from 'svelte-preprocess'
 import autoprefixer from "autoprefixer";
 
 export default {
-  // Consult https://github.com/sveltejs/svelte-preprocess
-  // for more information about preprocessors
-  preprocess: sveltePreprocess({
+    // Consult https://github.com/sveltejs/svelte-preprocess
+    // for more information about preprocessors
+    preprocess: sveltePreprocess({
         postcss: {
             plugins: [autoprefixer()]}
-      })
+    }),
+    vitePlugin: {
+        experimental: {
+            inspector: true // The inspector can be toggled using the key combo Ctrl+Shift
+        }
+    }
 }

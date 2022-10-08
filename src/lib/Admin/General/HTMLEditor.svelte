@@ -6,6 +6,7 @@
     import { onDestroy } from 'svelte';
     import {deleteFiles} from "../../../scripts/database/database";
     import {escapeString} from "../../../scripts/misc/escapeString";
+    import {findImagesInHtml} from "../../../scripts/database/databaseHtmlImageTools";
 
     export let imageBucket;
     export let imagePath;
@@ -18,7 +19,7 @@
     // Setting up any initial data for the editor
     export let editorData = preFill;
     // Storing images stored withing the previous data to be checked against on exit [[bucket, path]]
-    let prevImageKeys = Array.from(editorData.matchAll(new RegExp(escapeString(`src="${import.meta.env.VITE_SUPABASE_URL.toString()}/storage/`) + '.+\/public\/(.+?)\/(.+?)"', 'g')), m=>m[1] + "/" + m[2])
+    let prevImageKeys = findImagesInHtml(editorData);
 
     export let saved = false;
     let imageUploader = undefined;
@@ -90,6 +91,7 @@
         }
     }
 
+    // When the editor is destroyed, images that were uploaded but not saved and images that are not used anymore are deleted from the server
     onDestroy(() => {
         if (imageUploader) {
             if (!saved) { // Clear all newly uploaded Images if the Editor is closed without saving

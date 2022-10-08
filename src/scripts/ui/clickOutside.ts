@@ -1,5 +1,6 @@
 /**
  * Dispatch event on click outside of node
+ * Usage: <node use:clickOutside on:clickOutside={clickOutsideFunction}></node>
  * @param node The node to check for clicks outside of
  **/
 export function clickOutside(node) {

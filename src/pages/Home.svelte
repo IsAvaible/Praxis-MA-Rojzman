@@ -1,16 +1,17 @@
 <script lang="ts">
     import {fade} from "svelte/transition";
     import { inview } from 'svelte-inview';
-
     import { onMount } from 'svelte';
     import {createScene, rebindScene, sceneInitialized} from "../lib/webgl/scene";
+    import {getFeature, getOfficeHours, getShowcasedFeatures} from "../scripts/database/database";
+    import {navigate} from "svelte-navigator";
+
     import WebGl from "three/examples/jsm/capabilities/WebGL.js";
     import Title from "../lib/Home/Title.svelte";
     import Footer from "../lib/Essentials/Footer.svelte";
     import IntroSection from "../lib/Home/InfoSection.svelte";
     import FeatureSection from "../lib/Home/HomeFeaturesReference.svelte";
     import BlogSection from "../lib/Home/HomeBlogReference.svelte";
-    import {navigate} from "svelte-navigator";
     import OfficeHours from "../lib/Misc/OfficeHours.svelte";
 
     let el;
@@ -20,6 +21,9 @@
         } else {
             rebindScene(el);
         }
+        // Query the database for essential values to populate the cache
+        getOfficeHours();
+        getShowcasedFeatures().then(d => d.forEach(f => getFeature(f.name)));
     });
 
     let isInView = false;
@@ -56,14 +60,14 @@
                                 <polygon class="text-primary-100 dark:text-primary-800 fill-current" points="2560 0 2560 100 0 100"></polygon>
                             </svg>
                         </div>
-                        <div class="bg-primary-100 dark:bg-primary-800 mx-auto bg-slate flex justify-center rounded-b-lg">
+                        <div class="bg-primary-100 dark:bg-primary-800 mx-auto bg-slate flex justify-center rounded-b-lg mt-0">
                             <div class="flex p-5 lg:p-7 mb-5">
                                 <OfficeHours/>
                                 <div class="my-auto grid grid-cols-1 items-center ml-3">
                                         <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" class="hidden md:flex mx-auto mb-2 font-medium text-gray-900 dark:text-slate-100">
                                             <p>Kammstr. 2, 65399 Kiedrich</p>
                                         </a>
-                                    <a href="/kontakt" on:click|preventDefault={() => navigate("/kontakt")} class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white hover:bg-primary-700 focus:outline-none sm:w-auto sm:text-base">Kontaktieren sie uns!</a>
+                                    <a href="/kontakt" on:click|preventDefault={() => navigate("/kontakt")} class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white text-center hover:bg-primary-700 focus:outline-none sm:w-auto sm:text-base">Kontaktieren sie uns!</a>
                                 </div>
                             </div>
                         </div>
@@ -78,11 +82,6 @@
 
 
 <style lang="scss">
-  :root {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
   #webgl_canvas {
     margin: 0;
     // Push to background
