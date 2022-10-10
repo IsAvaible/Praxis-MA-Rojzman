@@ -10,9 +10,9 @@
 <div class="py-12">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="sr-only">Unsere Leistungen</h2>
-        <dl class="space-y-10 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
-            <!-- The admin may specify three different features that will be shown on the start page.-->
-            {#await showcasedFeatures then showcasedFeatures}
+        {#await showcasedFeatures then showcasedFeatures}
+            <dl class="space-y-10 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
+                <!-- The admin may specify three different features that will be shown on the start page.-->
                 {#each showcasedFeatures as {name, title, shortDescription, longDescription, svgPaths}}
                     <div in:fade={{duration: 100}}>
                         <dt>
@@ -30,10 +30,10 @@
                         <div class="w-full"><span on:click={() => navigate('leistungen/' + (longDescription ? name : ''))} class="ml-auto mr-4 table cursor-pointer text-gray-900 dark:text-slate-200 hover:underline">Mehr erfahren</span></div>
                     </div>
                 {/each}
-            {:catch e}
-                <Alert type={1} title='Leistungen konnten nicht geladen werden.' description="Wir konnten die angeforderten Daten nicht laden. Überprüfen sie bitte ihre Internetverbindung."/>
-            {/await}
-        </dl>
+            </dl>
+        {:catch e}
+            <Alert type={1} title='Leistungen konnten nicht geladen werden.' description="Wir konnten die angeforderten Daten nicht laden. Überprüfen sie bitte ihre Internetverbindung."/>
+        {/await}
 <!--        <div class="w-full">-->
 <!--            <span class="mt-8 mx-auto table cursor-pointer border border-transparent rounded-md shadow px-5 py-3 inline-flex items-center text-base font-medium bg-primary-600 text-white hover:bg-primary-700 dark:text-slate-100" on:click={() => navigate('/leistungen')}>-->
 <!--            Erfahren sie mehr über unsere Leistungen-->

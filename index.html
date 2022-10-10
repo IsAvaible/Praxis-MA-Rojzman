@@ -1,25 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="src/stylesheets/preloader.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Praxis M.A. Rojzman - Kiedrich</title>
     <base href="/">
+</head>
 
-    <!--[if IE]>
-    <meta HTTP-EQUIV="REFRESH" content="0; url=http://www.google.com">
-    <![endif]-->
-  </head>
-  <body style="margin: 0" class="dark:text-slate-200 dark:bg-slate-900 tap-hi">
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<body style="margin: 0" class="dark:text-slate-200 dark:bg-slate-900 tap-hi">
+    <script type="module" src="/main.js"></script>
+    <div class="absolute pointer-events-none" style="z-index: 75; height: 100%"><div class="preloader showDelayed" id="preloader">
+        <div>
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+    </div></div>
+    <noscript>
+        <div id="js-error">
+            <p>Diese Webseite benötigt Javascript um ihre Inhalte anzuzeigen. Bitte benutzen sie einen Browser welcher ES5 unterstützt.</p>
+        </div>
+    </noscript>
+</body>
 </html>
 
-<script type="text/javascript">
-  if (window.navigator.msPointerEnabled) {
-    window.location = "https://browsehappy.com/";
-  }
-</script>
+<style>
+    #js-error {
+        position: absolute;
+        top: 0;
+        min-height: 100vh;
+        min-width: 100vw;
+        background: #FFFFFF;
+        z-index: 100;
+    }
+
+    #js-error > p {
+        color: #D8000C;
+        background-color: #FFD2D2;
+        font-weight: 700;
+        position: absolute;
+        top: 45vh;
+        left: 0;
+        right: 0;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 50px;
+        padding: 1em;
+        max-height: 80%;
+        max-width: 90%;
+        text-align: center;
+    }
+</style>

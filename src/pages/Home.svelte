@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {fade} from "svelte/transition";
-    import { inview } from 'svelte-inview';
+    // import {fade} from "svelte/transition";
+    // import { inview } from 'svelte-inview';
     import { onMount } from 'svelte';
     import {createScene, rebindScene, sceneInitialized} from "../lib/webgl/scene";
     import {getFeature, getOfficeHours, getShowcasedFeatures} from "../scripts/database/database";
@@ -9,30 +9,48 @@
     import WebGl from "three/examples/jsm/capabilities/WebGL.js";
     import Title from "../lib/Home/Title.svelte";
     import Footer from "../lib/Essentials/Footer.svelte";
-    import IntroSection from "../lib/Home/InfoSection.svelte";
+    import InfoSection from "../lib/Home/InfoSection.svelte";
     import FeatureSection from "../lib/Home/HomeFeaturesReference.svelte";
     import BlogSection from "../lib/Home/HomeBlogReference.svelte";
     import OfficeHours from "../lib/Misc/OfficeHours.svelte";
 
-    let el;
+    let webGlSupported = WebGl.isWebGLAvailable();
+    let canvas;
     onMount(() => {
-        if (!sceneInitialized) {
-            createScene(el);
-        } else {
-            rebindScene(el);
+        if (!webGlSupported) {
+            // Sometimes webGl claims not to be supported, but it is. Recheck every two seconds whether it is.
+            setInterval(() => webGlSupported = WebGl.isWebGLAvailable(), 2000);
         }
         // Query the database for essential values to populate the cache
         getOfficeHours();
         getShowcasedFeatures().then(d => d.forEach(f => getFeature(f.name)));
     });
 
+    $: if (webGlSupported) {
+        if (!sceneInitialized) {
+            createScene(canvas);
+        } else {
+            rebindScene(canvas);
+        }
+    }
+
+    let canvasWrapper: HTMLDivElement;
+    let windowHeight: number = window.innerHeight;
+    let headerHeight: number = 92; // This is the height of the header in pixels, independent of the screen width
+    $: if (canvas && windowHeight) {
+        canvasWrapper.style.minHeight = canvas.clientHeight - headerHeight + 10 + "px";
+    }
+
     let isInView = false;
 </script>
+<svelte:window bind:innerHeight={windowHeight}/>
 
 
 <Footer>
-    {#if WebGl.isWebGLAvailable()}
-        <canvas bind:this={el} id='webgl_canvas'></canvas>
+    {#if webGlSupported}
+        <div bind:this={canvasWrapper}>
+            <canvas bind:this={canvas} id='webgl_canvas'></canvas>
+        </div>
     {:else}
         <div id="webgl_error" class="font-medium text-xl lg:text-2xl text-center">
             <div class="flex">
@@ -47,11 +65,12 @@
         </div>
     {/if}
     <Title/>
-    <div class="mt-[68vh] 4xl:mt-[74vh] mx-4 md:mx-10 pt-2 my-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black">
-        <IntroSection/>
-        <div use:inview={{unobserveOnEnter: true}} on:enter={() => isInView = true}>
-            {#if isInView}
-                <div in:fade={{duration: 700}}>
+    <div class="z-10 mx-4 md:mx-10 pt-2 mb-10 px-4 sm:px-6 lg:px-8 2xl:max-w-[80%] 2xl:mx-auto rounded-lg shadow-2xl shadow-gray-300 dark:shadow-black bg-white dark:bg-slate-900">
+        <InfoSection/>
+<!--        <div use:inview={{unobserveOnEnter: true}} on:enter={() => isInView = true}>-->
+<!--            {#if isInView}-->
+<!--                <div in:fade={{duration: 700}}>-->
+                <div>
                     <FeatureSection/>
                     <BlogSection/>
                     <div class="-mx-4 sm:-mx-6 lg:-mx-8">
@@ -73,10 +92,10 @@
                         </div>
                     </div>
                 </div>
-            {:else}
-                <div class="min-h-[50vh]"></div>
-            {/if}
-        </div>
+        <!--    {:else}-->
+        <!--        <div class="min-h-[50vh]"></div>-->
+        <!--    {/if}-->
+        <!--</div>-->
     </div>
 </Footer>
 
@@ -88,6 +107,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
     // Disable side scrolling
     max-height: 80%;
     max-width: 100%;

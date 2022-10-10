@@ -9,6 +9,8 @@
     }
 </script>
 
+<!--This flyout menu is currently not used in the application, see FlyoutMenu2-->
+
 <!--
                       'Solutions' flyout menu, show/hide based on flyout menu state.
 

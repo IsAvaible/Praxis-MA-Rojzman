@@ -15,7 +15,7 @@ import {navigate} from "svelte-navigator";
             <p class="mt-4 text-lg leading-6 text-gray-500 dark:text-slate-200">Wir freuen uns auf Ihren Besuch!</p>
             <span class="mt-8 cursor-pointer border border-transparent rounded-md shadow px-5 py-3 inline-flex items-center text-base font-medium bg-primary-600 text-white hover:bg-primary-700 dark:text-slate-100"
                   on:click={() => navigate('/kontakt')}
-            >Kontaktieren Sie uns</span>
+            >Kontaktieren Sie uns!</span>
         </div>
     </div>
     <div class="-mt-6 aspect-w-5 aspect-h-3 md:aspect-w-2 md:aspect-h-1 ">

@@ -79,7 +79,7 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
                                     <button on:click={addRecipe} type="button" class="h-full justify-center align-middle p-2 aspect-[1] rounded-md border dark:bg-slate-900 border-[f0f0f0] dark:border-none dark:hover:bg-slate-900 focus:outline-none active:ring-2 active:ring-primary-200 dark:active:ring-slate-200">
                                         <span class="sr-only">Weiteres Präperat hinzufügen</span>
                                         <!-- Heroicon name: outline/document-dublicate -->
-                                        <svg class="h-6 w-full text-gray-500 hover:text-gray-800 dark:text-slate-400 dark:hover:text-slate-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <svg class="h-6 w-full text-gray-500 sm:hover:text-gray-800 dark:text-slate-400 sm:dark:hover:text-slate-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                                         </svg>
                                     </button>
@@ -87,7 +87,7 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
                                     <button on:click={() => removeRecipe(recipe)} type="button" class="h-full justify-center align-middle p-2 aspect-[1] rounded-md border dark:bg-slate-900 border-[f0f0f0] dark:border-none dark:hover:bg-slate-900 focus:outline-none active:ring-2 active:ring-primary-200 dark:active:ring-slate-200">
                                         <span class="sr-only">Dieses Präperat löschen</span>
                                         <!-- Heroicon name: outline/document-remove -->
-                                        <svg class="h-6 w-full text-gray-500 hover:text-gray-800 dark:text-slate-400 dark:hover:text-slate-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <svg class="h-6 w-full text-gray-500 sm:hover:text-gray-800 dark:text-slate-400 sm:dark:hover:text-slate-100" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                         </svg>
                                     </button>

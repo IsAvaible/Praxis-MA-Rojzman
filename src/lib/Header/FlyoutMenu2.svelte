@@ -58,6 +58,6 @@
                 </div>
             </a>
         </div>
-        <MenuBlogReference/>
+        <MenuBlogReference on:navigate={hide}/>
     </div>
 </div>

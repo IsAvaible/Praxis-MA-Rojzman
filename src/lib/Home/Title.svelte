@@ -21,13 +21,14 @@
     top: 0;
     left: 0;
     z-index: 10;
-    width: 100vw;
+    width: 100%;
     height: 75vh;
     background: transparent;
     display: flex;
     flex-direction: row;
     justify-content: right;
     align-items: flex-end;
+    overflow-x: clip;
 
     .box {
       display: flex;

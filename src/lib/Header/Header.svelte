@@ -170,7 +170,7 @@
                 </div>
 
                 <div class="flex md:hidden space-x-10">
-                    <h1 class="text-base font-medium text-gray-500 dark:text-slate-200"> Praxis M.A. Rojzman </h1>
+                    <h1 class="text-base font-medium text-gray-500 dark:text-slate-200 text-center"> Praxis M.A. Rojzman </h1>
                 </div>
                 <div class="-mr-2 -my-2 md:hidden">
                     <button on:click={toggleMobileMenu} type="button" class="bg-white dark:bg-transparent rounded-md p-2 inline-flex items-center justify-center text-gray-400 dark:text-slate-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:text-slate-400 dark:hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-expanded="false">
