@@ -25,6 +25,7 @@
     export let name = '';
     export let role = '';
     export let description = '';
+    const defaultImageUrl = "assets/DefaultProfilePicture.png";
     export let imageUrl = defaultImageUrl;
 
     export let instagramUrl = undefined;
@@ -32,8 +33,6 @@
     export let flexUrl = undefined;
 
     export let newMember = false;
-
-    const defaultImageUrl = "assets/DefaultProfilePicture.png";
 
     let dispatch = createEventDispatcher();
 
@@ -135,7 +134,9 @@
                 await deleteTeamMember(id);
                 try {
                     await deleteFiles('images', [`team/${id}.webp`])
-                } catch (e) {}
+                } catch (e) {
+                    console.log("Fehler beim löschen des Profilbilds: " + e.message);
+                }
                 console.log(`Team Mitglied mit ID ${id} wurde gelöscht.`);
                 await getTeamMembers(true);
                 deleted = true;
@@ -195,14 +196,14 @@
 {#if showImageCropper}<ImageCropperPopUp image={currentEditFile} on:submit={(e) => imageUrl = e.detail} on:close={() => showImageCropper = false}/>{/if}
 
 {#if !deleted}
-<div use:filedrop={fileDropOptions} on:filedrop={e => {fileDropFiles = e.detail.files}} on:filedragover={() => fileDragOver = true} on:filedragleave={() => fileDragOver = false} in:fade={{duration: 500}} out:scale|local={{duration: deleted ? 400 : 0}} role="listitem" class="{deleted ? 'hidden' : ''} relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800">
-    <div class="rounded overflow-hidden shadow-md">
+<div use:filedrop={fileDropOptions} on:filedrop={e => {fileDropFiles = e.detail.files}} on:filedragover={() => fileDragOver = true} on:filedragleave={() => fileDragOver = false} in:fade={{duration: 500}} out:scale|local={{duration: deleted ? 400 : 0}} role="listitem" class="{deleted ? 'hidden' : ''} relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-md">
+    <div class="rounded-md overflow-hidden shadow-md">
         <div class="absolute -mt-20 w-full flex justify-center">
             <div in:scale={{easing: sineInOut, start: 0.3, duration: 500}} class="h-32 w-32 rounded-full overflow-hidden">
                 <div class="relative rounded-full overflow-hidden h-full">
                     {#if readerLoading}
                         <div class="bg-gray-50 dark:bg-slate-900 flex min-h-full items-center justify-center pl-1.5">
-                            <LoadingWheel size="20"/>
+                            <LoadingWheel size={20}/>
                         </div>
                     {/if}
                     <div class="{readerLoading ? 'hidden' : 'block'} h-full">

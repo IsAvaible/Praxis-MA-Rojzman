@@ -4,7 +4,7 @@
     import { onMount } from 'svelte';
     import {createScene, rebindScene, sceneInitialized} from "../lib/webgl/scene";
     import {getFeature, getOfficeHours, getShowcasedFeatures} from "../scripts/database/database";
-    import {navigate} from "svelte-navigator";
+    import {Link} from "svelte-navigator";
 
     import WebGl from "three/examples/jsm/capabilities/WebGL.js";
     import Title from "../lib/Home/Title.svelte";
@@ -15,18 +15,22 @@
     import OfficeHours from "../lib/Misc/OfficeHours.svelte";
 
     let webGlSupported = WebGl.isWebGLAvailable();
-    let canvas;
+    let canvas: HTMLCanvasElement;
+    let mounted: boolean = false;
     onMount(() => {
         if (!webGlSupported) {
             // Sometimes webGl claims not to be supported, but it is. Recheck every two seconds whether it is.
             setInterval(() => webGlSupported = WebGl.isWebGLAvailable(), 2000);
         }
+        mounted = true;
         // Query the database for essential values to populate the cache
-        getOfficeHours();
-        getShowcasedFeatures().then(d => d.forEach(f => getFeature(f.name)));
+        try {
+            getOfficeHours();
+            getShowcasedFeatures().then(d => d.forEach(f => getFeature(f.name)));
+        } catch (e) {}
     });
 
-    $: if (webGlSupported) {
+    $: if (webGlSupported && mounted) {
         if (!sceneInitialized) {
             createScene(canvas);
         } else {
@@ -35,16 +39,17 @@
     }
 
     let canvasWrapper: HTMLDivElement;
-    let windowHeight: number = window.innerHeight;
-    let headerHeight: number = 92; // This is the height of the header in pixels, independent of the screen width
-    $: if (canvas && windowHeight) {
+    let innerHeight: number;
+    let innerWidth: number;
+    $: if (canvas && innerHeight && innerWidth && mounted) {
+        const headerHeight = document.getElementById("header").clientHeight;
         canvasWrapper.style.minHeight = canvas.clientHeight - headerHeight + 10 + "px";
     }
 
-    let isInView = false;
+    // let isInView = false;
 </script>
-<svelte:window bind:innerHeight={windowHeight}/>
 
+<svelte:window bind:innerHeight bind:innerWidth/>
 
 <Footer>
     {#if webGlSupported}
@@ -70,28 +75,30 @@
 <!--        <div use:inview={{unobserveOnEnter: true}} on:enter={() => isInView = true}>-->
 <!--            {#if isInView}-->
 <!--                <div in:fade={{duration: 700}}>-->
-                <div>
-                    <FeatureSection/>
-                    <BlogSection/>
-                    <div class="-mx-4 sm:-mx-6 lg:-mx-8">
-                        <div class="mb-0 pointer-events-none overflow-hidden">
-                            <svg class="overflow-hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 100" x="0" y="0">
-                                <polygon class="text-primary-100 dark:text-primary-800 fill-current" points="2560 0 2560 100 0 100"></polygon>
-                            </svg>
+        <div>
+            <FeatureSection/>
+            <BlogSection/>
+            <div class="-mx-4 sm:-mx-6 lg:-mx-8 bg-primary-100 dark:bg-primary-800 rounded-b-lg">
+                <div class="mb-0 pointer-events-none overflow-hidden">
+                    <svg class="overflow-hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 30" x="0" y="0">
+                        <polygon class="text-white dark:text-slate-900 fill-current" points="0 0 0 30 1000 0"></polygon>
+                    </svg>
+                </div>
+                <div class="mx-auto bg-slate flex justify-center mt-0">
+                    <div class="flex p-5 lg:p-7 mb-5 flex-wrap justify-center items-center">
+                        <div class="overflow-x-auto">
+                            <OfficeHours/>
                         </div>
-                        <div class="bg-primary-100 dark:bg-primary-800 mx-auto bg-slate flex justify-center rounded-b-lg mt-0">
-                            <div class="flex p-5 lg:p-7 mb-5">
-                                <OfficeHours/>
-                                <div class="my-auto grid grid-cols-1 items-center ml-3">
-                                        <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" class="hidden md:flex mx-auto mb-2 font-medium text-gray-900 dark:text-slate-100">
-                                            <p>Kammstr. 2, 65399 Kiedrich</p>
-                                        </a>
-                                    <a href="/kontakt" on:click|preventDefault={() => navigate("/kontakt")} class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white text-center hover:bg-primary-700 focus:outline-none sm:w-auto sm:text-base">Kontaktieren sie uns!</a>
-                                </div>
-                            </div>
+                        <div class="my-auto grid grid-cols-1 md:ml-3 w-56">
+                            <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" class="hidden md:flex mx-auto mb-2 font-medium text-gray-900 dark:text-slate-100 hover:underline">
+                                <p>Kammstr. 2, 65399 Kiedrich</p>
+                            </a>
+                            <Link to="/kontakt" class="w-full inline-flex justify-center focus:outline-1 rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white text-center hover:bg-primary-700 sm:w-auto sm:text-base">Kontaktieren sie uns!</Link>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
         <!--    {:else}-->
         <!--        <div class="min-h-[50vh]"></div>-->
         <!--    {/if}-->

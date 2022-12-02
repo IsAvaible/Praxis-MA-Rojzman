@@ -4,7 +4,6 @@
     export let a = false
     export let span = false
     export let element: HTMLElement|undefined = undefined
-    export let css_class: string = '';
     $: passthrough = (({ condition, component, a, span, element, ...passthrough }) => passthrough)($$props)
 </script>
 
@@ -15,11 +14,11 @@
     {:else}
         {#if a}
             <!-- svelte-ignore a11y-missing-attribute -->
-            <a class={css_class} bind:this={element} {...passthrough}><slot></slot></a>
+            <a on:click bind:this={element} {...passthrough}><slot></slot></a>
         {:else if span}
-            <span class={css_class} bind:this={element} {...passthrough}><slot></slot></span>
+            <span on:click bind:this={element} {...passthrough}><slot></slot></span>
         {:else}
-            <div class={css_class} bind:this={element} {...passthrough}><slot></slot></div>
+            <div on:click bind:this={element} {...passthrough}><slot></slot></div>
         {/if}
     {/if}
 {:else}

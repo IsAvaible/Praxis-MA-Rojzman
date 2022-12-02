@@ -1,8 +1,11 @@
 <script lang="ts">
-    import ActionsTimeline from "../../lib/Admin/Home/ActionsTimeline.svelte";
+    import ActionsTimeline from "../../lib/Admin/Home/AdminActionsTimeline.svelte";
     import OfficeHoursConfigurator from "../../lib/Admin/Home/OfficeHoursConfigurator.svelte";
     import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
     import AllowRegistrationConfigurator from "../../lib/Admin/Home/AllowRegistrationConfigurator.svelte";
+    import BannerConfigurator from "../../lib/Admin/Home/BannerConfigurator.svelte";
+    import RainbowHeaderIconAnimationConfigurator
+        from "../../lib/Admin/Home/RainbowHeaderIconAnimationConfigurator.svelte";
 </script>
 
 
@@ -11,7 +14,12 @@
     <div class="flex flex-col divide-y divide-gray-200 w-full">
         <ActionsTimeline/>
         <OfficeHoursConfigurator/>
-        <AllowRegistrationConfigurator/>
+        <BannerConfigurator/>
+        <div>
+            <RainbowHeaderIconAnimationConfigurator/>
+            <AllowRegistrationConfigurator/>
+        </div>
+
     </div>
 </div>
 

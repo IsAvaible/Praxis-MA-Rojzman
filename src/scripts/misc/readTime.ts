@@ -123,7 +123,7 @@ function humanizeTime(time) {
     return `${Math.ceil(time)} minutes`;
 }
 
-export function readTime(string, customWordTime, customImageTime, chineseKoreanReadTime, imageTags) {
+export function readTime(string?, customWordTime?, customImageTime?, chineseKoreanReadTime?, imageTags?) {
     const {
         time: imageTime,
         count: imageCount$$1

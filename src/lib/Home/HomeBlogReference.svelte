@@ -1,20 +1,20 @@
 <script lang="ts">
-import {navigate} from "svelte-navigator";
-import {formatDDMMYYYY} from "../../scripts/misc/dateFormat";
-import {getBlogEntries} from "../../scripts/database/database";
-import {readTime} from "../../scripts/misc/readTime";
+    import {Link, navigate} from "svelte-navigator";
+    import {formatDDMMYYYY} from "../../scripts/misc/dateFormat";
+    import {getBlogEntries} from "../../scripts/database/database";
+    import {readTime} from "../../scripts/misc/readTime";
 
-import Alert from "../Essentials/Alert.svelte";
-import LoadingWheel from "../Misc/LoadingWheel.svelte";
+    import Alert from "../Essentials/Alert.svelte";
+    import LoadingWheel from "../Misc/LoadingWheel.svelte";
 
 </script>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="pt-16 pb-10 lg:pt-24 lg:px-8">
-    <div class="relative divide-y-2 divide-gray-200">
+    <div class="relative divide-y-2 divide-gray-200 dark:divide-slate-500">
         <div>
             <h2 class="text-3xl tracking-tight font-extrabold text-primary-600 dark:text-slate-100 sm:text-4xl">Unsere neusten Beiträge</h2>
-            <p class="mt-3 text-xl text-gray-500 sm:mt-4 dark:text-slate-200">In unsere Kategorie <span on:click={() => navigate("/aktuelles")} class="cursor-pointer hover:text-gray-800 dark:hover:text-slate-100">"Aktuelles"</span> halten wir sie stets über Neuigkeiten rund um die Praxis und Gesundheit auf dem Laufenden.</p>
+            <p class="mt-3 text-xl text-gray-500 sm:mt-4 dark:text-slate-200">In unsere Kategorie <Link to='/aktuelles' class="cursor-pointer hover:text-gray-800 hover:underline dark:hover:text-slate-200">Aktuelles</Link> halten wir sie stets über Neuigkeiten rund um die Praxis und Gesundheit auf dem Laufenden.</p>
         </div>
         <!-- The four most recent blog entries are queried -->
         {#await getBlogEntries(false, 4)}

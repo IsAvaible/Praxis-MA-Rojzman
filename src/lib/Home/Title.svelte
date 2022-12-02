@@ -1,14 +1,32 @@
+<script lang="ts">
+    import {homeVisited} from "../../scripts/stores/homeVisitStore";
+    import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
+
+    let prefersReducedMotion; // Stores whether the user prefers reduced motion
+    let visited: boolean = undefined; // Stores whether the user has visited the home page before
+    prefersReducedMotionStore.subscribe((value) => {
+        if (prefersReducedMotion == undefined) prefersReducedMotion = value;
+    });
+
+    homeVisited.subscribe((value) => {
+        if (visited === undefined) {
+            visited = value;
+            homeVisited.set(true);
+        }
+    });
+</script>
+
 
 <div class="invisible md:visible">
     <div class="titleWrapper">
         <div class="box">
             <div class="title">
-                <span class="block bg-primary-600 z-10"></span>
-                <h1 class="font-medium text-shadow text-white focus:outline-none z-10">Praxis M.-A. Rojzman<span></span></h1>
+                {#if !(prefersReducedMotion || visited)}<span class="block bg-primary-600 z-10"></span>{/if}
+                <h1 class="font-medium text-shadow dark:text-shadow-none text-white focus:outline-none z-10 {!visited ? 'fadeIn' : ''}">Praxis M.-A. Rojzman<span></span></h1>
             </div>
             <div class="role">
-                <div class="block z-10"></div>
-                <p class="text-gray-600 z-10 dark:text-white">Fachärztin für Allgemeinmedizin</p>
+                {#if !(prefersReducedMotion || visited)}<div class="block z-10"></div>{/if}
+                <p class="text-gray-600 z-10 dark:text-white {!visited ? 'fadeIn' : ''}">Fachärztin für Allgemeinmedizin</p>
             </div>
         </div>
     </div>
@@ -47,17 +65,21 @@
           height: inherit;
           position: absolute;
           animation: mainBlock 1.5s cubic-bezier(.74, .06, .4, .92) forwards;
+          animation-delay: 0.1s;
           display: flex;
         }
 
         h1 {
           font-size: 74px;
-          animation: mainFadeIn 1s forwards;
-          animation-delay: 1.2s;
-          opacity: 0;
           display: flex;
           align-items: baseline;
           position: relative;
+        }
+
+        .fadeIn {
+          animation: mainFadeIn 1s forwards;
+          animation-delay: 1.3s;
+          opacity: 0;
         }
       }
 
@@ -75,19 +97,22 @@
           background: #FFF;
           position: absolute;
           animation: secBlock 1.2s cubic-bezier(.74, .06, .4, .92) forwards;
-          animation-delay: 1.5s;
+          animation-delay: 1.6s;
           display: flex;
         }
 
         p {
           padding-left: 6px;
-          animation: secFadeIn 1.2s forwards;
-          animation-delay: 2.3s;
-          opacity: 0;
           font-weight: 400;
           font-size: 14px;
           text-transform: uppercase;
           letter-spacing: 5px;
+        }
+
+        .fadeIn {
+          animation: secFadeIn 1.2s forwards;
+          animation-delay: 2.4s;
+          opacity: 0;
         }
       }
     }

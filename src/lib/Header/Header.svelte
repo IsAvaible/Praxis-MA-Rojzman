@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Router, Route, Link, globalHistory, navigate} from "svelte-navigator";
+    import {Router, Route, Link, globalHistory} from "svelte-navigator";
     import { fade } from "svelte/transition";
     import {bannerPushContentStore} from "../../scripts/stores/bannerPushContentStore";
     // import FlyoutMenu1 from "./FlyoutMenu1.svelte";
@@ -15,9 +15,9 @@
     import SiteEnterPopUp from "../Essentials/SiteEnterPopUp.svelte";
     import Banner from "../Essentials/Banner.svelte";
     import Features from "../../pages/Features.svelte";
-    import Admin from "../../pages/Admin/Admin.svelte";
-    import Login from "../../pages/Admin/Login.svelte";
-    import Sidebar from "../Admin/Navigation/Sidebar.svelte";
+    import AdminHome from "../../pages/Admin/Admin.svelte";
+    import AdminLogin from "../../pages/Admin/Login.svelte";
+    import AdminSidebar from "../Admin/Navigation/Sidebar.svelte";
     import AdminFeatures from "../../pages/Admin/Features.svelte";
     import AdminBlog from '../../pages/Admin/Blog.svelte';
     import AdminTeam from '../../pages/Admin/Team.svelte';
@@ -27,13 +27,15 @@
     import {delay} from "../../scripts/misc/delay";
     import Blog from "../../pages/Blog.svelte";
     import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
+    import {adminPreviewBannerDataStore} from "../../scripts/stores/adminPreviewBannerDataStore";
+    import Icon from "./Icon.svelte";
 
     let bannerData = {
         mobileText: "Wir sind bis zum 26.04 im Urlaub!",
         desktopText: "Wir sind bis zum 26.04 im Urlaub!",
         active: false,
         buttonText: "Vertretung finden",
-        buttonAction: () => navigate("/vertretung"),
+        buttonAction: '() => navigate("/vertretung")',
         svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
         hideable: true,
     }
@@ -62,6 +64,15 @@
     let bannerOpen = bannerData.active;
     let bannerNoPushContentPaths = ["/"]; // These are the paths where the banner should not occupy screen space
 
+    let adminPreviewBannerActive = false;
+    let adminPreviewBannerData;
+    adminPreviewBannerDataStore.subscribe((data) => {
+        if (data) {
+            adminPreviewBannerData = data;
+        }
+        adminPreviewBannerActive = !!data;
+    });
+
     let offline = false;
     let offlineBannerOpen = false;
     deviceOnlineStore.subscribe(online => {
@@ -80,6 +91,12 @@
     }
 
     globalHistory.listen(onNavigate);
+
+    const onRouterNavigate = (history, location) => {
+        const viewName = history.meta.name;
+        const { pathname } = location;
+        return `Navigiert zu ${viewName} in ${pathname}`;
+    }
 
     let unsavedChanges;
     unsavedChangesStore.subscribe(value => unsavedChanges = value)
@@ -100,6 +117,7 @@
             // This will execute *after* the navigation
             if (history.state == undefined || history.state.scroll !== false) scrollTo(0, 0);
             lastPageKey = history.state._key;
+            adminPreviewBannerDataStore.set(null);
         }
     })
 
@@ -152,21 +170,12 @@
     }
 </script>
 
-<Router a11y="{{onNavigate}}">
-    <div class="sticky top-0 z-50 bg-white dark:bg-slate-800">
+<Router a11y="{{onRouterNavigate}}">
+    <div class="sticky top-0 z-50 bg-white dark:bg-slate-800" id="header">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="flex justify-between items-center border-b-2 border-gray-100 dark:border-none py-6 md:justify-start md:space-x-10">
                 <div class="flex justify-start lg:w-0 lg:flex-1">
-                    <Link to="/">
-                        <span class="sr-only">Homepage</span>
-                        <div class="has-tooltip">
-                            <img class="h-8 w-auto sm:h-10" src="assets/favicon.svg" alt="">
-                            <div class="tooltip inline-block ml-12 absolute z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
-                                Startseite
-                            </div>
-                        </div>
-                    </Link>
-
+                    <Icon/>
                 </div>
 
                 <div class="flex md:hidden space-x-10">
@@ -174,7 +183,7 @@
                 </div>
                 <div class="-mr-2 -my-2 md:hidden">
                     <button on:click={toggleMobileMenu} type="button" class="bg-white dark:bg-transparent rounded-md p-2 inline-flex items-center justify-center text-gray-400 dark:text-slate-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:text-slate-400 dark:hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-expanded="false">
-                        <span class="sr-only">Open menu</span>
+                        <span class="sr-only">Menu öffnen</span>
                         <!-- Heroicon name: outline/menu -->
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -206,13 +215,13 @@
 <!--                            </div>-->
 <!--                        {/if}-->
 <!--                    </div>-->
-                    <Link to="leistungen"><p class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Leistungen </p></Link>
-                    <Link to="team"><p class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Unser Team </p></Link>
-                    <Link to="aktuelles"><p class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Aktuelles </p></Link>
+                    <Link to="leistungen" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Leistungen </Link>
+                    <Link to="team" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Unser Team </Link>
+                    <Link to="aktuelles" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Aktuelles </Link>
 
                     <div class="relative">
                         <!-- Item active: "text-gray-900", Item inactive: "text-gray-500" -->
-                        <button on:click={toggleFlyout2} type="button" class="text-gray-500 group rounded-md inline-flex items-center font-medium hover:text-gray-900 dark:text-slate-200 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-transparent" aria-expanded="false">
+                        <button on:click={toggleFlyout2} type="button" class="text-gray-500 group rounded-md inline-flex items-center font-medium hover:text-gray-900 dark:text-slate-200 dark:hover:text-white dark:focus:ring-offset-transparent" aria-expanded="false">
                             <span>Mehr</span>
                             <!--
                               Heroicon name: solid/chevron-down
@@ -231,8 +240,8 @@
                     </div>
                 </nav>
                 <div class="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-                    <p on:click={toggleOfficeHoursPopUp} class="cursor-pointer whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-slate-400" tabindex="1"> Sprechzeiten </p>
-                    <Link to="kontakt"><span class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700"> Kontakt </span></Link>
+                    <button on:click={toggleOfficeHoursPopUp} class="cursor-pointer whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-slate-100"> Sprechzeiten </button>
+                    <Link to="kontakt" class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700"> Kontakt </Link>
                 </div>
             </div>
             {#if officeHoursPopUpOpen}
@@ -245,7 +254,10 @@
             <Banner {...offlineBannerData}/>
         {/if}
         {#if bannerOpen}
-            <Banner {...bannerData} on:hide={() => bannerOpen = false}/>
+            <Banner {...bannerData} buttonAction={eval(bannerData.buttonAction)} on:hide={() => bannerOpen = false}/>
+        {/if}
+        {#if adminPreviewBannerActive}
+            <Banner {...adminPreviewBannerData} buttonAction={eval(adminPreviewBannerData.buttonAction)} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}}/>
         {/if}
 <!--        <CookieBanner/>-->
         <SiteEnterPopUp {...siteEnterPopUpData}/>
@@ -305,16 +317,16 @@
         </Route>
 
         <Route path="admin/*">
-            <Route path="/login"><Login/></Route>
+            <Route path="/login"><AdminLogin/></Route>
             <Route path="/*">
                 <Footer>
-                    <Sidebar>
-                        <Route path="/"><Admin/></Route>
+                    <AdminSidebar>
+                        <Route path="/"><AdminHome/></Route>
                         <Route path="/leistungen"><AdminFeatures/></Route>
                         <Route path="/aktuelles"><AdminBlog/></Route>
                         <Route path="/team"><AdminTeam/></Route>
                         <Route path="/*"><NotFound redirectTo="/admin" withFooter={false}/></Route>
-                    </Sidebar>
+                    </AdminSidebar>
                 </Footer>
             </Route>
         </Route>

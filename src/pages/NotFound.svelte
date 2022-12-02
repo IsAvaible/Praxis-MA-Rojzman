@@ -1,5 +1,5 @@
 <script lang="ts">
-import {navigate} from "svelte-navigator";
+    import {Link} from "svelte-navigator";
 import Footer from "../lib/Essentials/Footer.svelte";
 import ConditionalWrapper from "../lib/Misc/ConditionalWrapper.svelte";
 
@@ -37,8 +37,7 @@ export let withFooter: boolean = true;
                             <p class="text-lg text-white mb-8">
                                 Bitte überprüfen Sie die URL in der Adressleiste und versuchen Sie es erneut
                             </p>
-                            <span
-                                    on:click={() => navigate(redirectTo)}
+                            <Link to={redirectTo}
                                     class="cursor-pointer
                           text-base
                           font-semibold
@@ -54,7 +53,7 @@ export let withFooter: boolean = true;
                           "
                             >
                                 Zurück zur Startseite
-                            </span>
+                            </Link>
                         </div>
                     </div>
                 </div>

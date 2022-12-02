@@ -47,12 +47,12 @@
                 <Cropper {image} aspect={aspect} maxZoom={4} zoomSpeed={0.5} cropShape={cropShape} on:cropcomplete={e => pixelCrop = e.detail.pixels} bind:crop bind:zoom/>
             </div>
         </div>
-        <div on:click={submit} class="mt-5 cursor-pointer w-full flex justify-center items-center font-medium text-white bg-primary-600 rounded-md border border-primary dark:border-none p-3 transition hover:bg-primary-700">
+        <button on:click={submit} class="mt-5 cursor-pointer w-full flex justify-center items-center font-medium text-white bg-primary-600 rounded-md border border-primary dark:border-none p-3 transition hover:bg-primary-700">
             Bestätigen
             {#if loading}
                 <span class="ml-2"><LoadingWheel/></span>
             {/if}
-        </div>
+        </button>
     </div>
 </Modal>
 

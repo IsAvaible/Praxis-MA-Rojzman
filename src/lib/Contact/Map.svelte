@@ -6,7 +6,7 @@
 
 <div class="bg-[#e8eaed] relative" style="min-height: 250px">
     <div class="absolute top-0 bottom-0 w-full flex justify-center items-center">
-        <LoadingWheel size="20" showAfter="500"/>
+        <LoadingWheel size={20} showAfter={500}/>
     </div>
     <iframe
             in:fade={{duration: 700, easing:quartIn}}

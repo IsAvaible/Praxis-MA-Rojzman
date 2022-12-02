@@ -8,6 +8,13 @@
     }
 }
 
+/* Enables Dark Mode Transition */
+/*body, #header, #footer, html {*/
+/*    transition: 100ms;*/
+/*    !*Expo-out timing*!*/
+/*    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);*/
+/*}*/
+
 .tooltip {
     @apply invisible absolute;
 }

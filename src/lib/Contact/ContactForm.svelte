@@ -19,7 +19,7 @@
             </div>
             <div class="mb-6">
                 <textarea
-                        class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 resize-none outline-none focus-visible:shadow-none focus:border-primary"
+                        class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 resize-none outline-none focus-visible:shadow-none focus:border-primary-500"
                         placeholder="Ihre Nachricht"
                         rows="6"
                 ></textarea>

@@ -49,9 +49,9 @@
     <PageTitle titleAccent="Leistungen" subTitle="In dieser Sektion können die angebotenen Leistungen modifiziert und gelöscht, sowie neue Einträge hinzugefügt werden."/>
     <div class="my-4 grid grid-cols-1 gap-8 lg:grid-cols-3 mx-auto w-full h-fit align-middle">
         {#each options as option, i}
-            <div on:click={() => activeOption = i} class="cursor-pointer max-w-[370px] mx-auto min-w-fit sm:w-full px-2">
+            <button on:click={() => activeOption = i} class="cursor-pointer max-w-[370px] mx-auto min-w-fit sm:w-full px-2">
                 <FeatureCard name={undefined} centerSvg={false} {...option}/>
-            </div>
+            </button>
         {/each}
     </div>
     <div class="divide-gray-200 divide-y-2 dark:divide-slate-700 my-4 mx-4 lg:my-10">
@@ -75,12 +75,12 @@
                     {:then showcasedFeatures}
                         {#if showcasedFeatures.length !== 3}
                             <div class="pt-6">
-                                <Alert type={1} title="Zu wenige Leistungen auf der Startseite." description="Monentan werden nur {showcasedFeatures.length} Leistungen auf der Startseite angezeigt. Bitte setzen sie mehr Leistungen auf die Startseite um die Anzahl auf 3 zu erhöhen."/>
+                                <Alert type={1} title="Zu wenige Leistungen auf der Startseite." description="Monentan werden nur {showcasedFeatures.length} Leistungen auf der Startseite angezeigt. Bitte setzen sie mehr Leistungen über den Bearbeitungsdialog auf die Startseite um die Anzahl auf 3 zu erhöhen."/>
                             </div>
                         {/if}
                         <div class="mt-6 pt-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 py-5">
                         {#each features as feature, i}
-                            <div in:fade={{duration: 500}} on:click={() => selectedFeature = selectedFeature.index === i ? {index: -1, data: undefined} : {index: i, data: feature}} class="mx-4 cursor-pointer h-full my-auto rounded-lg p-1 {selectedFeature.index===i?'bg-primary-300':''}">
+                            <button in:fade={{duration: 500}} on:click={() => selectedFeature = selectedFeature.index === i ? {index: -1, data: undefined} : {index: i, data: feature}} class="mx-4 cursor-pointer h-full my-auto rounded-lg p-1 {selectedFeature.index===i?'bg-primary-300':''}">
                                 <!--  If the feature is showcased on the homepage, show a star icon in the top left corner -->
                                 {#if showcasedFeatures.map(f => f.name).includes(feature.name)}
                                     <div class="float-left h-3 w-3 rounded-full ml-1 mt-1 text-yellow-400 flex justify-start items-start">
@@ -90,8 +90,8 @@
                                     </div>
                                 {/if}
                                 {#if selectedFeature.index === i}<span class="float-right h-3 w-3 mr-1 mt-1 justify-center inline-flex h-full w-full rounded-full bg-primary-500 opacity-100"></span>{/if}
-                                <FeatureCard {...feature}></FeatureCard>
-                            </div>
+                                <FeatureCard {...feature} expandViaIcon={false}></FeatureCard>
+                            </button>
                         {/each}
                     </div>
                     {/await}

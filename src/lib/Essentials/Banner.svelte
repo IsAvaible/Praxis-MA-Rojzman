@@ -7,15 +7,16 @@
     export let mobileText: string;
     export let desktopText: string;
     export let active: boolean = false;
-    export let buttonText: string = undefined;
-    export let buttonAction: Function = undefined;
+    export let activeUntil: Date = null;
+    export let buttonText: string = null;
+    export let buttonAction: Function = null;
     export let svgPaths: string[] = ["M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"];
     export let hideable: boolean = true;
     export let animateIn: boolean = false;
     export let pulseIcon: boolean = false;
 
     let pushContent;  // This controls whether the banner takes up screen space and therefore pushes the content down when it is displayed.
-    bannerPushContentStore.subscribe((v) => pushContent = v);
+    bannerPushContentStore.subscribe((val) => pushContent = val);
 
     let dispatch = createEventDispatcher();
     const hide = () => {
@@ -44,7 +45,7 @@
                 </div>
                 {#if buttonText && buttonAction}
                     <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
-                        <span on:click={buttonAction} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-primary-50"> {buttonText} </span>
+                        <button on:click={buttonAction} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-primary-50"> {buttonText} </button>
                     </div>
                 {/if}
                 <div class="order-2 flex-shrink-0 sm:order-3 sm:ml-3 {hideable ? '' : 'invisible sm:hidden'}">

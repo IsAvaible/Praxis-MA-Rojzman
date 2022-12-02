@@ -78,7 +78,7 @@ const deleteEntry = (blogEntry) => {
                 <div class="w-full divide-gray-200 divide-y-4 dark:divide-slate-700 my-4 mx-4 lg:my-10">
                     <div class="w-full divide-gray-200 divide-y dark:divide-slate-700">
                         {#each blogEntries as blogEntry, i}
-                            <div class="relative group py-4" on:mouseenter={() => currentHover = i} on:mouseleave={() => currentHover = -1}>
+                            <div class="relative group py-4 focus:outline-none" tabindex="0" on:focus={() => currentHover = i} on:focusout={(e) => {if (!e.currentTarget.contains(e.relatedTarget)) currentHover = -1}} on:mouseenter={() => currentHover = i} on:mouseleave={() => currentHover = -1}>
                                 <BlogEntryComponent {...blogEntry} expanded={expandedEntryIndex === i}/>
                                 {#if currentHover === i}
                                     <div in:fade={{duration: 200}} out:fade|local={{duration: 200}} class="absolute ml-auto mr-auto top-0 left-0 z-10 w-full h-full bg-gray-500 dark:bg-slate-600 {expandedEntryIndex === i ? 'bg-opacity-10 dark:bg-opacity-10' : 'bg-opacity-25 dark:bg-opacity-25'} rounded-lg transition-opacity">
@@ -142,7 +142,9 @@ const deleteEntry = (blogEntry) => {
                 </div>
             </div>
         {:catch e}
-            <Alert type={0} title="Blog konnte nicht geladen werden!" description="Error: {e.message}"/>
+            <div class="mx-6">
+                <Alert type={0} title="Blog konnte nicht geladen werden!" description="Error: {e.message}"/>
+            </div>
         {/await}
     {/key}
 </div>

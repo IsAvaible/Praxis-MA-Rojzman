@@ -64,9 +64,9 @@
         <iframe src="https://iconoir.com/" allow="clipboard-write" class="rounded-lg mb-4" title="Icon-Auswahl Webseite" style="min-height: {iframeHeight}"></iframe>
         {#if svgPaths && svgPaths.length > 0 || error}
             {#if error}
-                <Alert type="0" title="Error!" description="{error}"/>
+                <Alert type={0} title="Error!" description="{error}"/>
             {:else}
-                <div class="mx-auto flex group cursor-pointer" on:click={submit}>
+                <button class="mx-auto flex group cursor-pointer" on:click={submit}>
                     <span class="inline-flex p-3 bg-primary-500 rounded-md shadow-lg w-fit group-hover:bg-primary-600">
                         <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             {#each svgPaths as path}
@@ -74,8 +74,8 @@
                             {/each}
                         </svg>
                     </span>
-                    <button class="ml-3 inline-flex font-medium rounded-md dark:border-2 border-white bg-primary-500 text-white p-3 transition dark:border-white group-hover:bg-primary-600">Bestätigen und schließen</button>
-                </div>
+                    <span class="ml-3 inline-flex font-medium rounded-md dark:border-2 border-white bg-primary-500 text-white p-3 transition dark:border-white group-hover:bg-primary-600">Bestätigen und schließen</span>
+                </button>
             {/if}
         {/if}
         <button on:click={() => insertionCount++} class="mt-4 mx-auto w-[50%] flex justify-center font-medium text-white bg-primary-700 rounded-md border border-primary dark:border-none p-3 transition hover:bg-primary-800">

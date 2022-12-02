@@ -1,9 +1,9 @@
 
 <script lang="ts">
     import Footer from "../../lib/Essentials/Footer.svelte";
-    import HCaptcha from "svelte-hcaptcha/src/HCaptcha.svelte";
+    import HCaptcha, {CaptchaTheme} from "svelte-hcaptcha/src/HCaptcha.svelte";
     import {fade} from "svelte/transition";
-    import {navigate} from "svelte-navigator";
+    import {Link, navigate} from "svelte-navigator";
     import {signIn, signUp} from "../../scripts/database/database";
     import {longpress} from "../../scripts/ui/longpress";
     import {darkModeStore} from "../../scripts/stores/darkModeStore";
@@ -35,7 +35,7 @@
                     <h2 class="mt-6 text-3xl font-extrabold text-gray-900 dark:text-slate-100">Admin</h2>
                     <p class="mt-2 text-sm text-gray-600 dark:text-slate-200">
                         Dieser Bereich ist den Adminstratoren der Seite vorbehalten.
-                        <span on:click={() => navigate("/")} class="cursor-pointer text-primary-600 hover:text-primary-900">Hier Klicken</span>
+                        <Link to="/" class="cursor-pointer text-primary-600 hover:text-primary-900 hover:underline focus:underline focus:outline-none">Hier Klicken</Link>
                         um zurück zur Homepage zu gelangen.
                     </p>
                 </div>
@@ -64,7 +64,7 @@
                                             <!-- Validation does not work on localhost! Use 127.0.0.1 for testing -->
                                             <HCaptcha
                                                     sitekey={import.meta.env.VITE_HCAPTCHA_KEY}
-                                                    theme={darkMode ?  'dark' : 'light'}
+                                                    theme={darkMode ?  CaptchaTheme.Dark : CaptchaTheme.Light}
                                                     bind:this={captcha}
                                                     on:error={handleError}
                                                     on:success={handleSuccess}
@@ -75,7 +75,7 @@
                             {/if}
 
                             <div>
-                                <button use:longpress={1500} on:longpress='{() => doSignUp = true}' disabled={formSubmitted} type="submit" class="disabled:cursor-not-allowed disabled:bg-primary-500 disabled:hover:bg-primary-500 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                <button use:longpress={1500} on:longpress={() => doSignUp = true} disabled={formSubmitted} type="submit" class="disabled:cursor-not-allowed disabled:bg-primary-500 disabled:hover:bg-primary-500 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                                     {#if formSubmitted}
                                         <LoadingWheel/>
                                     {/if}
@@ -92,7 +92,7 @@
                                     {/if}
                                 {:catch e}
                                     <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
-                                        <span class="font-medium">Error!</span> {captchaSolved ? e.message : 'Validate the captcha before submitting the form'}. <span class="hover:text-red-500 cursor-pointer font-medium" on:click={() => {failedAttempts++; if (captcha) {captcha.reset()}; email=''; password=''; doSignUp = false; formSubmitted = false}}>Click here to reset.</span>
+                                        <span class="font-medium">Error!</span> {captchaSolved ? e.message : 'Validate the captcha before submitting the form'}. <button class="hover:text-red-500 cursor-pointer font-medium" on:click={() => {failedAttempts+=(e.message==="Request Failed"?0:1); if (captcha) {captcha.reset()}; email=''; password=''; doSignUp = false; formSubmitted = false}}>Click here to reset.</button>
                                     </div>
                                 {/await}
                             {/if}

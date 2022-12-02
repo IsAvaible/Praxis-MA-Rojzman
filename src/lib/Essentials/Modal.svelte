@@ -11,7 +11,7 @@
     export let unsavedChangesCheck: boolean = true; // Whether the modal should display a confirm dialog if there are unsaved changes
 
     let dispatch = createEventDispatcher();
-    let unsavedChanges;
+    let unsavedChanges: boolean;
     unsavedChangesStore.subscribe(value => unsavedChanges = value);
     const hide = () => {
         if (unsavedChangesCheck && unsavedChanges) {

@@ -4,8 +4,6 @@
     import {navigate} from "svelte-navigator";
     import OfficeHours from "../Misc/OfficeHours.svelte";
 
-    export let officeHours: { weekday: number; timePeriods: { start: Date; end: Date }[] }[];
-
     let dispatch = createEventDispatcher();
 
     function hide() {
@@ -21,8 +19,8 @@
         <!-- This element is to trick the browser into centering the modal contents. -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div use:clickOutside on:clickOutside={hide} class="relative inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <OfficeHours officeHours={officeHours}/>
-            <div class="bg-gray-50 dark:bg-slate-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <OfficeHours/>
+            <div class="bg-gray-50 dark:bg-slate-700 px-4 py-3 sm:px-6 sm:flex justify-end">
                 <button on:click={() => {navigate("/kontakt"); hide()}} type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Kontakt</button>
                 <button on:click={hide} type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-slate-900 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:text-slate-200 hover:dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Schließen</button>
             </div>

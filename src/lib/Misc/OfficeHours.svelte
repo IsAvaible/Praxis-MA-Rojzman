@@ -5,14 +5,6 @@
     import LoadingWheel from "./LoadingWheel.svelte";
     import Alert from "../Essentials/Alert.svelte";
 
-    export let officeHours: { weekday: number; timePeriods: { start: Date; end: Date }[] }[] = [
-        {weekday: 0, timePeriods: [{start: new Date(), end: new Date()}, {start: new Date(), end: new Date()}]},
-        {weekday: 1, timePeriods: [{start: new Date(), end: new Date()}]},
-        {weekday: 2, timePeriods: [{start: new Date(), end: new Date()}]},
-        {weekday: 3, timePeriods: [{start: new Date(), end: new Date()}, {start: new Date(), end: new Date()}]},
-        {weekday: 4, timePeriods: [{start: new Date(), end: new Date()}]}
-    ];
-
     let weekdays: string[] = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
 
     // If the office hours were changed by the admin, the cache is not used and the office hours are reloaded

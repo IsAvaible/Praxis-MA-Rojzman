@@ -14,7 +14,7 @@ let renderer: THREE.WebGLRenderer;
 let clock: THREE.Clock;
 let frameTime = 0;
 let frameRate = 1 / 60;
-let uniforms;
+let uniforms: { u_time: any; u_resolution: any; u_mouse: any };
 
 const fov = 50;
 const planeAspectRatio = 16 / 9;
@@ -25,7 +25,7 @@ const gltfLoader = new GLTFLoader();
 
 let virus: THREE.Group;
 
-let prefersReducedMotion;
+let prefersReducedMotion: boolean;
 prefersReducedMotionStore.subscribe((b) => prefersReducedMotion = b);
 
 const init = () => {
@@ -99,10 +99,10 @@ const resize = () => {
   uniforms.u_resolution.value.y = renderer.domElement.height;
 };
 
-export const createScene = (el) => {
+export const createScene = (canvasElement: HTMLCanvasElement) => {
   if (!WEBGL.isWebGLAvailable()) return
   sceneInitialized = true;
-  renderer = new THREE.WebGLRenderer({ canvas: el, alpha: true });
+  renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setClearColor( 0x000000, 0 );
   init();
@@ -111,9 +111,9 @@ export const createScene = (el) => {
   animate();
 }
 
-export const rebindScene = (el) => {
+export const rebindScene = (canvasElement: HTMLCanvasElement) => {
   renderer.dispose();
-  renderer = new THREE.WebGLRenderer({ canvas: el, alpha: true });
+  renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setClearColor( 0x000000, 0 );
   resize();

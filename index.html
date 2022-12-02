@@ -11,15 +11,17 @@
 </head>
 
 <body style="margin: 0" class="dark:text-slate-200 dark:bg-slate-900 tap-hi">
-    <script type="module" src="/main.js"></script>
-    <div class="absolute pointer-events-none" style="z-index: 75; height: 100%"><div class="preloader showDelayed" id="preloader">
+    <div class="absolute pointer-events-none top-0" style="z-index: 75; height: 100%"><div class="preloader showDelayed" id="preloader">
         <div>
             <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
     </div></div>
+    <div id="app"></div>
+
+    <script type="module" src="src/main.ts"></script>
     <noscript>
         <div id="js-error">
-            <p>Diese Webseite benötigt Javascript um ihre Inhalte anzuzeigen. Bitte benutzen sie einen Browser welcher ES5 unterstützt.</p>
+            <p>Diese Webseite benötigt Javascript um ihre Inhalte anzuzeigen. Bitte benutzen sie einen Browser welcher ES6 unterstützt.</p>
         </div>
     </noscript>
 </body>

@@ -58,13 +58,15 @@ $: unsavedChangesStore.set(anyEdit || addingMember);
                         {#each addedTeamMembers as member, i}
                             <EditableProfileCard {...member} on:edited={event => editStates[i] = event.detail}/>
                         {/each}
-                        <div role="listitem" class="relative mt-24 mx-2 sm:min-w-[300px] md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800">
+                        <div role="listitem" class="relative mt-24 mx-2 sm:min-w-[300px] md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-md">
                             <div class="rounded overflow-hidden shadow-md h-full">
                                 <div class="px-6 w-full my-20 text-primary-500 group cursor-pointer">
                                     <div class="hover:text-primary-600">
-                                        <svg on:click={() => handleTeamMemberAdd()} xmlns="http://www.w3.org/2000/svg" class="h-40 w-40 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d={addingMember ? (id ? "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" : "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z") : "M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"}/>
-                                        </svg>
+                                        <button on:click={() => handleTeamMemberAdd()} class="w-full flex items-center justify-center focus:outline-none focus:text-primary-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-40 w-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d={addingMember ? (id ? "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" : "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z") : "M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"}/>
+                                            </svg>
+                                        </button>
                                         <p class="font-medium text-center text-xl">Mitglied Hinzufügen</p>
                                     </div>
                                     {#if addingMember}
@@ -80,7 +82,9 @@ $: unsavedChangesStore.set(anyEdit || addingMember);
                 </div>
             </div>
         {:catch e}
-            <Alert type={0} title="Team konnte nicht geladen werden!" description="Error: {e.message}"/>
+            <div class="mx-6">
+                <Alert type={0} title="Team konnte nicht geladen werden!" description="Error: {e.message}"/>
+            </div>
         {/await}
     {/key}
 </div>

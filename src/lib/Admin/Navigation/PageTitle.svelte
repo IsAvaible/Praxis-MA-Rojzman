@@ -1,6 +1,6 @@
 <script lang="ts">
     export let title = 'Admin Tools:'
-    export let titleAccent: string;
+    export let titleAccent: string = '';
     export let subTitle: string = '';
     export let showTitle: boolean = true;
 </script>

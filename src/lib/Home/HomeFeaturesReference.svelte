@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {navigate} from "svelte-navigator";
+    import {Link} from "svelte-navigator";
     import {fade} from "svelte/transition";
     import {getFeature, getShowcasedFeatures} from "../../scripts/database/database";
     import Alert from "../Essentials/Alert.svelte";
@@ -27,7 +27,7 @@
                             <p class="mt-5 text-lg leading-6 font-medium text-gray-900 dark:text-slate-100">{title}</p>
                         </dt>
                         <dd class="mt-2 text-base text-gray-500 dark:text-slate-200">{shortDescription}</dd>
-                        <div class="w-full"><span on:click={() => navigate('leistungen/' + (longDescription ? name : ''))} class="ml-auto mr-4 table cursor-pointer text-gray-900 dark:text-slate-200 hover:underline">Mehr erfahren</span></div>
+                        <div class="w-full"><Link to={'leistungen/' + (longDescription ? name : '')}><span class="ml-auto mr-4 table cursor-pointer text-gray-900 dark:text-slate-200 hover:underline">Mehr erfahren</span></Link></div>
                     </div>
                 {/each}
             </dl>

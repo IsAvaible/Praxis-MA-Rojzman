@@ -18,10 +18,10 @@
             <div class="flex flex-wrap lg:justify-between -mx-4">
                 <div class="w-full lg:w-1/2 xl:w-6/12 px-4">
                     <div class="max-w-[670px] mb-12 lg:mb-0">
-                        <h2 class="dark:text-slate-100 mb-6 font-bold text-center text-[32px] sm:text-left sm:text-[40px] lg:text-[36px] xl:text-[40px] focus:outline-none">
+                        <h2 class="dark:text-slate-100 text-center mb-6 font-bold text-[32px] sm:text-left sm:text-[40px] lg:text-[36px] xl:text-[40px] focus:outline-none">
                             Kontaktieren Sie uns
                         </h2>
-                        <p class="dark:text-slate-200 text-body-color leading-relaxed mb-9">
+                        <p class="dark:text-slate-200 text-center sm:text-left text-body-color leading-relaxed mb-9">
                             Wir freuen uns, Sie zu sehen! Vereinbaren Sie unkompliziert einen Termin per Anruf, oder nutzen Sie das <span class="hidden lg:inline">nebenstehende </span>Online Formular<span class="lg:hidden">&nbsp;unten</span>.
                         </p>
                         {#each [
@@ -48,7 +48,7 @@
                         {/each}
                         <div class="flex mb-8 w-full">
                             <div class="max-w-[60px] sm:max-w-[70px] w-full h-[60px] sm:h-[70px] flex items-center justify-center mr-6 overflow-hidden bg-amber-300 bg-opacity-5 text-amber-500 rounded">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="24" viewBox="0 0 24 24" width="24">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="24" viewBox="0 0 20 20" width="24">
                                     <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                                 </svg>
                             </div>

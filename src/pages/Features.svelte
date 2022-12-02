@@ -24,14 +24,14 @@
 {/key}
 
 <Footer>
-<div class="relative py-8 lg:py-12">
-    <div class="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
+<div class="relative py-8 lg:py-12 flex-grow">
+    <div class="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl h-full flex flex-col">
         <h1 class="text-gray-500 dark:text-slate-100 text-lg text-center font-normal pb-3 uppercase">{title}</h1>
         <h2 class="xl:text-4xl text-3xl text-center text-gray-800 dark:text-slate-200 font-extrabold sm:w-4/6 w-5/6 mx-auto focus:outline-transparent">{subtitle}</h2>
         <p class="mt-5 max-w-prose mx-auto text-xl text-gray-500 dark:text-slate-300">{description}</p>
-        <div class="mt-12">
+        <div class="mt-5 flex-grow">
             {#await getFeatures()}
-                <div class="w-full flex justify-center">
+                <div class="h-full w-full flex items-center justify-center">
                     <LoadingWheel size={25} showAfter={1000}/>
                 </div>
             {:then features}
@@ -41,7 +41,9 @@
                     {/each}
                 </div>
             {:catch e}
-                <Alert type={1} title="Leistungen konnten nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
+                <div class="h-full w-full flex items-center justify-center">
+                    <Alert type={1} title="Leistungen konnten nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
+                </div>
             {/await}
         </div>
     </div>

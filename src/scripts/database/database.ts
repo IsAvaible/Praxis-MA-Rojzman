@@ -2,11 +2,18 @@ import {createClient} from '@supabase/supabase-js'
 import type {User} from '@supabase/gotrue-js';
 import type {SearchOptions} from '@supabase/storage-js';
 import {deleteImagesFromHTML, publicUrlToKey} from "./databaseHtmlImageTools";
+import type {JSONObject} from "../misc/jsonTypes";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL.toString();
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY.toString();
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+
+export type ConfigEntry = {
+    id: string,
+    data: JSONObject,
+    updatedAt: Date
+}
 
 export type Feature = {
     name: string;
@@ -19,15 +26,6 @@ export type Feature = {
 export type ShowcasedFeature = {
     name: string;
     setAt: Date;
-}
-
-export type AdminAction = {
-    id: number;
-    performedAt: Date;
-    section: string;
-    action: string;
-    description: string;
-    author: string;
 }
 
 export type TeamMember = {
@@ -63,11 +61,129 @@ export type TimePeriod = {
     duration: number;
 }
 
+export type BannerConfig = {
+    name: string;
+    updatedAt: Date;
+    active: boolean;
+    hideable: boolean;
+    svgPaths: string[];
+    pulseIcon: boolean;
+    desktopText: string;
+    mobileText: string;
+    buttonText: string;
+    buttonUrl: string;
+    activeUntil: Date;
+}
+
+export type AdminAction = {
+    id: number;
+    performedAt: Date;
+    section: string;
+    action: string;
+    description: string;
+    author: string;
+}
+
+
+// >>> Config <<<
+
+let getConfigCache: ConfigEntry[];
+export const getConfigEntries = async (noCache?: boolean): Promise<ConfigEntry[]> => {
+    if (getConfigCache != undefined && !noCache) return getConfigCache;
+
+    let {data, error} = await supabase
+        .from<ConfigEntry>('Config-Entry')
+        .select('*');
+
+    if (error) throw error;
+    else getConfigCache = data;
+
+    return data;
+}
+
+
+export const getConfigEntry = async (id: string, noCache?: boolean): Promise<ConfigEntry> => {
+    let find; // Only if the config entry can not be found in the cache, a new request is sent.
+    if (!noCache && (find = (await getConfigEntries()).find(e => e.id == id)) != undefined) return find
+
+    let {data, error} = await supabase
+        .from<ConfigEntry>('Config-Entry')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (error) throw error;
+
+    data = dataToConfigEntry(data);
+    if (getConfigCache != undefined) {
+        let index = getConfigCache.findIndex(e => e.id == id);
+        if (index != -1) getConfigCache[index] = data;
+    }
+
+    return data;
+}
+
+export const addConfigEntry = async (id: string, data: JSONObject): Promise<ConfigEntry> => {
+    let {data: dbData, error} = await supabase
+        .from<ConfigEntry>('Config-Entry')
+        .insert([{id, data, updatedAt: new Date()}])
+        .single();
+
+    if (error) throw error;
+
+    dbData = dataToConfigEntry(dbData);
+    if (getConfigCache != undefined) getConfigCache.push(dbData);
+    else getConfigCache = [dbData];
+
+    await addAdminAction('Config', 'insert', `Die Konfiguration mit der ID "${id}" wurde hinzugefügt.`);
+    return dbData;
+}
+
+export const updateConfigEntry = async (id: string, data: JSONObject): Promise<ConfigEntry> => {
+    let {data: dbData, error} = await supabase
+        .from('Config-Entry')
+        .update({data: data, updatedAt: new Date()})
+        .eq('id', id)
+        .single();
+
+    if (error) throw error;
+
+    if (getConfigCache != undefined) {
+        let index = getConfigCache.findIndex(e => e.id == id);
+        getConfigCache[index] = dbData;
+    }
+
+    await addAdminAction('Config', 'update', `Die Konfiguration mit der ID "${id}" wurde aktualisiert.`);
+    return dataToConfigEntry(dbData);
+}
+
+export const deleteConfigEntry = async (id: string): Promise<ConfigEntry> => {
+    let {data: dbData, error} = await supabase
+        .from<ConfigEntry>('Config-Entry')
+        .delete()
+        .eq('id', id)
+        .single();
+
+    if (error) throw error;
+
+    if (getConfigCache != undefined) {
+        let index = getConfigCache.findIndex(e => e.id == id);
+        getConfigCache.splice(index, 1);
+    }
+
+    await addAdminAction('Config', 'delete', `Die Konfiguration mit der ID "${id}" wurde gelöscht.`);
+    return dataToConfigEntry(dbData);
+}
+
+const dataToConfigEntry = (data): ConfigEntry => {
+    data.updatedAt = new Date(Date.parse(data.updatedAt.toString()));
+    return data;
+}
 
 // >>> Feature <<<
 
 
-let getFeaturesCache; // This results in each client only requesting the data once.
+let getFeaturesCache;
 export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
     if (getFeaturesCache != undefined && !noCache) return getFeaturesCache
 
@@ -576,6 +692,57 @@ const formatOfficeHourToData = (officeHour: OfficeHour): any => {
         timePeriodIds: officeHour.timePeriods.map(timePeriod => timePeriod.id),
         comment: officeHour.comment
     }
+}
+
+
+// >>> Banner-Config <<<
+
+
+export const getBannerConfig = async (name: string): Promise<BannerConfig> => {
+    let { data, error } = await supabase
+        .from('Banner-Config')
+        .select('*')
+        .eq('name', name)
+        .single()
+
+    if (error) throw error;
+
+    return data;
+}
+
+export const addBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
+    const { data, error } = await supabase
+        .from('Banner-Config')
+        .insert([bannerConfig])
+        .single()
+
+    if (error) throw error;
+
+    return data;
+}
+
+export const updateBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
+    const { data, error } = await supabase
+        .from('Banner-Config')
+        .update(bannerConfig)
+        .eq('name', bannerConfig.name)
+        .single()
+
+    if (error) throw error;
+
+    return data;
+}
+
+export const deleteBannerConfig = async (name: string): Promise<BannerConfig> => {
+    const { data, error } = await supabase
+        .from('Banner-Config')
+        .delete()
+        .eq('name', name)
+        .single()
+
+    if (error) throw error;
+
+    return data;
 }
 
 

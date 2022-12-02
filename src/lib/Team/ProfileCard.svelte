@@ -20,14 +20,14 @@
     prefersReducedMotionStore.subscribe(b => prefersReducedMotion = b);
 </script>
 
-<div role="listitem" class="relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800">
-    <div class="rounded overflow-hidden shadow-md">
+<div role="listitem" class="relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-md">
+    <div class="rounded-md overflow-hidden shadow-md">
         <div class="absolute -mt-20 w-full flex justify-center">
             <div in:scale={{easing: sineInOut, start: 0.3 * (prefersReducedMotion ? 0 : 1), duration: 500 * (prefersReducedMotion ? 0 : 1)}} class="h-32 w-32">
                 <img src="{imageUrl}" alt="Profilbild von {name}" class="rounded-full object-cover h-full w-full drop-shadow-xl bg-white" />
             </div>
         </div>
-        <div class="px-6 mt-16">
+        <div class="px-6 mt-16 rounded-md">
             <h1 class="font-bold dark:text-slate-100 text-3xl text-center mb-1">{name}</h1>
             <p class="text-gray-800 dark:text-slate-100 text-sm text-center">{role}</p>
             <p class="text-center text-gray-600 dark:text-slate-200 text-base pt-3 font-normal">{description}</p>

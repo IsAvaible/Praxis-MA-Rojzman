@@ -1,7 +1,7 @@
 <script lang="ts">
     import {fade} from "svelte/transition";
     import {createEventDispatcher} from "svelte";
-    import { navigate } from "svelte-navigator";
+    import {Link, navigate} from "svelte-navigator";
     import {clickOutside} from "../../../scripts/ui/clickOutside";
     import {getUser, signOut} from "../../../scripts/database/database";
 
@@ -46,18 +46,18 @@
             <nav class="mt-5 px-2 space-y-1">
                 <!-- Current: "bg-gray-100 text-gray-900", Default: "text-gray-600 hover:bg-gray-50 hover:text-gray-900" -->
                 {#each links as link, i}
-                    <span on:click={() => {hide(); navigate(link.link)}} class="{activeLinkIndex === i ? 'bg-gray-100 text-gray-900 dark:bg-slate-600 dark:text-slate-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-slate-300 dark:hover:text-slate-200 dark:hover:bg-slate-700'} cursor-pointer group flex items-center px-2 py-2 text-base font-medium rounded-md">
+                    <Link to={link.link} on:click={hide} class="{activeLinkIndex === i ? 'bg-gray-100 text-gray-900 dark:bg-slate-600 dark:text-slate-200' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-slate-300 dark:hover:text-slate-200 dark:hover:bg-slate-700'} cursor-pointer group flex items-center px-2 py-2 text-base font-medium rounded-md">
                         <svg class="{activeLinkIndex === i ? 'text-gray-500 dark:text-slate-300' : 'text-gray-400 group-hover:text-gray-500 dark:text-slate-300 dark:group-hover:text-slate-300'} mr-4 flex-shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             {#each link.svgPaths as path}
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={path} />
                             {/each}
                         </svg>
                         {link.title}
-                    </span>
+                    </Link>
                 {/each}
             </nav>
         </div>
-        <div on:click={() => signOut().then(() => navigate('admin/login'))} class="flex-shrink-0 flex border-t border-gray-200 p-4">
+        <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
             <div class="flex-shrink-0 w-full group block">
                 <div class="flex items-center">
                     <div>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm font-medium text-gray-700 group-hover:text-gray-800 dark:text-slate-200 dark:group-hover:text-slate-200">{getUser().email}</p>
-                        <p on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 group-hover:text-gray-700 cursor-pointer dark:text-slate-300 dark:group-hover:text-slate-200">Ausloggen</p>
+                        <button on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 group-hover:text-gray-700 cursor-pointer dark:text-slate-300 dark:group-hover:text-slate-200">Ausloggen</button>
                     </div>
                 </div>
             </div>

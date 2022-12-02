@@ -6,17 +6,17 @@
             </svg>
         </div>
         <div class="ml-4">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-slate-200">
                 Registrierung
             </h3>
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-gray-500 dark:text-slate-300">
                 Erlaube Registrierungen im Login Bereich der Webseite, durch langes Drücken auf den Login Button.
             </p>
         </div>
     </div>
     <!--  Stylized button link to the Supabase auth settings page -->
     <div class="ml-3 h-7 flex items-center">
-        <a href="https://app.supabase.com/project/{import.meta.env.VITE_SUPABASE_PROJECT_REFERENCE_ID}/auth/settings" target="_blank" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+        <a href="https://app.supabase.com/project/{import.meta.env.VITE_SUPABASE_PROJECT_REFERENCE_ID}/auth/settings" target="_blank" class="text-sm font-medium text-primary-600 dark:text-primary-500 hover:underline">
             Hier Konfigurieren
         </a>
     </div>

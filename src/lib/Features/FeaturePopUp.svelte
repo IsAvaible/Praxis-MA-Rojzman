@@ -6,7 +6,7 @@
     import LoadingWheel from "../Misc/LoadingWheel.svelte";
 
 
-    export let name;
+    export let name: string;
 
     let dispatch = createEventDispatcher();
     const hide = () => {
@@ -18,18 +18,18 @@
 
 <Modal on:hide={hide}>
     {#await getFeature(name)}
-        <LoadingWheel showAfter="1000" size={17}/>
+        <LoadingWheel showAfter={1000} size={17}/>
     {:then feature}
         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-[80vw]">
             <div class="flex justify-center items-center w-full">
                 <div class="flex items-center justify-center h-9 w-9 rounded-full bg-primary-100 dark:bg-primary-500 xl:h-10 xl:w-10">
-                    <svg class="h-6 w-6 xl:h-8 xl:w-8 text-primary-600 dark:text-primary-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <svg class="h-6 w-6 xl:h-8 xl:w-8 text-primary-600 dark:text-slate-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         {#each feature.svgPaths as path}
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={path} />
                         {/each}
                     </svg>
                 </div>
-                <h3 class="xl:text-4xl text-3xl text-gray-800 dark:text-slate-200 font-bold focus:outline-transparent uppercase ml-2" id="modal-title">{feature.title}</h3>
+                <h3 class="xl:text-4xl text-3xl text-gray-800 dark:text-slate-200 font-bold focus:outline-transparent uppercase ml-2 truncate" style="max-width: 70%" id="modal-title">{feature.title}</h3>
             </div>
             <div class="mt-4">
                 {#if feature.longDescription}
