@@ -32,7 +32,7 @@
         <div class="-mt-6 text-start">
             <ConditionalWrapper condition={longDescription && expandViaIcon} on:click={onLinkFollow} href={'leistungen/' + name} a={true}>
             <div class="{centerSvg ? 'justify-center' : 'justify-start'} flex items-center">
-                <span class="inline-flex p-3 bg-primary-500 rounded-md shadow-lg {longDescription && expandViaIcon ? 'hover:bg-primary-600' : ''}">
+                <span class="inline-flex p-3 bg-primary-600 rounded-md shadow-lg {longDescription && expandViaIcon ? 'hover:bg-primary-800' : ''}">
                   <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                       {#each svgPaths as path}
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={path} />

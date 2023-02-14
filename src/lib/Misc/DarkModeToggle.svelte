@@ -19,21 +19,29 @@
     }
 
     let showSystemNotification = false;
-    const onLongPress = () => {
-        if (!('theme' in localStorage)) return;
+    let showAlreadySystemNotification = false;
+    const restoreSystemTheme = () => {
+        if (!('theme' in localStorage)) {
+            showAlreadySystemNotification = true;
+            showSystemNotification = false;
+            delay(3000).then(() => showAlreadySystemNotification = false);
+            return;
+        }
 
         checked = !getSystemTheme();
         darkModeStore.set(!checked);
         localStorage.removeItem('theme');
         showSystemNotification = true;
+        showAlreadySystemNotification = false;
         delay(3000).then(() => showSystemNotification = false);
 
     }
 </script>
 
-<div class="wrapper flex items-center" use:longpress={1500} on:click={updateDarkMode} on:longpress={onLongPress} >
+<div class="wrapper flex items-center" use:longpress={1500} on:click={updateDarkMode} on:longpress={restoreSystemTheme} on:keydown={e => {if (e.code==='Space'||e.code==='Enter') {e.preventDefault(); checked = !checked; updateDarkMode()}}} >
     <input type="checkbox" id="hide-checkbox" class="peer" bind:checked={checked}>
     <label for="hide-checkbox" class="toggle peer-focus-visible:ring-1 peer-focus:ring-blue-400 dark:peer-focus-visible:ring-purple-600">
+        <span class="sr-only">{checked ? 'Dunklen' : 'Hellen'} Modus aktivieren</span>
         <span class="toggle-button">
           <span class="crater crater-1"></span>
           <span class="crater crater-2"></span>
@@ -53,9 +61,12 @@
         <span class="star star-8"></span>
     </label>
 
-    {#if showSystemNotification}
-        <div in:fade out:fade class="absolute mt-24 -ml-28 z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
-            <nobr>Der Modus folgt jetzt wieder dem System.</nobr>
+    {#if showSystemNotification || showAlreadySystemNotification}
+        <div in:fade out:fade class="absolute
+        left-0 right-0 mx-auto text-center table
+        md:left-auto md:right-auto md:text-left md:mx-0 md:block md:mt-24 md:-ml-28
+        z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+            <nobr>Der Modus folgt {#if showSystemNotification}jetzt wieder{:else}bereits{/if} dem System.</nobr>
         </div>
     {/if}
 

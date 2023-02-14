@@ -1,13 +1,19 @@
 <script lang="ts">
     import {updateConfigEntry} from "../../../scripts/database/database";
     import {rainbowHeaderIconAnimationStore} from "../../../scripts/stores/rainbowHeaderIconAnimationStore";
+    import {scrollToHeader} from "../../../scripts/misc/scrollToHeader";
 
     let rainbowAnimate: boolean;
     rainbowHeaderIconAnimationStore.subscribe(value => rainbowAnimate = value);
 
     const updateConfig = async () => {
-            await updateConfigEntry("rainbow-header-icon-animation", {active: rainbowAnimate});
+            await updateConfigEntry(
+                "rainbow-header-icon-animation",
+                {active: rainbowAnimate},
+                {section: "HeaderIcon", description: "Regenbogen Logo Animation wurde " + (rainbowAnimate ? "aktiviert." : "deaktiviert.")}
+            );
             rainbowHeaderIconAnimationStore.set(rainbowAnimate);
+            scrollToHeader();
         }
 </script>
 
@@ -24,7 +30,7 @@
                 Regenbogen Logo
             </h3>
             <p class="mt-1 text-sm text-gray-500 dark:text-slate-200">
-                Wenn aktiv, leuchte das Logo im Header der Webseite in Regenbogenfarben.
+                Wenn aktiv, leuchte das Logo links oben im Header in Regenbogenfarben.
             </p>
         </div>
     </div>

@@ -17,14 +17,14 @@
             <p class="mt-3 text-xl text-gray-500 sm:mt-4 dark:text-slate-200">In unsere Kategorie <Link to='/aktuelles' class="cursor-pointer hover:text-gray-800 hover:underline dark:hover:text-slate-200">Aktuelles</Link> halten wir sie stets über Neuigkeiten rund um die Praxis und Gesundheit auf dem Laufenden.</p>
         </div>
         <!-- The four most recent blog entries are queried -->
-        {#await getBlogEntries(false, 4)}
+        {#await getBlogEntries(false, 4, false)}
             <div class="w-full mt-12 pt-12 flex justify-center">
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
         {:then blogEntries}
             <div class="mt-12 grid gap-16 pt-12 md:grid-cols-2 xl:grid-cols-4 lg:gap-x-5 lg:gap-y-12">
                 {#each blogEntries as entry, i}
-                    <a on:click|preventDefault={() => navigate(`/aktuelles/${entry.id}`)} href={`/aktuelles/${entry.id}`} class="shadow-md hover:shadow-lg rounded-md p-4 {i > 2?'hidden':''} md:flex flex-col"> <!-- Only show 3 posts on small devices -->
+                    <a on:click|preventDefault={() => navigate(`/aktuelles/${entry.id}`)} href={`/aktuelles/${entry.id}`} class="shadow-md hover:shadow-lg dark:ring-1 dark:ring-slate-700 dark:hover:ring-slate-600 dark:hover:ring-2 transition-shadow rounded-md p-4 {i > 2?'hidden':''} md:flex flex-col"> <!-- Only show 3 posts on small devices -->
                         <div class="justify-center">
                             <span class="sr-only">Bild des Beitrags</span>
                             <img loading="lazy" alt="" class="object-cover rounded-lg w-full" src="{entry.previewImageUrl || 'assets/DefaultMissingImage.svg'}">

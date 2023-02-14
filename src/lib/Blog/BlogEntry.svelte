@@ -19,7 +19,7 @@
     {#if previewImageUrl && !expanded}
         <img src="{previewImageUrl}" alt="Image with the URL {previewImageUrl}" class="bg-primary-50 rounded-md w-full mb-2 sm:mb-0 sm:max-w-[25%] md:max-w-[20%] h-full aspect-video mr-3" in:fade/>
     {/if}
-    <div>
+    <div class="w-full block">
         <p class="text-sm text-gray-500 dark:text-slate-300">
             <time datetime={createdAt.toISOString()}>{createdAt.toLocaleDateString()}</time>
         </p>

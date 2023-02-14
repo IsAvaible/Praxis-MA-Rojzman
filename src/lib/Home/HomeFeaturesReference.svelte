@@ -11,26 +11,28 @@
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="sr-only">Unsere Leistungen</h2>
         {#await showcasedFeatures then showcasedFeatures}
-            <dl class="space-y-10 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
+            <div class="space-y-10 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
                 <!-- The admin may specify three different features that will be shown on the start page.-->
                 {#each showcasedFeatures as {name, title, shortDescription, longDescription, svgPaths}}
                     <div in:fade={{duration: 100}}>
-                        <dt>
-                            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white">
-                                <!-- Heroicon name: outline/globe-alt -->
-                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    {#each svgPaths as path}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{path}" />
-                                    {/each}
-                                </svg>
-                            </div>
+                        <div>
+                            <Link to={'leistungen/' + (longDescription ? name : '')}>
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-600 text-white hover:bg-primary-700 cursor-pointer">
+                                    <!-- Heroicon name: outline/globe-alt -->
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        {#each svgPaths as path}
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{path}" />
+                                        {/each}
+                                    </svg>
+                                </div>
+                            </Link>
                             <p class="mt-5 text-lg leading-6 font-medium text-gray-900 dark:text-slate-100">{title}</p>
-                        </dt>
+                        </div>
                         <dd class="mt-2 text-base text-gray-500 dark:text-slate-200">{shortDescription}</dd>
                         <div class="w-full"><Link to={'leistungen/' + (longDescription ? name : '')}><span class="ml-auto mr-4 table cursor-pointer text-gray-900 dark:text-slate-200 hover:underline">Mehr erfahren</span></Link></div>
                     </div>
                 {/each}
-            </dl>
+            </div>
         {:catch e}
             <Alert type={1} title='Leistungen konnten nicht geladen werden.' description="Wir konnten die angeforderten Daten nicht laden. Überprüfen sie bitte ihre Internetverbindung."/>
         {/await}

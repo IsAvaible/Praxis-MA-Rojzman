@@ -3,6 +3,7 @@
         getOfficeHourByWeekday, updateOfficeHourComment, updateOfficeHour,
         addTimePeriod, updateTimePeriod, deleteTimePeriod, calculateEndTime, calculateDateDistance
     } from "../../../scripts/database/database";
+    import {numberToWeekdayDE} from "../../../scripts/misc/dateFormat";
     import Alert from "../../Essentials/Alert.svelte";
     import LoadingWheel from "../../Misc/LoadingWheel.svelte";
     import {formatHHMM} from "../../../scripts/misc/dateFormat";
@@ -88,11 +89,6 @@
         }
     }
 
-    // Convert a number between 0 and 6 to a weekday string in german
-    const numberToWeekday = (n: number) => {
-        return ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"][n];
-    }
-
     const compareTimePeriods = (a, b) => {
         if (a.startTime > b.startTime) {
             return 1;
@@ -111,10 +107,10 @@
         editieren sie die Start- und/oder Endzeit. Jedem Wochentag kann zudem ein Kommentar angehängt werden. Um diesen
         zu bearbeiten, klicken sie bitte den Knopf auf der rechten Seite.&#13;&#10;Alle ihre Änderungen werden sofort auf der Webseite übernommen.
     </p>
-    <div class="w-full grid lg:grid-cols-7 rounded-md shadow lg:divide-x divide-y lg:divide-y-0 dark:divide-slate-300 dark:ring-1 dark:ring-slate-300 dark:shadow-none max-h-44 overflow-y-scroll lg:overflow-y-auto">
+    <div class="w-full grid lg:grid-cols-7 rounded-md shadow lg:divide-x divide-y lg:divide-y-0 dark:divide-slate-300 dark:shadow-slate-600 max-h-44 overflow-y-scroll lg:overflow-y-auto">
         {#each [...Array(7).keys()] as weekday}
             <button on:click={() => selectWeekday(weekday)} class="{weekday === selectedWeekday ? 'bg-gray-100 dark:bg-slate-800' : 'hover:bg-gray-50 dark:hover:bg-slate-800'} hover:shadow-gray-300 text-center py-3 font-semibold text-gray-700 dark:text-slate-300 dark:bg-slate-900">
-                {numberToWeekday(weekday)}
+                {numberToWeekdayDE(weekday)}
             </button>
         {/each}
     </div>

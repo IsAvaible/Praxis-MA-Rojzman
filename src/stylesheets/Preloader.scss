@@ -131,5 +131,8 @@ $hide-delay: 1s;
 }
 
 @keyframes hideAnimation {
-  to   { opacity: 0; }
+  to   {
+    opacity: 0; // The element will smoothly fade out
+    visibility: hidden; // Transitioning the visibility will toggle it at the end of the animation (to prevent clicks)
+  }
 }

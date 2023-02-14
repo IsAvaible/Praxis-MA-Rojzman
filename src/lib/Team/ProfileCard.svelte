@@ -34,21 +34,21 @@
             {#if [flexUrl, twitterUrl, instagramUrl].findIndex(e => e !== undefined) !== -1}
                 <div class="w-full flex justify-center pt-5 pb-5">
                     {#if flexUrl}
-                        <a href={flexUrl} target="_blank" class="mx-5">
+                        <a href={flexUrl} target="_blank" rel="noreferrer" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
                             <div aria-label="Flex" role="img">
                                 <FlexIcon/>
                             </div>
                         </a>
                     {/if}
                     {#if twitterUrl}
-                        <a href={twitterUrl} target="_blank" class="mx-5">
+                        <a href={twitterUrl} target="_blank" rel="noreferrer" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
                             <div aria-label="Twitter" role="img">
                                 <TwitterIcon/>
                             </div>
                         </a>
                     {/if}
                     {#if instagramUrl}
-                        <a href={instagramUrl} target="_blank" class="mx-5">
+                        <a href={instagramUrl} target="_blank" rel="noreferrer" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
                             <div aria-label="Instagram" role="img">
                                 <InstagramIcon/>
                             </div>

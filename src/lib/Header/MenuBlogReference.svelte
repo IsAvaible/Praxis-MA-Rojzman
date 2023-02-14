@@ -16,7 +16,7 @@ const onNavigate = () => {
     <div>
         <h3 class="text-sm tracking-wide font-medium text-gray-500 uppercase dark:text-slate-200">Neueste Beiträge</h3>
         <ul class="mt-4 space-y-4">
-            {#await getBlogEntries(false, 3)}
+            {#await getBlogEntries(false, 3, false)}
                 {#each Array(3) as _}
                     <li class="text-base truncate showDelayed">
                         <p class="cursor-pointer font-medium text-gray-900 hover:text-gray-600 dark:text-slate-200 dark:hover:text-slate-50 animate-pulse"> Loading... </p>

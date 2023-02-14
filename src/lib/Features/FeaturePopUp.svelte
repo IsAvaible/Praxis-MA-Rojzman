@@ -41,6 +41,6 @@
             </div>
         </div>
     {:catch e}
-        <Alert type={0} title="Fehler!" description='Wir konnten die Leistung mit dem Namen "{name}" nicht finden.'/>
+        <Alert type={0} title="Fehler!" description='Wir konnten die Leistung mit dem in der URL angegebenen Namen "{name}" nicht finden.'/>
     {/await}
 </Modal>

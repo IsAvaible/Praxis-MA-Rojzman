@@ -6,11 +6,7 @@ export default {
     // for more information about preprocessors
     preprocess: sveltePreprocess({
         postcss: {
-            plugins: [autoprefixer()]}
-    }),
-    vitePlugin: {
-        experimental: {
-            inspector: true // The inspector can be toggled using the key combo Ctrl+Shift
+            plugins: [autoprefixer()]
         }
-    }
+    }),
 }

@@ -6,6 +6,7 @@ import WEBGL from "three/examples/jsm/capabilities/WebGL";
 // import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import {vertexShader, fragmentShader} from "./shaders";
 import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
+import {delay} from "../../scripts/misc/delay";
 
 export let sceneInitialized = false;
 
@@ -23,6 +24,7 @@ const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 250);
 const gltfLoader = new GLTFLoader();
 
+let loadPlaceholderObject: THREE.Mesh;
 let virus: THREE.Group;
 
 let prefersReducedMotion: boolean;
@@ -74,9 +76,13 @@ const animate = () => {
 };
 
 const update = () => {
+  if (loadPlaceholderObject != undefined) {
+    loadPlaceholderObject.rotation.x += prefersReducedMotion ? 0.0001 : 0.0007;
+    loadPlaceholderObject.rotation.z += prefersReducedMotion ? 0.0001 : 0.0007;
+  }
   if (virus != undefined) {
-    virus.rotation.x += prefersReducedMotion ? 0.0001 : 0.001;
-    virus.rotation.z += prefersReducedMotion ? 0.0001 : 0.001;
+    virus.rotation.x += prefersReducedMotion ? 0.0001 : 0.0007;
+    virus.rotation.z += prefersReducedMotion ? 0.0001 : 0.0007;
   }
 }
 
@@ -105,6 +111,7 @@ export const createScene = (canvasElement: HTMLCanvasElement) => {
   renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setClearColor( 0x000000, 0 );
+
   init();
   resize();
   window.addEventListener('resize', resize);
@@ -126,6 +133,14 @@ const loadVirus = () => {
     fragmentShader: fragmentShader(),
     wireframe: true
   } );
+  const centerGeometry = new THREE.IcosahedronGeometry(2.1, 8);
+  loadPlaceholderObject = new THREE.Mesh(centerGeometry, centerMaterial);
+
+  loadPlaceholderObject.position.setX(1);
+  delay(200).then(() => {
+    if (loadPlaceholderObject != undefined) scene.add(loadPlaceholderObject);
+  });
+
   // const centerMaterial = new THREE.MeshBasicMaterial({color: 0x33333, wireframe: true});
   gltfLoader.load(
       window.innerWidth < 500 ? 'assets/virus_c.glb' : 'assets/virus.glb',
@@ -146,7 +161,9 @@ const loadVirus = () => {
         scene.add(virus);
         // interaction.add(virus);
         // virus.addEventListener("mousedown", (event => centerMaterial.wireframe = !centerMaterial.wireframe));
-      }
+      },
+      (xhr) => {if (xhr.loaded === xhr.total) {scene.remove(loadPlaceholderObject); loadPlaceholderObject = undefined;}},
+      (error) => console.error(error)
   );
 }
 

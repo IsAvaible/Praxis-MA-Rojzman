@@ -40,7 +40,7 @@
                                 </a>
                                 <div class="w-full">
                                     <h4 class="font-bold dark:text-slate-100 text-xl mb-1">{title}</h4>
-                                    <a href={href} target="_blank" class="font-medium text-gray-600 hover:text-black dark:text-slate-300 dark:hover:text-slate-100">
+                                    <a href={href} target="_blank" rel="noreferrer" class="font-medium text-gray-600 hover:text-black dark:text-slate-300 dark:hover:text-slate-100">
                                         {linkText}
                                     </a>
                                 </div>
@@ -59,14 +59,14 @@
                                 <p class="text-gray-600 font-medium dark:text-slate-300">Bei akutem Behandlungsbedarf außerhalb von Praxiszeiten empfehlen wir
                                     die Kontaktierung des <a href="https://www.116117.de/de/index.php" class="hover:text-black dark:hover:text-slate-100">ärztlichen Bereitschaftsdienstes</a>
                                     (<a href="tel:116117" class="text-gray-800 dark:text-slate-200 hover:text-black dark:hover:text-slate-100 underline">116 117</a>) oder in schwereren Fällen
-                                    des <a href="https://www.aok.de/pk/magazin/familie/eltern/im-notfall-116-117-anrufen-oder-besser-den-notruf-112/" target="_blank" class="hover:text-black dark:hover:text-slate-100">Notdienstes</a>
+                                    des <a href="https://www.aok.de/pk/magazin/familie/eltern/im-notfall-116-117-anrufen-oder-besser-den-notruf-112/" target="_blank" rel="noreferrer" class="hover:text-black dark:hover:text-slate-100">Notdienstes</a>
                                     (<a href="tel:112" class="text-gray-800 dark:text-slate-200 hover:text-black dark:hover:text-slate-100 underline">112</a>). </p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <ContactForm/>
-                <a href="https://g.page/r/CduYIOKWcFs3EBE/review" target="_blank" class="mt-5 p-3 flex w-full md:hidden items-start rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 shadow-md hover:shadow-2xl">
+                <a href="https://g.page/r/CduYIOKWcFs3EBE/review" target="_blank" rel="noreferrer" class="mt-5 p-3 flex w-full md:hidden items-start rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 shadow-md hover:shadow-2xl">
                     <!-- Heroicon name: outline/shield-check -->
                     <svg class="flex-shrink-0 h-6 w-6 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />

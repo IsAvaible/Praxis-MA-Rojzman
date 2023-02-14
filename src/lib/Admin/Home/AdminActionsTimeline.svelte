@@ -1,10 +1,15 @@
 <script lang="ts">
 import {getAdminActions} from "../../../scripts/database/database";
 import {fade} from "svelte/transition";
+import {inview} from "svelte-inview";
 import Alert from "../../Essentials/Alert.svelte";
+import {adminActionsChangeStore} from "../../../scripts/stores/adminActionsChangeStore";
 
+let reload = 0;
 let actionsCount: number | string = 5;
 let increaseBy = actionsCount;
+
+$: if (actionsCount) reload++;
 
 let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6']},
     {section: 'Leistungen', paths: ['M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z']},
@@ -12,14 +17,29 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
     {section: 'Team', paths: ['M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z']},
     {section: 'Texte', paths: ['M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z']},
     {section: 'Bilder', paths: ['M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z']},
-    {section: 'Config', paths: ["M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"]}
+    {section: 'Config', paths: ["M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"]},
+    {section: 'OfficeHour', paths: ["M12 6v6h6", "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"]},
+    {section: 'Banner', paths: ["M4 16l.01-.011M4 20l.01-.011M8 20l.01-.011M12 20l.01-.011M16 20l.01-.011M20 20l.01-.011M20 16l.01-.011M4 12V4h16v8H4z"]},
+    {section: 'HeaderIcon', paths: ["M12 2v4M12 18v4M22 12h-4M6 12H2M4.929 4.929l2.828 2.828M16.243 16.243l2.828 2.828M19.071 4.929l-2.828 2.828M7.757 16.243L4.93 19.07"]}
 ];
+
+let inView = true;
+let adminActionChange = false;
+adminActionsChangeStore.subscribe(value => {
+    adminActionChange = value;
+});
+
+
+$: if (inView && adminActionChange) {
+    reload++;
+    adminActionsChangeStore.set(false);
+}
 
 // Does the job...
 </script>
 
-<div class="flow-root">
-    {#key actionsCount}
+<div class="flow-root" use:inview on:change={e => inView = e.detail.inView}>
+    {#key reload}
         <ul class="my-6" in:fade={{duration: 500}}>
         {#await getAdminActions(actionsCount === 'all' ? undefined : actionsCount)}
             {#each Array(actionsCount === 'all' ? increaseBy : actionsCount) as _, i}
@@ -43,7 +63,7 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
             {#each actions as action, i}
                 <li in:fade={{duration: 300}}>
                     <div class="mx-2 relative pb-8">
-                        {#if i+1 !== actions.length}<span class="absolute top-4 left-4 -ml-px h-[75%] w-0.5 bg-gray-200" aria-hidden="true"></span>{/if}
+                        {#if i+1 !== actions.length}<span class="absolute top-4 left-4 -ml-px w-0.5 bg-gray-200" aria-hidden="true"></span>{/if}
                         <div class="relative flex space-x-3">
                             <div>
                                 <span class="h-8 w-8 rounded-full bg-primary-400 flex items-center justify-center ring-8 ring-white dark:ring-slate-900">

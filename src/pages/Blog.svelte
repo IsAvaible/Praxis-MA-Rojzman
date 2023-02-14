@@ -9,6 +9,7 @@
     import Alert from "../lib/Essentials/Alert.svelte";
     import LoadingWheel from "../lib/Misc/LoadingWheel.svelte";
     import Footer from "../lib/Essentials/Footer.svelte";
+    import disableScroll from "disable-scroll";
 
     let urlID;
     let showErrorAlertDialog = false;
@@ -23,7 +24,11 @@
             urlID = $params.id;
             let element = document.getElementById(urlID);
             if (element) {
-                delay(100).then(() => scrollToElement(element));
+                delay(170).then(() => {
+                    disableScroll.on();
+                    scrollToElement(element, true);
+                    disableScroll.off();
+                });
             } else {
                 console.log(`Der Beitrag mit der ID "${urlID}" konnte nicht in der Datenbank gefunden werden.`)
                 showErrorAlertDialog = true;
@@ -32,9 +37,14 @@
         }
     }
 
-    const scrollToElement = (element: HTMLElement) => {
+    const scrollToElement = (element: HTMLElement, smooth: boolean) => {
+        let bannerElement = document.getElementById("banner");
         let elementPosition = element.getBoundingClientRect().top;
-        window.scrollBy({top: elementPosition - 65, behavior: "smooth"});
+        if (bannerElement) {
+            let bannerHeight = bannerElement.getBoundingClientRect().height;
+            elementPosition -= bannerHeight;
+        }
+        window.scrollBy({top: elementPosition - 80, behavior: smooth ? "smooth" : "auto"});
     }
 
     let expandedEntryIndex: number = undefined;
@@ -47,17 +57,32 @@
     }
 
     const onEntryExpandClick = (id: string, index: number) => {
+        const oldScrollStateY = window.scrollY;
         toggleEntryExpand(id, index);
         // The history state is replaced to prevent users from having to click back multiple times
-        if (expandedEntryIndex == index) {
+        if (expandedEntryIndex == index) { // If a new entry is expanded set the url to the id of the new entry
             history.replaceState({}, '', `aktuelles/${id}`)
             urlID = id;
-            delay(50).then(() => scrollToElement(document.getElementById(id)));
-        } else {
+            delay(120).then(() => {
+                disableScroll.on();
+                scrollToElement(document.getElementById(id), true);
+                disableScroll.off();
+            });
+        } else { // If the entry is collapsed, the URL is reset
             history.replaceState({}, '', 'aktuelles')
             urlID = undefined;
         }
     }
+
+    const onParamsIdChange = (paramsId) => {
+        urlID = paramsId;
+        if (!document.getElementById(urlID)) return;
+        expandedEntryIndex = undefined;
+        scrollToElement(document.getElementById(urlID), true);
+    }
+
+    $: onParamsIdChange($params.id);
+
 </script>
 
 <Footer><div class="relative">
@@ -73,12 +98,12 @@
     {#if showErrorAlertDialog}
         <div out:slide|local>
             <Alert type={1} title="Unbekannte ID" description={`Der Blog Beitrag mit der in der URL angegeben ID "${urlID}" konnte nicht gefunden werden.`}>
-                <button class="text-yellow-700 text-sm font-bold underline ml-1" on:click={() => showErrorAlertDialog = false}>Ok.</button>
+                <button class="text-yellow-700 text-sm ml-1 rounded-md bg-yellow-300 hover:bg-yellow-400 hover:text-yellow-800 dark:bg-yellow-200 dark:hover:bg-yellow-300 dark:hover:text-yellow-800 px-2" on:click={() => {showErrorAlertDialog = false}}>Ok.</button>
             </Alert>
         </div>
     {/if}
     <div class="max-w-[100rem] w-full flex flex-col justify-between gap-y-8">
-        {#await getBlogEntries()}
+        {#await getBlogEntries(false, undefined, false)}
             <div class="w-full flex justify-center">
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
@@ -92,7 +117,7 @@
                              id={blogEntry.id}>
                             <BlogEntry {...blogEntry} expanded={expanded} on:mount={() => {if (i === blogEntries.length-1) onBlogEntriesMount()}}/>
                             <div class="w-full absolute {expanded ? '-bottom-3' : 'bottom-0'} rounded-md flex {expanded?'':'hidden'} lg:flex justify-end">
-                                <a href={`aktuelles/${blogEntry.id}`} on:click|preventDefault|stopPropagation={() => onEntryExpandClick(blogEntry.id, i)} class="underline text-sm font-semibold dark:font-medium">
+                                <a href={`aktuelles/${blogEntry.id}`} on:click|preventDefault|stopPropagation={() => onEntryExpandClick(blogEntry.id, i)} class="underline text-sm font-semibold dark:font-medium w-fulll">
                                 Beitrag {expanded ? 'einklappen' : 'lesen'}
                                 </a>
                             </div>

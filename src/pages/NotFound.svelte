@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Link} from "svelte-navigator";
+import {Link} from "svelte-navigator";
 import Footer from "../lib/Essentials/Footer.svelte";
 import ConditionalWrapper from "../lib/Misc/ConditionalWrapper.svelte";
 

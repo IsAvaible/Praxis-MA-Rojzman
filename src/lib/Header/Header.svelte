@@ -29,16 +29,9 @@
     import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
     import {adminPreviewBannerDataStore} from "../../scripts/stores/adminPreviewBannerDataStore";
     import Icon from "./Icon.svelte";
-
-    let bannerData = {
-        mobileText: "Wir sind bis zum 26.04 im Urlaub!",
-        desktopText: "Wir sind bis zum 26.04 im Urlaub!",
-        active: false,
-        buttonText: "Vertretung finden",
-        buttonAction: '() => navigate("/vertretung")',
-        svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
-        hideable: true,
-    }
+    import {onMount} from "svelte";
+    import {getBannerConfig, getConfigEntry} from "../../scripts/database/database";
+    import disableScroll from "disable-scroll";
 
     let siteEnterPopUpData = {
         svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
@@ -61,25 +54,7 @@
         pulseIcon: true
     }
 
-    let bannerOpen = bannerData.active;
     let bannerNoPushContentPaths = ["/"]; // These are the paths where the banner should not occupy screen space
-
-    let adminPreviewBannerActive = false;
-    let adminPreviewBannerData;
-    adminPreviewBannerDataStore.subscribe((data) => {
-        if (data) {
-            adminPreviewBannerData = data;
-        }
-        adminPreviewBannerActive = !!data;
-    });
-
-    let offline = false;
-    let offlineBannerOpen = false;
-    deviceOnlineStore.subscribe(online => {
-        offline = !online;
-        if (online) {offlineBannerOpen = false}
-        else {delay(3000).then(() => {if (offline) offlineBannerOpen = true})}
-    })
 
     let pathname;
     let lastPageKey;
@@ -109,13 +84,17 @@
                 if (confirm('Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?')) {
                     unsavedChangesStore.set(false);
                 } else {
-                    return;
+                    return false;
                 }
             }
             // Render the new site
             Reflect.apply(target, thisArg, argumentsList);
             // This will execute *after* the navigation
-            if (history.state == undefined || history.state.scroll !== false) scrollTo(0, 0);
+            if (history.state == undefined || history.state.scroll !== false) {
+                disableScroll.on();
+                scrollTo(0, 0);
+                disableScroll.off();
+            }
             lastPageKey = history.state._key;
             adminPreviewBannerDataStore.set(null);
         }
@@ -124,7 +103,7 @@
     // Prevent refresh when there are unsaved changes
     window.onbeforeunload = () => {
         if (unsavedChanges) {
-            return false;
+            return 'Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?';
         }
     }
 
@@ -162,24 +141,63 @@
         mobileMenuOpen = !mobileMenuOpen;
     }
 
+    // Automatically close the mobile or flyout menu when the resolution switched between the thresholds (mobile and desktop)
+    let smallScreenWidth = window.innerWidth < 768;
+    window.onresize = () => {
+        if (smallScreenWidth && window.innerWidth >= 768) {
+            smallScreenWidth = false;
+            // flyout2Open = mobileMenuOpen;
+            mobileMenuOpen = false;
+        } else if (!smallScreenWidth && window.innerWidth < 768) {
+            smallScreenWidth = true;
+            // mobileMenuOpen = flyout2Open;
+            flyout2Open = false;
+        }
+    }
+
     let officeHoursPopUpOpen = false;
     const toggleOfficeHoursPopUp = () => {
         flyout1Open = false
         flyout2Open = false;
         officeHoursPopUpOpen = !officeHoursPopUpOpen;
     }
+
+    let bannerData;
+    let bannerOpen;
+    onMount(async () => {
+        let selectedBannerName = (await getConfigEntry("selected-banner-config", true)).data["name"] as string
+        bannerData = await getBannerConfig(selectedBannerName);
+        bannerOpen = bannerData.active && (!bannerData.activeUntil || new Date(bannerData.activeUntil) > new Date());
+    });
+
+    let adminPreviewBannerActive = false;
+    let adminPreviewBannerData;
+    adminPreviewBannerDataStore.subscribe((data) => {
+        if (data) {
+            adminPreviewBannerData = data;
+        }
+        adminPreviewBannerActive = !!data;
+    });
+
+    let offline = false;
+    let offlineBannerOpen = false;
+    deviceOnlineStore.subscribe(online => {
+        offline = !online;
+        if (online) {offlineBannerOpen = false}
+        else {delay(3000).then(() => {if (offline) offlineBannerOpen = true})}
+    })
 </script>
 
 <Router a11y="{{onRouterNavigate}}">
     <div class="sticky top-0 z-50 bg-white dark:bg-slate-800" id="header">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="mx-auto px-4 sm:px-6 max-w-7xl">
             <div class="flex justify-between items-center border-b-2 border-gray-100 dark:border-none py-6 md:justify-start md:space-x-10">
-                <div class="flex justify-start lg:w-0 lg:flex-1">
+                <div class="flex justify-start lg:w-0 lg:flex-1 {mobileMenuOpen ? 'hidden' : ''}">
                     <Icon/>
                 </div>
 
                 <div class="flex md:hidden space-x-10">
-                    <h1 class="text-base font-medium text-gray-500 dark:text-slate-200 text-center"> Praxis M.A. Rojzman </h1>
+                    <h1 class="text-base font-medium text-gray-500 dark:text-slate-200 text-center {mobileMenuOpen ? 'hidden' : ''}"> Praxis M.A. Rojzman </h1>
                 </div>
                 <div class="-mr-2 -my-2 md:hidden">
                     <button on:click={toggleMobileMenu} type="button" class="bg-white dark:bg-transparent rounded-md p-2 inline-flex items-center justify-center text-gray-400 dark:text-slate-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:text-slate-400 dark:hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-expanded="false">
@@ -190,7 +208,7 @@
                         </svg>
                     </button>
                     {#if mobileMenuOpen}
-                        <div in:fade={{duration: 300}} out:fade={{duration: 300}}>
+                        <div in:fade={{duration: 300}} out:fade|local={{duration: 300}}>
                             <MobileMenu on:toggleOfficeHoursPopUp={toggleOfficeHoursPopUp} on:hide={toggleMobileMenu}/>
                         </div>
                     {/if}
@@ -233,8 +251,8 @@
                             </svg>
                         </button>
                         {#if flyout2Open}
-                            <div in:fade={{duration: 300}} out:fade={{duration: 300}}>
-                                <FlyoutMenu2 on:hide={toggleFlyout2}/>
+                            <div out:fade|local={{duration: 300}}>
+                                <FlyoutMenu2 on:hide={() => {toggleFlyout2(); flyout2Open = false}}/>
                             </div>
                         {/if}
                     </div>
@@ -245,19 +263,19 @@
                 </div>
             </div>
             {#if officeHoursPopUpOpen}
-                <div in:fade={{duration: 300}} out:fade={{duration: 300}}>
+                <div in:fade={{duration: 300}} out:fade|local={{duration: 300}}>
                     <OfficeHours on:hide={toggleOfficeHoursPopUp}/>
                 </div>
             {/if}
         </div>
         {#if offlineBannerOpen}
-            <Banner {...offlineBannerData}/>
+            <Banner {...offlineBannerData} id="offlineBanner"/>
         {/if}
         {#if bannerOpen}
-            <Banner {...bannerData} buttonAction={eval(bannerData.buttonAction)} on:hide={() => bannerOpen = false}/>
+            <Banner {...bannerData} on:hide={() => bannerOpen = false} id="banner"/>
         {/if}
         {#if adminPreviewBannerActive}
-            <Banner {...adminPreviewBannerData} buttonAction={eval(adminPreviewBannerData.buttonAction)} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}}/>
+            <Banner {...adminPreviewBannerData} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}} id="adminPreviewBanner"/>
         {/if}
 <!--        <CookieBanner/>-->
         <SiteEnterPopUp {...siteEnterPopUpData}/>

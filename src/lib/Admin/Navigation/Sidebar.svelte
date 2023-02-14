@@ -24,6 +24,7 @@
     globalHistory.listen(() => activeLinkIndex = getLinkIndex() != -1 ? getLinkIndex() : activeLinkIndex);
 </script>
 
+{#await validateAuthentication() then user}
 {#if mobileMenuOpen}
     <MobileMenu on:hide={toggleMobileMenu} links={links} activeLinkIndex={activeLinkIndex}/>
 {/if}
@@ -82,3 +83,4 @@
         </main>
     </div>
 </div>
+{/await}

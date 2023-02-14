@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-import theme from "tailwindcss/defaultTheme";
 
 // Get the current system value of the dark mode preference
 export const getSystemTheme = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;

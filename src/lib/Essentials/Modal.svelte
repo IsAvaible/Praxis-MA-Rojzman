@@ -9,6 +9,7 @@
     export let hideOnClickOutside: boolean = true;
     export let modalTopModal: boolean = false; // Whether the modal should be able to display over another modal (hacky)
     export let unsavedChangesCheck: boolean = true; // Whether the modal should display a confirm dialog if there are unsaved changes
+    export let zIndex: number = 50;
 
     let dispatch = createEventDispatcher();
     let unsavedChanges: boolean;
@@ -27,9 +28,9 @@
 
 
 <!-- @component This is a general skeleton for modals (pop-ups) -->
-<div class="z-50 inset-0 overflow-y-scroll fixed" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div class="inset-0 overflow-y-scroll fixed" style="z-index: {zIndex}" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center {modalTopModal?'min-h-full':'pt-4 px-4 pb-20 min-h-screen'} text-center sm:block sm:p-0">
-        <div in:fade={{duration: 200, easing: circIn}} out:fade|local={{duration: 300}} class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <div in:fade={{duration: 200, easing: circIn}} out:fade|local={{duration: 300}} class="fixed inset-0 bg-gray-500 dark:bg-slate-800 bg-opacity-75 dark:bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         {#if !modalTopModal}<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>{/if}
 
         <div use:clickOutside on:clickOutside={() => {if (hideOnClickOutside) {hide()}}} in:fade={{duration: 300*(modalTopModal?0:1)}} out:fade|local={{duration: 200*(modalTopModal?0:1), easing: circIn}} class="relative inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all {modalTopModal?'':'sm:my-8'} sm:align-middle {modalTopModal?'max-w-[99.9%] min-h-full':'sm:max-w-[80%] xl:max-w-7xl'} sm:p-6">

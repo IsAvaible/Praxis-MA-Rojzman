@@ -78,10 +78,11 @@ const deleteEntry = (blogEntry) => {
                 <div class="w-full divide-gray-200 divide-y-4 dark:divide-slate-700 my-4 mx-4 lg:my-10">
                     <div class="w-full divide-gray-200 divide-y dark:divide-slate-700">
                         {#each blogEntries as blogEntry, i}
-                            <div class="relative group py-4 focus:outline-none" tabindex="0" on:focus={() => currentHover = i} on:focusout={(e) => {if (!e.currentTarget.contains(e.relatedTarget)) currentHover = -1}} on:mouseenter={() => currentHover = i} on:mouseleave={() => currentHover = -1}>
+                            <div class="py-3 sm:py-2">
+                            <div class="relative group focus:outline-none px-1 py-1 sm:py-2" tabindex="0" on:focus={() => currentHover = i} on:focusout={(e) => {if (!e.currentTarget.contains(e.relatedTarget)) currentHover = -1}} on:mouseenter={() => currentHover = i} on:mouseleave={() => currentHover = -1}>
                                 <BlogEntryComponent {...blogEntry} expanded={expandedEntryIndex === i}/>
                                 {#if currentHover === i}
-                                    <div in:fade={{duration: 200}} out:fade|local={{duration: 200}} class="absolute ml-auto mr-auto top-0 left-0 z-10 w-full h-full bg-gray-500 dark:bg-slate-600 {expandedEntryIndex === i ? 'bg-opacity-10 dark:bg-opacity-10' : 'bg-opacity-25 dark:bg-opacity-25'} rounded-lg transition-opacity">
+                                    <div in:fade={{duration: 200}} out:fade|local={{duration: 200}} class="absolute top-0 left-0 z-10 w-full h-full bg-gray-500 dark:bg-slate-600 {expandedEntryIndex === i ? 'bg-opacity-10 dark:bg-opacity-10' : 'bg-opacity-25 dark:bg-opacity-25'} rounded-lg transition-opacity">
                                         <div class="flex h-full items-center justify-center max-w-3xl mx-auto text-white {i === blogEntries.length ? '' : 'mb-2'}">
                                             <div class="has-tooltip mx-4">
                                                 <button on:click={() => expandEntry(i)} class="h-9 w-9 rounded-full bg-primary-500 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 hover:bg-primary-600 cursor-pointer">
@@ -120,13 +121,14 @@ const deleteEntry = (blogEntry) => {
                                     </div>
                                 {/if}
                             </div>
+                            </div>
                         {:else}
                             <Alert type={1} title='Hinweis:' description='Es wurden noch keine Blog Einträge verfasst.'/>
                         {/each}
                     </div>
                     <div class="mt-12 pt-12">
                         <div class="overflow-hidden group relative">
-                            <div class="blur-sm m-1">
+                            <div class="blur-sm m-1 dark:m-2">
                                 <BlogEntryOutline/>
                             </div>
                             <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">

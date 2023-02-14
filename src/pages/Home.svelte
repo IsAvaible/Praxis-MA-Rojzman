@@ -16,13 +16,31 @@
 
     let webGlSupported = WebGl.isWebGLAvailable();
     let canvas: HTMLCanvasElement;
+    let canvasWrapper: HTMLDivElement;
+    let header: HTMLDivElement;
+    let headerHeight: number;
     let mounted: boolean = false;
+
+    const resizeCanvasWrapper = () => {
+        requestAnimationFrame(() => {
+            if (canvasWrapper) {
+                canvasWrapper.style.minHeight = Math.max(canvas.clientHeight - headerHeight + 10, window.innerHeight / 2) + "px";
+            }
+        });
+    };
+
     onMount(() => {
         if (!webGlSupported) {
             // Sometimes webGl claims not to be supported, but it is. Recheck every two seconds whether it is.
             setInterval(() => webGlSupported = WebGl.isWebGLAvailable(), 2000);
         }
+        header = document.getElementById("header") as HTMLDivElement;
+        headerHeight = header.clientHeight;
         mounted = true;
+        // on resize
+        resizeCanvasWrapper();
+        window.addEventListener("resize", resizeCanvasWrapper);
+
         // Query the database for essential values to populate the cache
         try {
             getOfficeHours();
@@ -37,19 +55,8 @@
             rebindScene(canvas);
         }
     }
-
-    let canvasWrapper: HTMLDivElement;
-    let innerHeight: number;
-    let innerWidth: number;
-    $: if (canvas && innerHeight && innerWidth && mounted) {
-        const headerHeight = document.getElementById("header").clientHeight;
-        canvasWrapper.style.minHeight = canvas.clientHeight - headerHeight + 10 + "px";
-    }
-
-    // let isInView = false;
 </script>
 
-<svelte:window bind:innerHeight bind:innerWidth/>
 
 <Footer>
     {#if webGlSupported}
@@ -90,7 +97,7 @@
                             <OfficeHours/>
                         </div>
                         <div class="my-auto grid grid-cols-1 md:ml-3 w-56">
-                            <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" class="hidden md:flex mx-auto mb-2 font-medium text-gray-900 dark:text-slate-100 hover:underline">
+                            <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" rel="noreferrer" class="hidden md:flex mx-auto mb-2 font-medium text-gray-800 dark:text-slate-100 hover:underline">
                                 <p>Kammstr. 2, 65399 Kiedrich</p>
                             </a>
                             <Link to="/kontakt" class="w-full inline-flex justify-center focus:outline-1 rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white text-center hover:bg-primary-700 sm:w-auto sm:text-base">Kontaktieren sie uns!</Link>

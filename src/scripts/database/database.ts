@@ -1,43 +1,29 @@
-import {createClient} from '@supabase/supabase-js'
+import {createClient} from '@supabase/supabase-js';
+import type { Database } from './database.types';
 import type {User} from '@supabase/gotrue-js';
 import type {SearchOptions} from '@supabase/storage-js';
-import {deleteImagesFromHTML, publicUrlToKey} from "./databaseHtmlImageTools";
 import type {JSONObject} from "../misc/jsonTypes";
+import {deleteImagesFromHTML, publicUrlToKey} from "./databaseHtmlImageTools";
+import {numberToWeekdayDE} from "../misc/dateFormat";
+import {adminActionsChangeStore} from "../stores/adminActionsChangeStore";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL.toString();
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY.toString();
-const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+// To regenerate the types, run the following command in the terminal:
+// (supabase login)
+// supabase gen types typescript --project-id=xybuosnwqiuotktydvik > src/scripts/database/database.types.ts
 
+export type ConfigEntry = Database['public']['Tables']['Config-Entry']['Row'];
 
-export type ConfigEntry = {
-    id: string,
-    data: JSONObject,
-    updatedAt: Date
-}
-
-export type Feature = {
-    name: string;
-    title: string;
-    shortDescription: string;
-    longDescription: string | undefined;
-    svgPaths: string[];
-}
+export type Feature = Database['public']['Tables']['Feature']['Row'];
 
 export type ShowcasedFeature = {
     name: string;
     setAt: Date;
 }
 
-export type TeamMember = {
-    id: string;
-    name: string;
-    role: string;
-    description: string;
-    imageUrl: string;
-    instagramUrl: string,
-    twitterUrl: string,
-    flexUrl: string
-}
+export type TeamMember = Database['public']['Tables']['Team-Member']['Row'];
 
 export type BlogEntry = {
     id: string;
@@ -92,7 +78,7 @@ export const getConfigEntries = async (noCache?: boolean): Promise<ConfigEntry[]
     if (getConfigCache != undefined && !noCache) return getConfigCache;
 
     let {data, error} = await supabase
-        .from<ConfigEntry>('Config-Entry')
+        .from('Config-Entry')
         .select('*');
 
     if (error) throw error;
@@ -107,7 +93,7 @@ export const getConfigEntry = async (id: string, noCache?: boolean): Promise<Con
     if (!noCache && (find = (await getConfigEntries()).find(e => e.id == id)) != undefined) return find
 
     let {data, error} = await supabase
-        .from<ConfigEntry>('Config-Entry')
+        .from('Config-Entry')
         .select('*')
         .eq('id', id)
         .single();
@@ -123,11 +109,12 @@ export const getConfigEntry = async (id: string, noCache?: boolean): Promise<Con
     return data;
 }
 
-export const addConfigEntry = async (id: string, data: JSONObject): Promise<ConfigEntry> => {
+export const addConfigEntry = async (id: string, data: JSONObject, customAdminActionMessage?: {section: string, description: string}): Promise<ConfigEntry> => {
     let {data: dbData, error} = await supabase
-        .from<ConfigEntry>('Config-Entry')
-        .insert([{id, data, updatedAt: new Date()}])
-        .single();
+        .from('Config-Entry')
+        .insert([{id: id, data: data}])
+        .single()
+        .select();
 
     if (error) throw error;
 
@@ -135,16 +122,19 @@ export const addConfigEntry = async (id: string, data: JSONObject): Promise<Conf
     if (getConfigCache != undefined) getConfigCache.push(dbData);
     else getConfigCache = [dbData];
 
-    await addAdminAction('Config', 'insert', `Die Konfiguration mit der ID "${id}" wurde hinzugefügt.`);
+    if (customAdminActionMessage == undefined) await addAdminAction('Config', 'insert', `Die Konfiguration mit der ID "${id}" wurde hinzugefügt.`);
+    else await addAdminAction(customAdminActionMessage.section, 'insert', customAdminActionMessage.description);
+
     return dbData;
 }
 
-export const updateConfigEntry = async (id: string, data: JSONObject): Promise<ConfigEntry> => {
+export const updateConfigEntry = async (id: string, data: JSONObject, customAdminActionMessage?: {section: string, description: string}): Promise<ConfigEntry> => {
     let {data: dbData, error} = await supabase
         .from('Config-Entry')
-        .update({data: data, updatedAt: new Date()})
+        .update({data: data, updatedAt: new Date().toISOString()})
         .eq('id', id)
-        .single();
+        .single()
+        .select();
 
     if (error) throw error;
 
@@ -153,16 +143,19 @@ export const updateConfigEntry = async (id: string, data: JSONObject): Promise<C
         getConfigCache[index] = dbData;
     }
 
-    await addAdminAction('Config', 'update', `Die Konfiguration mit der ID "${id}" wurde aktualisiert.`);
+    if (customAdminActionMessage == undefined) await addAdminAction('Config', 'update', `Die Konfiguration mit der ID "${id}" wurde aktualisiert.`);
+    else await addAdminAction(customAdminActionMessage.section, 'update', customAdminActionMessage.description);
+
     return dataToConfigEntry(dbData);
 }
 
-export const deleteConfigEntry = async (id: string): Promise<ConfigEntry> => {
+export const deleteConfigEntry = async (id: string, customAdminActionMessage?: {section: string, description: string}): Promise<ConfigEntry> => {
     let {data: dbData, error} = await supabase
-        .from<ConfigEntry>('Config-Entry')
+        .from('Config-Entry')
         .delete()
         .eq('id', id)
-        .single();
+        .single()
+        .select();
 
     if (error) throw error;
 
@@ -171,7 +164,9 @@ export const deleteConfigEntry = async (id: string): Promise<ConfigEntry> => {
         getConfigCache.splice(index, 1);
     }
 
-    await addAdminAction('Config', 'delete', `Die Konfiguration mit der ID "${id}" wurde gelöscht.`);
+    if (customAdminActionMessage == undefined) await addAdminAction('Config', 'delete', `Die Konfiguration mit der ID "${id}" wurde gelöscht.`);
+    else await addAdminAction(customAdminActionMessage.section, 'delete', customAdminActionMessage.description);
+
     return dataToConfigEntry(dbData);
 }
 
@@ -188,7 +183,7 @@ export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
     if (getFeaturesCache != undefined && !noCache) return getFeaturesCache
 
     let {data, error} = await supabase
-        .from<Feature>('Feature')
+        .from('Feature')
         .select('*')
         .order('title')
 
@@ -203,7 +198,7 @@ export const getFeature = async (name: string, noCache?: boolean): Promise<Featu
     if (!noCache && (find = (await getFeatures()).find(e => e.name == name)) != undefined) return find
 
     let {data, error} = await supabase
-        .from<Feature>('Feature')
+        .from('Feature')
         .select('*')
         .eq('name', name)
         .single();
@@ -215,11 +210,12 @@ export const getFeature = async (name: string, noCache?: boolean): Promise<Featu
 
 export const addFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
     const { data, error } = await supabase
-        .from<Feature>('Feature')
+        .from('Feature')
         .insert([
             { name: name, title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths },
         ])
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -229,10 +225,11 @@ export const addFeature = async (name: string, title: string, shortDescription: 
 
 export const updateFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
     const { data, error } = await supabase
-        .from<Feature>('Feature')
+        .from('Feature')
         .update({ title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths })
         .eq('name', name)
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -247,10 +244,11 @@ export const deleteFeature = async (name: string) => {
     await deleteImagesFromHTML(feature.longDescription)
 
     const { data, error } = await supabase
-        .from<Feature>('Feature')
+        .from('Feature')
         .delete()
         .eq('name', name)
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -267,7 +265,7 @@ export const getShowcasedFeatures = async (noCache?: boolean): Promise<Showcased
     if (getShowcasedFeaturesCache != undefined && !noCache) return getShowcasedFeaturesCache
 
     let {data, error} = await supabase
-        .from<ShowcasedFeature>('Showcased-Feature')
+        .from('Showcased-Feature')
         .select('*')
         .order('setAt', {ascending: false})
 
@@ -281,11 +279,12 @@ export const getShowcasedFeatures = async (noCache?: boolean): Promise<Showcased
 
 export const addShowcasedFeature = async (name: string): Promise<ShowcasedFeature> => {
     const { data, error } = await supabase
-        .from<ShowcasedFeature>('Showcased-Feature')
+        .from('Showcased-Feature')
         .insert([
             { name: name },
         ])
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -297,12 +296,13 @@ export const addShowcasedFeature = async (name: string): Promise<ShowcasedFeatur
 
 export const deleteShowcasedFeature = async (name: string) => {
     const { data, error } = await supabase
-        .from<ShowcasedFeature>('Showcased-Feature')
+        .from('Showcased-Feature')
         .delete()
         .eq('name', name)
         .single()
 
     if (error) throw error;
+    if (data === null) return data;
     data.setAt = new Date(data.setAt);
 
     await addAdminAction('Leistungen', 'delete', `Die Leistung mit dem Namen "${name}" wurde von der Startseite entfernt.`);
@@ -314,13 +314,13 @@ export const deleteShowcasedFeature = async (name: string) => {
 
 
 let getBlogEntriesCache; // This results in each client only requesting the data once.
-export const getBlogEntries = async (noCache?: boolean, count?: number): Promise<BlogEntry[]> => {
+export const getBlogEntries = async (noCache?: boolean, count?: number, withAuthor: boolean = true): Promise<BlogEntry[]> => {
     if (typeof count === undefined) count = -1;
     if (getBlogEntriesCache != undefined && !noCache) return getBlogEntriesCache.limit(count)
 
     let {data, error} = await supabase
-        .from<BlogEntry>('Blog-Entry')
-        .select('*')
+        .from('Blog-Entry')
+        .select('id, createdAt, title, content, previewImageUrl, previewText' + (withAuthor ? ', author' : ''))
         .order('createdAt', {ascending: false})
         .limit(count)
 
@@ -332,13 +332,13 @@ export const getBlogEntries = async (noCache?: boolean, count?: number): Promise
     return data;
 }
 
-export const getBlogEntry = async (id: string, noCache?: boolean): Promise<BlogEntry> => {
+export const getBlogEntry = async (id: string, noCache?: boolean, withAuthor: boolean = true): Promise<BlogEntry> => {
     let find; // Only if the feature can not be found in the cache, a new request is sent.
     if (!noCache && (find = (await getBlogEntries()).find(e => e.id == id)) != undefined) return find
 
     let {data, error} = await supabase
-        .from<BlogEntry>('Blog-Entry')
-        .select('*')
+        .from('Blog-Entry')
+        .select('id, createdAt, title, content, previewImageUrl, previewText' + (withAuthor ? ', author' : ''))
         .eq('id', id)
         .single();
 
@@ -352,11 +352,12 @@ export const getBlogEntry = async (id: string, noCache?: boolean): Promise<BlogE
 // Adds a new blog entry to the database.
 export const addBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
     const { data, error } = await supabase
-        .from<BlogEntry>('Blog-Entry')
+        .from('Blog-Entry')
         .insert([
             { id: id, author: author, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl },
         ])
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -367,10 +368,11 @@ export const addBlogEntry = async (id: string, author: string, title: string, pr
 // Updates the blog entry with the given id.
 export const updateBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
     const { data, error } = await supabase
-        .from<BlogEntry>('Blog-Entry')
+        .from('Blog-Entry')
         .update( { id: id, author: author, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl })
         .eq('id', id)
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -390,7 +392,7 @@ export const deleteBlogEntry = async (id: string) => {
     await deleteFiles(key.bucket, [key.path.match(/(.*)\?t=.*/)[1]]);
 
     const { data, error } = await supabase
-        .from<BlogEntry>('Blog-Entry')
+        .from('Blog-Entry')
         .delete()
         .eq('id', id)
         .single()
@@ -411,7 +413,7 @@ export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> =
     if (getTeamMembersCache != undefined && !noCache) return getTeamMembersCache
 
     let {data, error} = await supabase
-        .from<TeamMember>('Team-Member')
+        .from('Team-Member')
         .select('*')
         .order('name')
 
@@ -427,7 +429,7 @@ export const getTeamMember = async (id: string, noCache?: boolean): Promise<Team
     if (!noCache && (find = (await getTeamMembers()).find(e => e.id == id)) != undefined) return find
 
     let {data, error} = await supabase
-        .from<TeamMember>('Team-Member')
+        .from('Team-Member')
         .select('*')
         .eq('id', id)
         .single();
@@ -440,11 +442,12 @@ export const getTeamMember = async (id: string, noCache?: boolean): Promise<Team
 // Adds the team member to the database.
 export const addTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
-        .from<TeamMember>('Team-Member')
+        .from('Team-Member')
         .insert([
             { id: id, name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl },
         ])
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -455,10 +458,11 @@ export const addTeamMember = async (id: string, name: string, role: string, desc
 // Updates the team member with the given id.
 export const updateTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
-        .from<TeamMember>('Team-Member')
+        .from('Team-Member')
         .update({ name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl })
         .eq('id', id)
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -472,10 +476,11 @@ export const updateTeamMember = async (id: string, name: string, role: string, d
  */
 export const deleteTeamMember = async (id: string) => {
     const { data, error } = await supabase
-        .from<TeamMember>('Team-Member')
+        .from('Team-Member')
         .delete()
         .eq('id', id)
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -492,7 +497,7 @@ export const deleteTeamMember = async (id: string) => {
  */
 export const getTimePeriod = async (id: number): Promise<TimePeriod> => {
     let {data, error} = await supabase
-        .from<TimePeriod>('Time-Period')
+        .from('Time-Period')
         .select('*')
         .eq('id', id)
         .single();
@@ -517,6 +522,7 @@ export const addTimePeriod = async (startTime: Date, duration: number): Promise<
             { startTime: startTimeString, duration: duration },
         ])
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -538,6 +544,7 @@ export const updateTimePeriod = async (id: number, startTime: Date, duration: nu
         .update({ startTime: startTimeString, duration: duration })
         .eq('id', id)
         .single()
+        .select();
 
     if (error) throw error;
 
@@ -551,10 +558,11 @@ export const updateTimePeriod = async (id: number, startTime: Date, duration: nu
  */
 export const deleteTimePeriod = async (id: number) => {
     const { data, error } = await supabase
-        .from<TimePeriod>('Time-Period')
+        .from('Time-Period')
         .delete()
         .eq('id', id)
         .single()
+        .select();
 
     if (error) throw error;
     return data;
@@ -600,7 +608,7 @@ export const getOfficeHours = async (noCache: boolean = false): Promise<OfficeHo
     if (getOfficeHoursCache && !noCache) return getOfficeHoursCache;
 
     let {data, error} = await supabase
-        .from<OfficeHour>('Office-Hour')
+        .from('Office-Hour')
         .select('*')
         .order('weekday', {ascending: true});
 
@@ -643,12 +651,15 @@ export const updateOfficeHour = async (weekday: number, timePeriods: TimePeriod[
         .update({ timePeriodIds: timePeriodIds, comment: comment })
         .eq('weekday', weekday)
         .single()
+        .select();
 
     if (error) {
         //  If an error occurs, the time periods are deleted again.
         await Promise.all(timePeriodIds.map(async timePeriodId => deleteTimePeriod(timePeriodId)));
         throw error;
     }
+
+    await addAdminAction('OfficeHour', 'update', `Die Sprechzeiten am ${numberToWeekdayDE(weekday)} wurden bearbeitet.`);
 
     return await formatDataToOfficeHour(data);
 }
@@ -664,8 +675,11 @@ export const updateOfficeHourComment = async (weekday: number, comment: string):
         .update({ comment: comment })
         .eq('weekday', weekday)
         .single()
+        .select();
 
     if (error) throw error;
+
+    await addAdminAction('OfficeHour', 'delete', `Der Kommentar zur Sprechzeit am ${numberToWeekdayDE(weekday)} wurde bearbeitet.`);
 
     return await formatDataToOfficeHour(data);
 }
@@ -707,7 +721,7 @@ export const getBannerConfig = async (name: string): Promise<BannerConfig> => {
 
     if (error) throw error;
 
-    return data;
+    return formatDataToBannerConfig(data);
 }
 
 export const addBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
@@ -715,10 +729,13 @@ export const addBannerConfig = async (bannerConfig: BannerConfig): Promise<Banne
         .from('Banner-Config')
         .insert([bannerConfig])
         .single()
+        .select();
 
     if (error) throw error;
 
-    return data;
+    await addAdminAction('Banner', 'insert', `Das Banner Konfiguration mit dem Namen "${bannerConfig.name}" wurde hinzugefügt.`);
+
+    return formatDataToBannerConfig(data);
 }
 
 export const updateBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
@@ -727,10 +744,13 @@ export const updateBannerConfig = async (bannerConfig: BannerConfig): Promise<Ba
         .update(bannerConfig)
         .eq('name', bannerConfig.name)
         .single()
+        .select();
 
     if (error) throw error;
 
-    return data;
+    await addAdminAction('Banner', 'update', `Das Banner Konfiguration mit dem Namen "${bannerConfig.name}" wurde bearbeitet.`);
+
+    return formatDataToBannerConfig(data);
 }
 
 export const deleteBannerConfig = async (name: string): Promise<BannerConfig> => {
@@ -739,10 +759,20 @@ export const deleteBannerConfig = async (name: string): Promise<BannerConfig> =>
         .delete()
         .eq('name', name)
         .single()
+        .select();
 
     if (error) throw error;
 
-    return data;
+    await addAdminAction('Banner', 'delete', `Das Banner Konfiguration mit dem Namen "${name}" wurde gelöscht.`);
+
+    return formatDataToBannerConfig(data);
+}
+
+const formatDataToBannerConfig = (data: BannerConfig): BannerConfig => {
+    let copy = { ...data };
+    copy.updatedAt = copy.updatedAt ? new Date(copy.updatedAt) : null;
+    copy.activeUntil = copy.activeUntil ? new Date(copy.activeUntil) : null;
+    return copy;
 }
 
 
@@ -753,7 +783,7 @@ export const getAdminActions = async (count?: number): Promise<AdminAction[]> =>
     if (typeof count === undefined) count = -1;
 
     let { data, error } = await supabase
-        .from<AdminAction>('Admin-Action')
+        .from('Admin-Action')
         .select('*')
         .order('performedAt', {ascending: false})
         .limit(count)
@@ -766,12 +796,15 @@ export const getAdminActions = async (count?: number): Promise<AdminAction[]> =>
 
 export const addAdminAction = async (section: string, action: string, description: string, author?: string) => {
     const { data, error } = await supabase
-        .from<AdminAction>('Admin-Action')
+        .from('Admin-Action')
         .insert([
-            { section: section, action: action, description: description, author: author || getUser().email },
+            { section: section, action: action, description: description, author: author || (await getUser()).email },
         ])
+        .select();
 
     if (error) throw error
+
+    adminActionsChangeStore.set(true);
 
     return data
 }
@@ -805,11 +838,9 @@ export const deleteFiles = async (bucket: string, paths: string[]) => {
 }
 
 export const getPublicFileUrl = async (bucket: string, path: string) => {
-    const { publicURL, error } = supabase.storage.from(bucket).getPublicUrl(path);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
 
-    if (error) throw error;
-
-    return publicURL;
+    return data.publicUrl;
 }
 
 /// Lists all the files within a bucket.
@@ -829,10 +860,12 @@ export const listFiles = async (bucket: string, path?: string, searchOptions?: S
 
 
 export const signIn = async (email: string, password: string) => {
-    let {user, error} = await supabase.auth.signIn({
-        email: email,
-        password: password
-    })
+    const {
+        data: { user },
+        error,
+    } = await supabase
+        .auth
+        .signInWithPassword({ email, password })
 
     if (error) throw error;
 
@@ -846,17 +879,21 @@ export const signOut = async () => {
     else return true
 }
 
-export const signUp = async (email: string, password: string) => {
-    let { user, error } = await supabase.auth.signUp({
+export const signUp = async (email: string, password: string): Promise<User | null> => {
+    let { data, error } = await supabase.auth.signUp({
         email: email,
         password: password
     })
 
     if (error) throw error;
-    return user;
+    return data.user;
 }
 
-export const getUser = (): User | null => {
-    return supabase.auth.user();
+export const getUser = async (): Promise<User | null> => {
+    const {
+        data: { session },
+    } = await supabase.auth.getSession()
+    if (session) return session.user;
+    else return null;
 }
 

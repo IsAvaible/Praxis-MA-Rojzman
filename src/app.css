@@ -8,19 +8,20 @@
     }
 }
 
-/* Enables Dark Mode Transition */
+/* Enables Dark Mode Transition (wonky as some elements won't transition) */
 /*body, #header, #footer, html {*/
-/*    transition: 100ms;*/
+/*    transition: 500ms;*/
 /*    !*Expo-out timing*!*/
 /*    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);*/
 /*}*/
 
 .tooltip {
-    @apply invisible absolute;
+    @apply opacity-0 absolute pointer-events-none;
+    @apply transition-opacity;
 }
 
 .has-tooltip:hover .tooltip {
-    @apply md:visible md:z-50;
+    @apply md:opacity-100 md:z-50;
 }
 
 /* Enable placeholders in content editable fields */
