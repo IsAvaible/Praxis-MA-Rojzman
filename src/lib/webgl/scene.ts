@@ -165,5 +165,8 @@ const loadVirus = () => {
       (xhr) => {},
       (error) => console.error(error)
   );
+
+  scene.remove(loadPlaceholderObject);
+  loadPlaceholderObject = undefined;
 }
 
