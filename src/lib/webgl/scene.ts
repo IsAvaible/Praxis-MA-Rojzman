@@ -162,8 +162,11 @@ const loadVirus = () => {
         // interaction.add(virus);
         // virus.addEventListener("mousedown", (event => centerMaterial.wireframe = !centerMaterial.wireframe));
       },
-      (xhr) => {if (xhr.loaded === xhr.total) {scene.remove(loadPlaceholderObject); loadPlaceholderObject = undefined;}},
+      (xhr) => {},
       (error) => console.error(error)
   );
+
+  scene.remove(loadPlaceholderObject);
+  loadPlaceholderObject = undefined;
 }
 
