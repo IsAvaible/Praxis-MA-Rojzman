@@ -3,6 +3,7 @@
     import {fade} from "svelte/transition";
     import {getFeature, getShowcasedFeatures} from "../../scripts/database/database";
     import Alert from "../Essentials/Alert.svelte";
+    import LoadingWheel from "../Misc/LoadingWheel.svelte";
 
     let showcasedFeatures = getShowcasedFeatures().then(d => Promise.all(d.map(f => getFeature(f.name))));
 </script>
@@ -10,9 +11,12 @@
 <div class="py-12">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="sr-only">Unsere Leistungen</h2>
-        {#await showcasedFeatures then showcasedFeatures}
+        {#await showcasedFeatures}
+            <div class="w-full mt-12 pt-12 flex justify-center">
+                <LoadingWheel size={25} showAfter={1000}/>
+            </div>
+        {:then showcasedFeatures}
             <div class="space-y-10 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
-                <!-- The admin may specify three different features that will be shown on the start page.-->
                 {#each showcasedFeatures as {name, title, shortDescription, longDescription, svgPaths}}
                     <div in:fade={{duration: 100}}>
                         <div>

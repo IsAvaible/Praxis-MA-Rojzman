@@ -115,7 +115,7 @@
         {/each}
     </div>
     <div class="w-full flex flex-col xl:flex-row space-y-2 xl:space-y-0 xl:space-x-2 bg-primary-300 p-2 rounded-md">
-        <div class="flex-grow flex space-x-2 justify-center xl:justify-start">
+        <div class="flex-grow flex space-x-2 justify-center xl:justify-start min-h-[3rem]">
             {#await getOfficeHourByWeekday(selectedWeekday)}
                 <div class="w-full flex justify-center items-center"><LoadingWheel size={9}/></div>
             {:then {weekday, timePeriods, comment}}

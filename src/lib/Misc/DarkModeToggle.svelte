@@ -3,11 +3,13 @@
     import {fade} from "svelte/transition";
     import {delay} from "../../scripts/misc/delay";
     import {longpress} from "../../scripts/ui/longpress";
+    import {onDestroy} from "svelte";
 
     let checked;
-    darkModeStore.subscribe(value => {
+    const unsubscribe = darkModeStore.subscribe(value => {
         checked = !value;
     });
+    onDestroy(unsubscribe);
 
     const updateDarkMode = () => {
         showSystemNotification = false;

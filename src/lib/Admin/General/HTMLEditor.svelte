@@ -18,6 +18,7 @@
     let editorInstance = null;
     // Setting up any initial data for the editor
     export let editorData = preFill;
+    export let exportData;
     // Storing images stored withing the previous data to be checked against on exit [[bucket, path]]
     let prevImageKeys = findImagesInHtml(editorData);
 
@@ -25,8 +26,13 @@
     let imageUploader = undefined;
     let uploads = [];
 
+    // Convert youtube-nocookie.com to youtube.com embeds (as the editor does not support youtube-nocookie.com)
+    editorData = editorData.replace(/youtube-nocookie\.com\/embed\/(.*)/g, "youtube.com/embed/$1")
+
     // Add lazy loading attribute to img tags
     $: editorData = editorData.replace(/<img (loading="lazy"){0} .*>/, match => match.replace(/<img/, '<img loading="lazy"'));
+    // Convert youtube.com to youtube-nocookie.com embeds (privacy reasons)
+    $: exportData = editorData.replace(/youtube\.com\/embed\/(.*)/g, "youtube-nocookie.com/embed/$1");
 
     // If needed, custom editor config can be passed through to the component
     // Uncomment the custom editor config if you need to customise the editor.

@@ -3,7 +3,6 @@
     import {useParams} from "svelte-navigator";
     import {delay} from "../scripts/misc/delay";
     import {slide} from "svelte/transition";
-    import {prefersReducedMotionStore} from "../scripts/stores/prefersReducedMotionStore";
 
     import BlogEntry from "../lib/Blog/BlogEntry.svelte";
     import Alert from "../lib/Essentials/Alert.svelte";
@@ -13,9 +12,6 @@
 
     let urlID;
     let showErrorAlertDialog = false;
-
-    let prefersReducedMotion;
-    prefersReducedMotionStore.subscribe(b => prefersReducedMotion = b);
 
     let params = useParams()
     const onBlogEntriesMount = () => {

@@ -2,9 +2,10 @@
     import {updateConfigEntry} from "../../../scripts/database/database";
     import {rainbowHeaderIconAnimationStore} from "../../../scripts/stores/rainbowHeaderIconAnimationStore";
     import {scrollToHeader} from "../../../scripts/misc/scrollToHeader";
+    import {onDestroy} from "svelte";
 
     let rainbowAnimate: boolean;
-    rainbowHeaderIconAnimationStore.subscribe(value => rainbowAnimate = value);
+    const unsubscribe = rainbowHeaderIconAnimationStore.subscribe(value => rainbowAnimate = value);
 
     const updateConfig = async () => {
             await updateConfigEntry(
@@ -15,6 +16,8 @@
             rainbowHeaderIconAnimationStore.set(rainbowAnimate);
             scrollToHeader();
         }
+
+    onDestroy(unsubscribe);
 </script>
 
 

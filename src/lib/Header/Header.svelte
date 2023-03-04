@@ -29,9 +29,11 @@
     import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
     import {adminPreviewBannerDataStore} from "../../scripts/stores/adminPreviewBannerDataStore";
     import Icon from "./Icon.svelte";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import {getBannerConfig, getConfigEntry} from "../../scripts/database/database";
     import disableScroll from "disable-scroll";
+    import {siteCookieStore} from "../../scripts/stores/cookies/siteCookieStore";
+    import {cookieState} from "../../scripts/stores/cookies/siteCookieStore";
 
     let siteEnterPopUpData = {
         svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
@@ -73,14 +75,11 @@
         return `Navigiert zu ${viewName} in ${pathname}`;
     }
 
-    let unsavedChanges;
-    unsavedChangesStore.subscribe(value => unsavedChanges = value)
-
     // Scroll to top when the site is switched
     history.pushState = new Proxy(history.pushState, {
         apply (target, thisArg, argumentsList) {
             // This will execute *before* the navigation (and may prevent it by returning early)
-            if (unsavedChanges) {
+            if ($unsavedChangesStore) {
                 if (confirm('Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?')) {
                     unsavedChangesStore.set(false);
                 } else {
@@ -102,14 +101,14 @@
 
     // Prevent refresh when there are unsaved changes
     window.onbeforeunload = () => {
-        if (unsavedChanges) {
+        if ($unsavedChangesStore) {
             return 'Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?';
         }
     }
 
     // Revert browser back and forward buttons when there are unsaved changes
     window.onpopstate = event => {
-        if (unsavedChanges) {
+        if ($unsavedChangesStore) {
             if (confirm('Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?')) {
                 return
             } else {
@@ -172,7 +171,7 @@
 
     let adminPreviewBannerActive = false;
     let adminPreviewBannerData;
-    adminPreviewBannerDataStore.subscribe((data) => {
+    const adminPreviewBannerUnsubscribe = adminPreviewBannerDataStore.subscribe((data) => {
         if (data) {
             adminPreviewBannerData = data;
         }
@@ -181,10 +180,15 @@
 
     let offline = false;
     let offlineBannerOpen = false;
-    deviceOnlineStore.subscribe(online => {
+    const deviceOnlineUnsubscribe = deviceOnlineStore.subscribe(online => {
         offline = !online;
         if (online) {offlineBannerOpen = false}
         else {delay(3000).then(() => {if (offline) offlineBannerOpen = true})}
+    })
+
+    onDestroy(() => {
+        adminPreviewBannerUnsubscribe();
+        deviceOnlineUnsubscribe();
     })
 </script>
 
@@ -213,7 +217,7 @@
                         </div>
                     {/if}
                 </div>
-                <nav class="hidden md:flex space-x-10">
+                <nav class="hidden md:flex md:items-center space-x-10">
 <!--                    <div class="relative">-->
 <!--                        &lt;!&ndash; Item active: "text-gray-900", Item inactive: "text-gray-500" &ndash;&gt;-->
 <!--                        <button on:click={toggleFlyout1} type="button" class="text-gray-500 group bg-white rounded-md inline-flex items-center text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" aria-expanded="false">-->
@@ -277,7 +281,9 @@
         {#if adminPreviewBannerActive}
             <Banner {...adminPreviewBannerData} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}} id="adminPreviewBanner"/>
         {/if}
-<!--        <CookieBanner/>-->
+        {#if $siteCookieStore === cookieState.UNSET}
+            <CookieBanner/>
+        {/if}
         <SiteEnterPopUp {...siteEnterPopUpData}/>
     </div>
     <div id="#Routes">

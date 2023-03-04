@@ -12,10 +12,8 @@
     export let zIndex: number = 50;
 
     let dispatch = createEventDispatcher();
-    let unsavedChanges: boolean;
-    unsavedChangesStore.subscribe(value => unsavedChanges = value);
     const hide = () => {
-        if (unsavedChangesCheck && unsavedChanges) {
+        if (unsavedChangesCheck && $unsavedChangesStore) {
             if (confirm('Auf dieser Seite liegen noch ungespeicherte Änderungen vor! Wollen sie die Seite trotzdem verlassen?')) {
                 unsavedChangesStore.set(false);
             } else {

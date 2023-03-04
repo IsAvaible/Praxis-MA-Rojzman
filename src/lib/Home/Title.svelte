@@ -1,18 +1,24 @@
 <script lang="ts">
     import {homeVisited} from "../../scripts/stores/homeVisitStore";
     import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
+    import {onDestroy} from "svelte";
 
     let prefersReducedMotion; // Stores whether the user prefers reduced motion
     let visited: boolean = undefined; // Stores whether the user has visited the home page before
-    prefersReducedMotionStore.subscribe((value) => {
+    const prefersReducedMotionUnsubscribe = prefersReducedMotionStore.subscribe((value) => {
         if (prefersReducedMotion == undefined) prefersReducedMotion = value;
     });
 
-    homeVisited.subscribe((value) => {
+    const homeVisitedUnsubscribe = homeVisited.subscribe((value) => {
         if (visited === undefined) {
             visited = value;
             homeVisited.set(true);
         }
+    });
+
+    onDestroy(() => {
+        prefersReducedMotionUnsubscribe();
+        homeVisitedUnsubscribe();
     });
 </script>
 

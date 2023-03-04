@@ -81,7 +81,7 @@
             {/if}
         </div>
         <div class="mb-6" on:mousedown={disableSubmitted} title={editMode?'Ausführliche Beschreibung (Optional)':''}>
-            <HTMLEditor bind:saved={submitted} bind:editorData={longDescription} imageBucket="images" imagePath="feature/content/"/>
+            <HTMLEditor bind:saved={submitted} bind:exportData={longDescription} editorData={longDescription} imageBucket="images" imagePath="feature/content/"/>
         </div>
         <div class="flex justify-center mb-6">
             <input required bind:value={svgPaths} class="absolute opacity-0 pointer-events-none">

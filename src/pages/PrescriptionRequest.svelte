@@ -1,6 +1,5 @@
 <script lang="ts">
 import {darkModeStore} from "../scripts/stores/darkModeStore";
-import {prefersReducedMotionStore} from "../scripts/stores/prefersReducedMotionStore";
 import {conditionalInputTypeReset} from "../scripts/ui/conditionalInputTypeReset";
 import Footer from "../lib/Essentials/Footer.svelte";
 import {fade, slide} from "svelte/transition";
@@ -8,11 +7,6 @@ import HCaptcha, {CaptchaTheme} from "svelte-hcaptcha/src/HCaptcha.svelte";
 import {removeItem} from "../scripts/misc/arrayRemoveItem";
 import {onMount} from "svelte";
 import PageTitle from "../lib/Admin/Navigation/PageTitle.svelte";
-
-let darkMode: boolean;
-darkModeStore.subscribe((value) => darkMode = value);
-let prefersReducedMotion: boolean;
-prefersReducedMotionStore.subscribe((value) => prefersReducedMotion = value);
 
 onMount(() => scrollTo(0, 0)); // The HCaptcha is messing up the scroll
 
@@ -98,11 +92,11 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
                 {/each}
                 <div class="mb-6 items-center w-full">
                     <div class="m-auto table min-h-[78px]" in:fade={{duration: 400}}>
-                        {#key darkMode} <!-- This forces the component to update when the dark mode is changed -->
+                        {#key $darkModeStore} <!-- This forces the component to update when the dark mode is changed -->
                             <!-- Validation does not work on localhost! Use 127.0.0.1 for testing -->
                             <HCaptcha
                                     sitekey={import.meta.env.VITE_HCAPTCHA_KEY}
-                                    theme={darkMode ? CaptchaTheme.DARK : CaptchaTheme.LIGHT}
+                                    theme={$darkModeStore ? CaptchaTheme.DARK : CaptchaTheme.LIGHT}
                                     reCaptchaCompat={false}
                                     bind:this={captcha}
                                     on:error={handleError}

@@ -8,10 +8,6 @@
     let weekdays: string[] = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
 
     // If the office hours were changed by the admin, the cache is not used and the office hours are reloaded
-    let officeHoursChanged = false;
-    officeHoursChangedStore.subscribe(value => {
-        officeHoursChanged = value;
-    });
 
     const compareTimePeriods = (a, b) => {
         if (a.startTime > b.startTime) {
@@ -36,7 +32,7 @@
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-slate-100" id="modal-title">Unsere Sprech- und Praxiszeiten</h3>
             <div class="mt-2">
                 <!-- Use noCache if the office hours are opened while the user is in the admin section -->
-                {#await getOfficeHours(officeHoursChanged)}
+                {#await getOfficeHours($officeHoursChangedStore)}
                     <div class="flex w-full my-28 justify-center items-center">
                         <LoadingWheel showAfter={1000} size={20}/>
                     </div>

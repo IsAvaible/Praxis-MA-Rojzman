@@ -1,9 +1,10 @@
 <script lang="ts">
     import Modal from "../Essentials/Modal.svelte";
-    import { createEventDispatcher } from "svelte";
+    import {createEventDispatcher} from "svelte";
     import { getFeature } from "../../scripts/database/database";
     import Alert from "../Essentials/Alert.svelte";
     import LoadingWheel from "../Misc/LoadingWheel.svelte";
+    import DSGVODialogHTMLWrapper from "../Legal/DSGVODialogHTMLInjector.svelte";
 
 
     export let name: string;
@@ -33,7 +34,7 @@
             </div>
             <div class="mt-4">
                 {#if feature.longDescription}
-                    <p class="ck-content">{@html feature.longDescription}</p>
+                    <p class="ck-content"><DSGVODialogHTMLWrapper html={feature.longDescription}/></p>
                 {:else}
                     <p class="text-center font-normal mb-2">{feature.shortDescription}</p>
                     <Alert type={1} title="Keine ausführliche Beschreibung vorhanden" description="Für diese Leistung ist leider keine ausführliche Beschreibung vorhanden."/>

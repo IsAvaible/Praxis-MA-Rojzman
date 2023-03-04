@@ -31,7 +31,7 @@
                                 as {title, linkText, href, svgPaths, viewBox, target}}
 
                             <div class="flex mb-8 w-full">
-                                <a href={href} target={target} class="max-w-[60px] sm:max-w-[70px] w-full h-[60px] sm:h-[70px] flex items-center justify-center mr-6 overflow-hidden bg-primary-300 hover:bg-opacity-10 bg-opacity-5 text-primary-500 rounded">
+                                <a href={href} target={target} class="max-w-[60px] sm:max-w-[70px] w-full h-[60px] sm:h-[70px] flex items-center justify-center mr-6 overflow-hidden bg-primary-300 hover:bg-opacity-10 dark:hover:bg-opacity-20 bg-opacity-5 text-primary-500 text-primary-400 rounded">
                                     <svg class="fill-current overflow-visible" height="24" width="24" viewBox="0 0 {viewBox} {viewBox}" >
                                         {#each svgPaths as path}
                                             <path fill-rule="evenodd" d={path}/>
@@ -39,7 +39,7 @@
                                     </svg>
                                 </a>
                                 <div class="w-full">
-                                    <h4 class="font-bold dark:text-slate-100 text-xl mb-1">{title}</h4>
+                                    <h3 class="font-bold dark:text-slate-100 text-xl mb-1">{title}</h3>
                                     <a href={href} target="_blank" rel="noreferrer" class="font-medium text-gray-600 hover:text-black dark:text-slate-300 dark:hover:text-slate-100">
                                         {linkText}
                                     </a>
@@ -53,9 +53,9 @@
                                 </svg>
                             </div>
                             <div class="w-full">
-                                <h4 class="font-bold dark:text-slate-100 text-xl mb-1">
+                                <h3 class="font-bold dark:text-slate-100 text-xl mb-1">
                                     Im Notfall
-                                </h4>
+                                </h3>
                                 <p class="text-gray-600 font-medium dark:text-slate-300">Bei akutem Behandlungsbedarf außerhalb von Praxiszeiten empfehlen wir
                                     die Kontaktierung des <a href="https://www.116117.de/de/index.php" class="hover:text-black dark:hover:text-slate-100">ärztlichen Bereitschaftsdienstes</a>
                                     (<a href="tel:116117" class="text-gray-800 dark:text-slate-200 hover:text-black dark:hover:text-slate-100 underline">116 117</a>) oder in schwereren Fällen

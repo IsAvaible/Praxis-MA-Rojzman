@@ -17,8 +17,6 @@
     let failedAttempts: number = 0;
     let maxFailsBeforeCaptcha: number = 3;
 
-    let darkMode: boolean;
-    darkModeStore.subscribe((value) => darkMode = value);
     let captcha;
     let captchaSolved;
     $: captchaSolved = failedAttempts < maxFailsBeforeCaptcha;
@@ -60,11 +58,11 @@
                             {#if failedAttempts >= maxFailsBeforeCaptcha}
                                 <div class="mb-6 items-center w-full">
                                     <div class="m-auto table min-h-[78px]" in:fade={{duration: 400}}>
-                                        {#key darkMode} <!-- This forces the component to update when the dark mode is changed -->
+                                        {#key $darkModeStore} <!-- This forces the component to update when the dark mode is changed -->
                                             <!-- Validation does not work on localhost! Use 127.0.0.1 for testing -->
                                             <HCaptcha
                                                     sitekey={import.meta.env.VITE_HCAPTCHA_KEY}
-                                                    theme={darkMode ?  CaptchaTheme.Dark : CaptchaTheme.Light}
+                                                    theme={$darkModeStore ?  CaptchaTheme.Dark : CaptchaTheme.Light}
                                                     bind:this={captcha}
                                                     on:error={handleError}
                                                     on:success={handleSuccess}

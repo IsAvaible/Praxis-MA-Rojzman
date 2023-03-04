@@ -1,31 +1,18 @@
 <script>
-    import {googleMapsAllowedStore} from "../../scripts/stores/googleMapsAllowedStore";
-
     import {fade} from "svelte/transition";
     import {quartIn} from "svelte/easing";
-    import LoadingWheel from "../Misc/LoadingWheel.svelte";
 
-    let googleMapsAllowed = false;
-    googleMapsAllowedStore.subscribe(value => googleMapsAllowed = value);
-    let alwaysAllow = true;
+    import {googleMapsAllowedStore} from "../../scripts/stores/cookies/googleMapsAllowedStore";
+
+    import LoadingWheel from "../Misc/LoadingWheel.svelte";
+    import DSGVODialog from "../Legal/DSGVODialog.svelte";
 </script>
 
-<div class="relative" style="min-height: 250px; background-color: #e5e3df">
-    {#if !googleMapsAllowed}
-        <div class="w-full h-full bg-hero-topography-700">
-            <div class="w-full h-full flex flex-col justify-center items-center backdrop-blur-sm gap-1 p-4">
-                <!-- DSGVO google maps confirmation dialog -->
-                <p class="text-md text-gray-800 text-center">Diese Webseite nutzt Google Maps um den Standort der Praxis anzuzeigen. Durch das Laden der Karte akzeptieren sie Datenschutzerklärung von Google.</p>
-                <a href="https://policies.google.com/privacy" rel="noreferrer" target="_blank" class="text-primary-600 hover:underline">Mehr erfahren</a>
-                <button on:click={() => {if (alwaysAllow) {googleMapsAllowedStore.set(true)} else {googleMapsAllowed = true}}} class="bg-white text-gray-800 font-bold mt-2 px-4 py-2 rounded-md shadow-lg hover:shadow-md transition-shadow duration-300">Karte laden</button>
-                <div class="flex items-center gap-1">
-                    <input type="checkbox" class="my-auto hover:cursor-pointer h-full" bind:checked={alwaysAllow}/>
-                    <p class="text-gray-800">Immer zulassen</p>
-                </div>
 
-            </div>
-        </div>
-    {:else}
+
+<div class="relative" style="min-height: 250px; background-color: #e5e3df">
+    <DSGVODialog text="Diese Webseite nutzt Google Maps um den Standort der Praxis anzuzeigen. Durch das Laden der Karte akzeptieren sie Datenschutzerklärung von Google."
+                 link="https://policies.google.com/privacy" buttonText="Karte laden" cookieStore={googleMapsAllowedStore} backgroundStyle="bg-hero-topography-700" blurBackground={true}>
         <div class="absolute top-0 bottom-0 w-full flex justify-center items-center">
             <LoadingWheel size={20} showAfter={500}/>
         </div>
@@ -35,5 +22,5 @@
                 class="w-full h-full z-10 relative"
                 allowfullscreen referrerpolicy="no-referrer" title="Google Maps Karte mit der Praxis als markierten Standort (Kammstr. 2, Kiedrich).">
         </iframe>
-    {/if}
+    </DSGVODialog>
 </div>

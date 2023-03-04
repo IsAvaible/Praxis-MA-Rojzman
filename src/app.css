@@ -15,6 +15,11 @@
 /*    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);*/
 /*}*/
 
+/* Override Tailwind's default font-medium class to use 600 instead of 500 */
+.font-medium {
+    font-weight: 600;
+}
+
 .tooltip {
     @apply opacity-0 absolute pointer-events-none;
     @apply transition-opacity;

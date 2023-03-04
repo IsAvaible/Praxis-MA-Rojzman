@@ -18,9 +18,6 @@
     export let pulseIcon: boolean = false;
     export let id: string = null;
 
-    let pushContent;  // This controls whether the banner takes up screen space and therefore pushes the content down when it is displayed.
-    bannerPushContentStore.subscribe((val) => pushContent = val);
-
     let dispatch = createEventDispatcher();
     const hide = () => {
         dispatch("hide", true);
@@ -29,7 +26,7 @@
 
 {#if active}
     <!-- The banner has a negative z-index to prevent it from appearing over dropdown menus during their fade animation -->
-    <div class="bg-primary-600 -z-10 {pushContent ? '' : 'absolute w-full'}" in:slide={{duration: 300 * (animateIn ? 1 : 0)}} out:slide={{duration: 400, easing: backInOut}} id={id}>
+    <div class="bg-primary-600 -z-10 {$bannerPushContentStore ? '' : 'absolute w-full'}" in:slide={{duration: 300 * (animateIn ? 1 : 0)}} out:slide={{duration: 400, easing: backInOut}} id={id}>
         <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between flex-wrap">
                 <div class="w-0 flex-1 flex items-center">

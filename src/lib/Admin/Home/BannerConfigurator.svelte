@@ -12,6 +12,7 @@
     import {delay} from "../../../scripts/misc/delay";
     import {slide} from "svelte/transition";
     import {scrollToHeader} from "../../../scripts/misc/scrollToHeader";
+    import {onDestroy} from "svelte";
 
     let showConfigScreen = false;
 
@@ -45,9 +46,10 @@
     let deleteLoading = false;
 
     let previewBannerActive;
-    adminPreviewBannerDataStore.subscribe((value) => {
+    const unsubscribe = adminPreviewBannerDataStore.subscribe((value) => {
         previewBannerActive = !!value;
     });
+    onDestroy(unsubscribe);
 
     const togglePreviewBanner = () => {
         adminPreviewBannerDataStore.set(previewBannerActive ? null : bannerConfig);

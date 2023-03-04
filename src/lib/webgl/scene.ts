@@ -137,7 +137,7 @@ const loadVirus = () => {
   loadPlaceholderObject = new THREE.Mesh(centerGeometry, centerMaterial);
 
   loadPlaceholderObject.position.setX(1);
-  delay(200).then(() => {
+  delay(500).then(() => {
     if (loadPlaceholderObject != undefined) scene.add(loadPlaceholderObject);
   });
 

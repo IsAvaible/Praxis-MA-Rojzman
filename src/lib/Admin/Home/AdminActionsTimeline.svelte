@@ -24,13 +24,9 @@ let svgs = [{section: 'Übersicht', paths: ['M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0
 ];
 
 let inView = true;
-let adminActionChange = false;
-adminActionsChangeStore.subscribe(value => {
-    adminActionChange = value;
-});
 
 
-$: if (inView && adminActionChange) {
+$: if (inView && $adminActionsChangeStore) {
     reload++;
     adminActionsChangeStore.set(false);
 }

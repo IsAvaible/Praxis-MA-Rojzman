@@ -69,7 +69,7 @@
         {/if}
         <input autocomplete="off" bind:value={previewText} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Eine kurze Zusammenfassung des Inhalts (*)" type="text" title={editMode?'Kurze Zusammenfassung des Inhalts (*)':''} />
         <div class="mb-6" on:mousedown={disableSubmitted} title={editMode?'Inhalt des Beitrags':''}>
-            <HTMLEditor bind:saved={submitted} bind:editorData={content} imageBucket="images" imagePath="blog/content/"/>
+            <HTMLEditor bind:saved={submitted} bind:exportData={content} editorData={content} imageBucket="images" imagePath="blog/content/"/>
         </div>
         <div class="flex justify-center mb-6">
             <input required bind:value={previewImageUrl} class="absolute opacity-0 pointer-events-none">

@@ -2,6 +2,7 @@
 
 import Footer from "../lib/Essentials/Footer.svelte";
 import DarkModeGlow from "../lib/Misc/DarkModeGlow.svelte";
+import CookieConfigurator from "../lib/Legal/CookieConfigurator.svelte";
 </script>
 
 <Footer>
@@ -249,5 +250,14 @@ import DarkModeGlow from "../lib/Misc/DarkModeGlow.svelte";
         <p>Diese Datenschutzerklärung hat den Stand vom 25. Mai 2018. Wir behalten uns vor, die Datenschutzerklärung zu gegebener Zeit zu aktualisieren, um den Datenschutz zu verbessern und/oder an geänderte Behördenpraxis oder Rechtsprechung anzupassen.</p>
 
         <p>&nbsp;</p>
+
+        <hr/>
+        <div class="w-full flex xl:justify-center pb-3 mt-5">
+            <div class="w-[30rem] max-w-full flex flex-col gap-1 xl:px-4 xl:py-2 xl:rounded-lg xl:shadow-md dark:xl:ring-1 dark:xl:ring-white">
+                <h3 class="text-xl font-semibold mb-1 xl:text-center">Cookies Konfigurieren</h3>
+                <CookieConfigurator showAdditionalControls={true}/>
+            </div>
+        </div>
+
     </div>
 </Footer>

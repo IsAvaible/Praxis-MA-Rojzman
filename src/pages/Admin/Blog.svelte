@@ -82,9 +82,9 @@ const deleteEntry = (blogEntry) => {
                             <div class="relative group focus:outline-none px-1 py-1 sm:py-2" tabindex="0" on:focus={() => currentHover = i} on:focusout={(e) => {if (!e.currentTarget.contains(e.relatedTarget)) currentHover = -1}} on:mouseenter={() => currentHover = i} on:mouseleave={() => currentHover = -1}>
                                 <BlogEntryComponent {...blogEntry} expanded={expandedEntryIndex === i}/>
                                 {#if currentHover === i}
-                                    <div in:fade={{duration: 200}} out:fade|local={{duration: 200}} class="absolute top-0 left-0 z-10 w-full h-full bg-gray-500 dark:bg-slate-600 {expandedEntryIndex === i ? 'bg-opacity-10 dark:bg-opacity-10' : 'bg-opacity-25 dark:bg-opacity-25'} rounded-lg transition-opacity">
+                                    <div in:fade={{duration: 200}} out:fade|local={{duration: 200}} class="absolute top-0 left-0 z-10 w-full h-full bg-gray-500 dark:bg-slate-600 pointer-events-none {expandedEntryIndex === i ? 'bg-opacity-10 dark:bg-opacity-10' : 'bg-opacity-25 dark:bg-opacity-25'} rounded-lg transition-opacity">
                                         <div class="flex h-full items-center justify-center max-w-3xl mx-auto text-white {i === blogEntries.length ? '' : 'mb-2'}">
-                                            <div class="has-tooltip mx-4">
+                                            <div class="has-tooltip mx-4 pointer-events-auto">
                                                 <button on:click={() => expandEntry(i)} class="h-9 w-9 rounded-full bg-primary-500 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 hover:bg-primary-600 cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6p" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -95,7 +95,7 @@ const deleteEntry = (blogEntry) => {
                                                     Artikel Lesen
                                                 </div>
                                             </div>
-                                            <div class="has-tooltip mx-4">
+                                            <div class="has-tooltip mx-4 pointer-events-auto">
                                                 <button on:click={() => editEntry(blogEntry)} class="h-9 w-9 rounded-full bg-primary-500 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 hover:bg-primary-600 cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -106,7 +106,7 @@ const deleteEntry = (blogEntry) => {
                                                     Bearbeiten
                                                 </div>
                                             </div>
-                                            <div class="has-tooltip mx-4">
+                                            <div class="has-tooltip mx-4 pointer-events-auto">
                                                 <button on:click={() => deleteEntry(blogEntry)} class="h-9 w-9 rounded-full bg-primary-500 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 hover:bg-primary-600 cursor-pointer">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

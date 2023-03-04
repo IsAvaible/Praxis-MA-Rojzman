@@ -1,6 +1,6 @@
 <script lang="ts">
 import {Link} from "svelte-navigator";
-import {onMount} from "svelte";
+import {onDestroy, onMount} from "svelte";
 import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
 import {getConfigEntry} from "../../scripts/database/database";
 import {rainbowHeaderIconAnimationStore} from "../../scripts/stores/rainbowHeaderIconAnimationStore";
@@ -8,12 +8,12 @@ import {rainbowHeaderIconAnimationStore} from "../../scripts/stores/rainbowHeade
 let canvas;
 let regularIcon;
 let windowWidth;
-let prefersReducedMotion;
 let rainbowAnimate = true;
 
 const initAnimation = async () => {
     // Source: https://svelte.dev/tutorial/bind-this
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', {willReadFrequently: true});
+    ctx.willReadFrequently = true;
     let frame = requestAnimationFrame(loop);
 
     let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -37,7 +37,7 @@ const initAnimation = async () => {
         }
 
         ctx.putImageData(imageData, 0, 0);
-        if (prefersReducedMotion || !rainbowAnimate) {
+        if ($prefersReducedMotionStore || !rainbowAnimate) {
             cancelAnimationFrame(frame);
             return;
         }
@@ -48,10 +48,8 @@ const initAnimation = async () => {
     };
 }
 
+let unsubscribe;
 onMount(async () => {
-    prefersReducedMotionStore.subscribe((value) => {
-        prefersReducedMotion = value;
-    });
     try {
         rainbowAnimate = (await getConfigEntry("rainbow-header-icon-animation")).data.active as boolean;
     } catch { // Database unreachable
@@ -60,7 +58,7 @@ onMount(async () => {
     rainbowHeaderIconAnimationStore.set(rainbowAnimate);
     await initAnimation();
 
-    rainbowHeaderIconAnimationStore.subscribe(value => {
+    unsubscribe = rainbowHeaderIconAnimationStore.subscribe(value => {
         rainbowAnimate = value;
 
         if (rainbowAnimate) {
@@ -73,6 +71,10 @@ onMount(async () => {
 
         initAnimation();
     });
+});
+
+onDestroy(() => {
+    unsubscribe();
 });
 
 </script>
