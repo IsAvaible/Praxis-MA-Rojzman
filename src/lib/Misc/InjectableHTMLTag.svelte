@@ -11,7 +11,6 @@
 
     let parsedHTML = [html];
     rules.forEach(rule => {
-        console.log(rule)
         parsedHTML = parsedHTML.map(substr => substr.split(rule.regex)).flat();
     });
 </script>

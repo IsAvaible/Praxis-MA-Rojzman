@@ -140,7 +140,7 @@
                                         </button>
                                     {:else}
                                         <!-- Two input type time elements that allow editing the startTime and endTime -->
-                                        <div on:click={e => {if (id === expandedTimePeriodId && e.target.matches('.parent-node')) expandedTimePeriodId = -1}} class="bg-white text-lg dark:bg-slate-900 rounded-md h-full px-2 flex items-center parent-node">
+                                        <div on:click={e => {if (id === expandedTimePeriodId && e.target.matches('.parent-node')) expandedTimePeriodId = -1}} class="bg-white text-lg dark:bg-slate-900 rounded-md h-full px-2 flex items-center parent-node flex-wrap justify-center">
                                             <span class="font-bold mr-1 has-tooltip pointer-events-none">{index + 1}.</span>
                                             <!-- timePeriods is a list of TimePeriod objects when the value is changed a new timePeriod is added to the time-->
                                             <input type="time" class="cursor-pointer p-1 bg-transparent" value={formatHHMM(startTime)} on:change={e => onStartTimeInputChange(e, id, index)} />

@@ -253,7 +253,7 @@ import CookieConfigurator from "../lib/Legal/CookieConfigurator.svelte";
 
         <hr/>
         <div class="w-full flex xl:justify-center pb-3 mt-5">
-            <div class="w-[30rem] max-w-full flex flex-col gap-1 xl:px-4 xl:py-2 xl:rounded-lg xl:shadow-md dark:xl:ring-1 dark:xl:ring-white">
+            <div class="w-[40rem] max-w-full flex flex-col gap-1 xl:px-4 xl:py-2 xl:rounded-lg xl:shadow-md dark:xl:ring-1 dark:xl:ring-white">
                 <h3 class="text-xl font-semibold mb-1 xl:text-center">Cookies Konfigurieren</h3>
                 <CookieConfigurator showAdditionalControls={true}/>
             </div>

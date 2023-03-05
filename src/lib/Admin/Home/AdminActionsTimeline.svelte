@@ -85,7 +85,7 @@ $: if (inView && $adminActionsChangeStore) {
             {/each}
             {#if actions}
                 <li>
-                    <div class="relative flex justify-center items-center space-x-5">
+                    <div class="relative flex justify-center items-center gap-x-5 flex-col sm:flex-row gap-y-2">
                         {#if actionsCount !== 'all'}
                             <button on:click={() => actionsCount += increaseBy} class="whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-1 active:ring-0 ring-inset ring-white">
                                 <span class="text-sm font-medium">Mehr anzeigen</span>

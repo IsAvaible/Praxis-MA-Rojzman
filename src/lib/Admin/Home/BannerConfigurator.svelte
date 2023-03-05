@@ -268,7 +268,7 @@
                         {/if}
                     </div>
                 </div>
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between flex-col sm:flex-row gap-y-2 gap-x-1">
                     <button on:click={saveCurrentConfig} class="px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 flex space-x-2">
                         <span class="text-sm font-medium">{#if selectedBannerConfig = bannerConfig.name}Auswählen und {/if}Speichern</span>
                         {#if saveLoading}

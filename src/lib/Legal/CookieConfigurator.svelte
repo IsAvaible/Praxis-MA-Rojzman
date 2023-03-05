@@ -31,7 +31,7 @@ onDestroy(() => {
 </script>
 
 
-{#each siteCookies as cookie, i}
+{#each [{name: 'Unbedingt Erforderliche Cookies', description: 'Cookies welche die ordnungsgemäße Funktionsweise der Webseite ermöglichen', store: undefined}].concat(siteCookies) as cookie, i}
     <div class="flex items-center justify-between">
         <div class="flex items-start">
             <div class="">
@@ -45,9 +45,13 @@ onDestroy(() => {
         </div>
         <div class="ml-3 h-7 flex items-center">
             <label class="container">
-                {#key $siteCookieStore}
-                    <input type="checkbox" checked={cookieStates[i]} on:change={() => {if (realtimeCookieState) cookie.store.update(value => !value)}}>
-                {/key}
+                {#if i == 0}
+                    <input type="checkbox" checked={true} disabled={true}>
+                {:else}
+                    {#key $siteCookieStore}
+                        <input type="checkbox" bind:checked={cookieStates[i-1]} on:change={() => {if (realtimeCookieState) cookie.store.update(value => !value)}}>
+                    {/key}
+                {/if}
             </label>
         </div>
     </div>

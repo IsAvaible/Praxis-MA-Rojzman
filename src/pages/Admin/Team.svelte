@@ -46,7 +46,7 @@ $: unsavedChangesStore.set(anyEdit || addingMember);
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
         {:then teamMembers}
-            <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 z-20 w-full px-10 pt-10 pb-16">
+            <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 w-full px-10 pt-10 pb-16">
                 <div class="container mx-auto">
                     <div role="list" aria-label="Mitarbeiter" class="md:flex items-center flex-wrap sm:justify-around">
                         {#each teamMembers as member, i}

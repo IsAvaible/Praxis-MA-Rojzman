@@ -28,8 +28,8 @@
     <!-- The banner has a negative z-index to prevent it from appearing over dropdown menus during their fade animation -->
     <div class="bg-primary-600 -z-10 {$bannerPushContentStore ? '' : 'absolute w-full'}" in:slide={{duration: 300 * (animateIn ? 1 : 0)}} out:slide={{duration: 400, easing: backInOut}} id={id}>
         <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between flex-wrap">
-                <div class="w-0 flex-1 flex items-center">
+            <div class="flex items-center justify-center sm:justify-between flex-wrap">
+                <div class="w-0 flex-1 flex items-center justify-center sm:justify-start">
                     <span class="flex p-2 rounded-lg bg-primary-800">
                       <!-- Heroicon name: outline/speakerphone -->
                       <svg class="h-6 w-6 text-white {pulseIcon ? 'animate-pulse' : ''}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -44,7 +44,7 @@
                     </p>
                 </div>
                 {#if buttonText && (buttonAction || buttonUrl)}
-                    <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
+                    <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto flex justify-center">
                         {#if buttonAction}
                             <button on:click={buttonAction} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-primary-50"> {buttonText} </button>
                         {:else if buttonUrl}
