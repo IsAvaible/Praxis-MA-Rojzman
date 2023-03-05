@@ -11,7 +11,7 @@
 <div out:slide|local class="max-w-screen-xl fixed bottom-10 -z-10 mx-auto bg-white dark:bg-slate-800 inset-x-5 p-5 rounded-lg drop-shadow-2xl">
     {#if showConfigurator}
         <div in:slide class="pb-2">
-            <CookieConfigurator/>
+            <CookieConfigurator realtimeCookieState={false}/>
         </div>
     {/if}
 

@@ -3,21 +3,29 @@ import {siteCookies} from "../../scripts/stores/cookies/siteCookieStore";
 import {cookieState} from "../../scripts/stores/cookies/siteCookieStore";``
 import {siteCookieStore} from "../../scripts/stores/cookies/siteCookieStore.js";
 import {onDestroy} from "svelte";
+import {get} from "svelte/store";
 
-export let showAdditionalControls = false;
+export let realtimeCookieState = true; // Whether the cookie state should be updated in real time or only on exit
+export let showAdditionalControls = false; // Whether to show the "Accept all" and "Decline all" buttons
 
 // This stores the state of the checkboxes
 // (we cannot use reactive statements on the stores, because Svelte only supports reactive statements on top level imports)
 let cookieStates: boolean[] = [];
 let unsubscribers: (() => void)[] = [];
 for (let i = 0; i < siteCookies.length; i++) {
-    unsubscribers.push(siteCookies[i].store.subscribe(value => {
-        cookieStates[i] = value;
-    }))
+    if (realtimeCookieState) {
+        unsubscribers.push(siteCookies[i].store.subscribe(value => {
+            cookieStates[i] = value;
+        }))
+    } else if (get(siteCookieStore) === cookieState.UNSET) {
+        cookieStates[i] = true; // Default all cookies to true if the user has not set a preference
+    }
 }
 
 onDestroy(() => {
-    siteCookieStore.update(current => current !== cookieState.UNSET ? current : cookieState.SOME);
+    for (let i = 0; i < siteCookies.length; i++) {
+        siteCookies[i].store.set(cookieStates[i]);
+    }
     unsubscribers.forEach(unsubscribe => unsubscribe());
 });
 </script>
@@ -38,7 +46,7 @@ onDestroy(() => {
         <div class="ml-3 h-7 flex items-center">
             <label class="container">
                 {#key $siteCookieStore}
-                    <input type="checkbox" checked={cookieStates[i]} on:change={() => {cookie.store.update(value => !value)}}>
+                    <input type="checkbox" checked={cookieStates[i]} on:change={() => {if (realtimeCookieState) cookie.store.update(value => !value)}}>
                 {/key}
             </label>
         </div>

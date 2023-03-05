@@ -12,7 +12,7 @@
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="sr-only">Unsere Leistungen</h2>
         {#await showcasedFeatures}
-            <div class="w-full mt-12 pt-12 flex justify-center">
+            <div class="w-full h-20 mt-12 pt-12 flex justify-center items-center">
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
         {:then showcasedFeatures}
