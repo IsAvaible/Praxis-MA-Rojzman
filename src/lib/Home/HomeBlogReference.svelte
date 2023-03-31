@@ -6,10 +6,8 @@
 
     import Alert from "../Essentials/Alert.svelte";
     import LoadingWheel from "../Misc/LoadingWheel.svelte";
-
 </script>
 
-<!-- This example requires Tailwind CSS v2.0+ -->
 <div class="pt-16 pb-10 lg:pt-24 lg:px-8">
     <div class="relative divide-y-2 divide-gray-200 dark:divide-slate-500">
         <div>

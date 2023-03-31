@@ -1,8 +1,4 @@
-import {writable} from "svelte/store";
+import {persisted} from "svelte-local-storage-store";
 
 // Stores whether the user has allowed YouTube videos to be loaded
-export const youtubeAllowedStore = writable('youtubeAllowed' in localStorage ? localStorage.youtubeAllowed === 'true' : false);
-
-youtubeAllowedStore.subscribe(value => {
-    localStorage.youtubeAllowed = value;
-})
+export const youtubeAllowedStore = persisted('youtubeAllowed', false);

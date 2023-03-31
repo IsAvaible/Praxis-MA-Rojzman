@@ -1,11 +1,11 @@
 <script lang="ts">
-import {Link} from "svelte-navigator";
-import {onDestroy, onMount} from "svelte";
-import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
-import {getConfigEntry} from "../../scripts/database/database";
-import {rainbowHeaderIconAnimationStore} from "../../scripts/stores/rainbowHeaderIconAnimationStore";
+    import {Link} from "svelte-navigator";
+    import {onDestroy, onMount} from "svelte";
+    import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
+    import {getConfigEntry} from "../../scripts/database/database";
+    import {rainbowHeaderIconAnimationStore} from "../../scripts/stores/rainbowHeaderIconAnimationStore";
 
-let canvas;
+    let canvas;
 let regularIcon;
 let windowWidth;
 let rainbowAnimate = true;
@@ -50,11 +50,15 @@ const initAnimation = async () => {
 
 let unsubscribe;
 onMount(async () => {
+    // If the request fails to resolve within 400ms, show the regular icon
+    let loaded = false;
+    setTimeout(() => {if (loaded == false) {regularIcon.classList.remove("hidden")}}, 400);
     try {
         rainbowAnimate = (await getConfigEntry("rainbow-header-icon-animation")).data.active as boolean;
     } catch { // Database unreachable
         rainbowAnimate = false;
     }
+    loaded = true;
     rainbowHeaderIconAnimationStore.set(rainbowAnimate);
     await initAnimation();
 

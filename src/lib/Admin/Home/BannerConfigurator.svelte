@@ -1,9 +1,12 @@
 <script lang="ts">
     import {
+        addBannerConfig,
+        deleteBannerConfig,
         getBannerConfig,
         getConfigEntry,
-        updateConfigEntry,
-        supabase, updateBannerConfig, deleteBannerConfig, addBannerConfig
+        supabase,
+        updateBannerConfig,
+        updateConfigEntry
     } from "../../../scripts/database/database";
     import Alert from "../../Essentials/Alert.svelte";
     import LoadingWheel from "../../Misc/LoadingWheel.svelte";
@@ -54,7 +57,7 @@
     const togglePreviewBanner = () => {
         adminPreviewBannerDataStore.set(previewBannerActive ? null : bannerConfig);
         delay(100).then(() => {
-            const bannerElement = document.getElementById("adminPreviewBanner");
+            const bannerElement = document.getElementById("admin-preview-banner");
             if (bannerElement && previewBannerActive) {
                 scrollToHeader();
             }

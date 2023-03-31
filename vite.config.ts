@@ -11,13 +11,9 @@ export default ({mode}) => {
         plugins: [
             svelte(),
             legacy({
-                targets: ['> 0.1%', 'not IE <= 11'],
+                targets: ['> 0.1%', 'not IE <= 11', 'not dead'],
                 ignoreBrowserslistConfig: true,
             }),
-            // chunkSplitPlugin({customSplitting: {
-            //     'admin': [/src\/pages\/Admin/, /src\/lib\/Admin/], // split admin pages and admin lib
-            //     'db': [/src\/scripts\/database/], // split database scripts
-            // }})
         ],
     });
 }

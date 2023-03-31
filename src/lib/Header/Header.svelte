@@ -1,6 +1,6 @@
 <script lang="ts">
-    import {Router, Route, Link, globalHistory} from "svelte-navigator";
-    import { fade } from "svelte/transition";
+    import {globalHistory, Link, Route, Router} from "svelte-navigator";
+    import {fade} from "svelte/transition";
     import {bannerPushContentStore} from "../../scripts/stores/bannerPushContentStore";
     // import FlyoutMenu1 from "./FlyoutMenu1.svelte";
     import FlyoutMenu2 from "./FlyoutMenu2.svelte";
@@ -8,20 +8,12 @@
     import Contact from "../../pages/Contact.svelte";
     import Home from "../../pages/Home.svelte";
     import Team from "../../pages/Team.svelte";
-    import PrivacyPolicy from "../../pages/PrivacyPolicy.svelte";
-    import OfficeHours from "./OfficeHoursPopUp.svelte";
+    import OfficeHoursPopUp from "./OfficeHoursPopUp.svelte";
     import NotFound from "../../pages/NotFound.svelte";
     import PrescriptionRequest from "../../pages/PrescriptionRequest.svelte";
     import SiteEnterPopUp from "../Essentials/SiteEnterPopUp.svelte";
     import Banner from "../Essentials/Banner.svelte";
     import Features from "../../pages/Features.svelte";
-    import AdminHome from "../../pages/Admin/Admin.svelte";
-    import AdminLogin from "../../pages/Admin/Login.svelte";
-    import AdminSidebar from "../Admin/Navigation/Sidebar.svelte";
-    import AdminFeatures from "../../pages/Admin/Features.svelte";
-    import AdminBlog from '../../pages/Admin/Blog.svelte';
-    import AdminTeam from '../../pages/Admin/Team.svelte';
-    import Footer from "../Essentials/Footer.svelte";
     import CookieBanner from "../Misc/CookieBanner.svelte";
     import {deviceOnlineStore} from "../../scripts/stores/deviceOnlineStore";
     import {delay} from "../../scripts/misc/delay";
@@ -32,8 +24,9 @@
     import {onDestroy, onMount} from "svelte";
     import {getBannerConfig, getConfigEntry} from "../../scripts/database/database";
     import disableScroll from "disable-scroll";
-    import {siteCookieStore} from "../../scripts/stores/cookies/siteCookieStore";
-    import {cookieState} from "../../scripts/stores/cookies/siteCookieStore";
+    import {cookieState, siteCookieStore} from "../../scripts/stores/cookies/siteCookieStore";
+    import LazyRoute from "./LazyRoute.svelte";
+    import PrivacyPolicy from "../../pages/PrivacyPolicy.svelte";
 
     let siteEnterPopUpData = {
         svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
@@ -53,7 +46,8 @@
         svgPaths: ["M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"],
         hideable: false,
         animateIn: true,
-        pulseIcon: true
+        pulseIcon: true,
+        name: 'offline'
     }
 
     let bannerNoPushContentPaths = ["/"]; // These are the paths where the banner should not occupy screen space
@@ -190,6 +184,8 @@
         adminPreviewBannerUnsubscribe();
         deviceOnlineUnsubscribe();
     })
+
+    const AdminSection = () => import("./LazyAdminSection.svelte");
 </script>
 
 <Router a11y="{{onRouterNavigate}}">
@@ -267,19 +263,17 @@
                 </div>
             </div>
             {#if officeHoursPopUpOpen}
-                <div in:fade={{duration: 300}} out:fade|local={{duration: 300}}>
-                    <OfficeHours on:hide={toggleOfficeHoursPopUp}/>
-                </div>
+                <OfficeHoursPopUp on:hide={toggleOfficeHoursPopUp}/>
             {/if}
         </div>
         {#if offlineBannerOpen}
-            <Banner {...offlineBannerData} id="offlineBanner"/>
+            <Banner {...offlineBannerData} id="offline-banner"/>
         {/if}
         {#if bannerOpen}
             <Banner {...bannerData} on:hide={() => bannerOpen = false} id="banner"/>
         {/if}
         {#if adminPreviewBannerActive}
-            <Banner {...adminPreviewBannerData} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}} id="adminPreviewBanner"/>
+            <Banner {...adminPreviewBannerData} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}} id="admin-preview-banner"/>
         {/if}
         {#if $siteCookieStore === cookieState.UNSET}
             <CookieBanner/>
@@ -328,10 +322,6 @@
             <NotFound/>
         </Route>
 
-        <Route path="faq">
-            <NotFound/>
-        </Route>
-
         <Route path="datenschutzerklaerung">
             <PrivacyPolicy/>
         </Route>
@@ -340,20 +330,7 @@
             <NotFound/>
         </Route>
 
-        <Route path="admin/*">
-            <Route path="/login"><AdminLogin/></Route>
-            <Route path="/*">
-                <Footer>
-                    <AdminSidebar>
-                        <Route path="/"><AdminHome/></Route>
-                        <Route path="/leistungen"><AdminFeatures/></Route>
-                        <Route path="/aktuelles"><AdminBlog/></Route>
-                        <Route path="/team"><AdminTeam/></Route>
-                        <Route path="/*"><NotFound redirectTo="/admin" withFooter={false}/></Route>
-                    </AdminSidebar>
-                </Footer>
-            </Route>
-        </Route>
+        <LazyRoute path="admin/*" component={AdminSection}/>
 
         <Route>
             <NotFound/>

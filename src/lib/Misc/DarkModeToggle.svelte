@@ -1,9 +1,10 @@
 <script lang="ts">
-    import {darkModeStore, getSystemTheme} from "../../scripts/stores/darkModeStore";
+    import {darkModeStore, themePreferenceStore} from "../../scripts/stores/darkModeStore";
     import {fade} from "svelte/transition";
     import {delay} from "../../scripts/misc/delay";
     import {longpress} from "../../scripts/ui/longpress";
     import {onDestroy} from "svelte";
+    import {get} from "svelte/store";
 
     let checked;
     const unsubscribe = darkModeStore.subscribe(value => {
@@ -11,36 +12,31 @@
     });
     onDestroy(unsubscribe);
 
-    const updateDarkMode = () => {
+    const updateThemePreference = () => {
         showSystemNotification = false;
-        delay(0).then(() => {
-            darkModeStore.set(!checked);
-            localStorage.theme = !checked ? 'dark' : 'light';
-        });
-
+        showNotSystemNotification = get(themePreferenceStore) === 'system';
+        themePreferenceStore.set(checked ? 'dark' : 'light');
+        delay(3000).then(() => showNotSystemNotification = false);
     }
 
     let showSystemNotification = false;
     let showAlreadySystemNotification = false;
+    let showNotSystemNotification = false;
     const restoreSystemTheme = () => {
-        if (!('theme' in localStorage)) {
+        if (get(themePreferenceStore) === 'system') {
             showAlreadySystemNotification = true;
             showSystemNotification = false;
             delay(3000).then(() => showAlreadySystemNotification = false);
-            return;
+        } else {
+            themePreferenceStore.set('system');
+            showSystemNotification = true;
+            showAlreadySystemNotification = false;
+            delay(3000).then(() => showSystemNotification = false);
         }
-
-        checked = !getSystemTheme();
-        darkModeStore.set(!checked);
-        localStorage.removeItem('theme');
-        showSystemNotification = true;
-        showAlreadySystemNotification = false;
-        delay(3000).then(() => showSystemNotification = false);
-
     }
 </script>
 
-<div class="wrapper flex items-center" use:longpress={1500} on:click={updateDarkMode} on:longpress={restoreSystemTheme} on:keydown={e => {if (e.code==='Space'||e.code==='Enter') {e.preventDefault(); checked = !checked; updateDarkMode()}}} >
+<div class="wrapper flex items-center" use:longpress={1500} on:click|preventDefault={updateThemePreference} on:longpress={restoreSystemTheme} on:keydown={e => {if (e.code==='Space'||e.code==='Enter') {e.preventDefault(); checked = !checked; updateThemePreference()}}} >
     <input type="checkbox" id="hide-checkbox" class="peer" bind:checked={checked}>
     <label for="hide-checkbox" class="toggle peer-focus-visible:ring-1 peer-focus:ring-blue-400 dark:peer-focus-visible:ring-purple-600">
         <span class="sr-only">{checked ? 'Dunklen' : 'Hellen'} Modus aktivieren</span>
@@ -63,12 +59,12 @@
         <span class="star star-8"></span>
     </label>
 
-    {#if showSystemNotification || showAlreadySystemNotification}
+    {#if showSystemNotification || showAlreadySystemNotification || showNotSystemNotification}
         <div in:fade out:fade class="absolute
         left-0 right-0 mx-auto text-center table
         md:left-auto md:right-auto md:text-left md:mx-0 md:block md:mt-24 md:-ml-28
         z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
-            <nobr>Der Modus folgt {#if showSystemNotification}jetzt wieder{:else}bereits{/if} dem System.</nobr>
+            <nobr>Der Modus folgt {#if showSystemNotification}jetzt wieder{:else if showAlreadySystemNotification}bereits{:else}nicht mehr{/if} dem System.</nobr>
         </div>
     {/if}
 
@@ -76,7 +72,6 @@
 
 
 <style>
-
     #hide-checkbox {
         opacity: 0;
         height: 0;

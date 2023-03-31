@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {getBlogEntries, addBlogEntry, updateBlogEntry, getUser} from "../../../scripts/database/database";
+    import {addBlogEntry, getBlogEntries, getUser, updateBlogEntry} from "../../../scripts/database/database";
     import {createEventDispatcher} from "svelte";
     import Alert from "../../Essentials/Alert.svelte";
     import HTMLEditor from "../General/HTMLEditor.svelte";
     import {unsavedChangesStore} from "../../../scripts/stores/unsavedChangesStore";
-    import AddImageButtonWithPreview, { uploadCurrent } from "../General/AddImageButtonWithPreview.svelte";
+    import AddImageButtonWithPreview, {uploadCurrent} from "../General/AddImageButtonWithPreview.svelte";
     import LoadingWheel from "../../Misc/LoadingWheel.svelte";
 
 
@@ -85,10 +85,12 @@
     {#if submitted}
         <div class="mt-4">
             {#await uploadCurrent(`blog/preview/${id}.webp`, id, {quality: 0.9, maxWidth: 600, maxHeight: 338}) then previewImageUrl}
-                {#await (editMode?updateBlogEntry:addBlogEntry)(id, getUser().email, title, previewText, content, previewImageUrl) then data}
+                {#await getUser() then user}
+                {#await (editMode?updateBlogEntry:addBlogEntry)(id, user.email, title, previewText, content, previewImageUrl) then data}
                     <Alert type={2} title="Erfolg!{disableLoading()+onModify()}" description='Der Beitrag mit der ID "{id}" wurde erfolgreich {editMode?"bearbeitet":"hinzugefügt"}.'/>
                 {:catch e}
                     <Alert type={0} title="Error!{disableLoading()}" description={e.message} on:click={() => submitted = false}/>
+                {/await}
                 {/await}
             {:catch e}
                 <Alert type={0} title="Error!{disableLoading()}" description={e.message} on:click={() => submitted = false}/>

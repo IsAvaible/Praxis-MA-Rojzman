@@ -1,14 +1,14 @@
-import {writable} from "svelte/store";
 import type {Writable} from "svelte/store";
 import {get} from "svelte/store";
 
 import {externalContentAllowedStore} from "./externalContentAllowedStore";
 import {youtubeAllowedStore} from "./youtubeAllowedStore";
 import {googleMapsAllowedStore} from "./googleMapsAllowedStore";
+import {persisted} from "svelte-local-storage-store";
 
 
 export enum cookieState {UNSET, NONE, SOME, ALL}
-export const siteCookieStore: Writable<cookieState> = writable('siteCookie' in localStorage ? parseInt(localStorage.siteCookie) : 0);
+export const siteCookieStore: Writable<cookieState> = persisted('siteCookie', cookieState.UNSET);
 export const siteCookies: {name: string, description: string, store: Writable<boolean>}[] = [
     {name: "Youtube", description: "Erlaubt das Einbinden von Youtube Videos", store: youtubeAllowedStore},
     {name: "Google Maps", description: "Erlaubt das Anzeigen des Praxisstandorts auf Google Maps", store: googleMapsAllowedStore},
@@ -33,7 +33,6 @@ siteCookieStore.subscribe((siteCookie) => {
                 if (cookieValues.every(value => value)) siteCookieStore.set(cookieState.ALL);
                 else if (cookieValues.find(value => value))  siteCookieStore.set(cookieState.SOME);
                 else siteCookieStore.set(cookieState.NONE);
-                localStorage.siteCookie = get(siteCookieStore);
             })
         })
     }

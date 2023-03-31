@@ -1,6 +1,6 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
-    import { navigate } from "svelte-navigator";
+    import {createEventDispatcher} from 'svelte';
+    import {navigate} from "svelte-navigator";
     import MenuBlogReference from "./MenuBlogReference.svelte";
     import Icon from "./Icon.svelte";
 
@@ -27,7 +27,7 @@
         To: "opacity-0 scale-95"
     -->
 <div class="absolute top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden z-10">
-    <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white dark:bg-slate-800 divide-y-2 divide-gray-50 dark:divide-slate-700">
+    <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white dark:bg-slate-800 dark:ring-slate-700 divide-y-2 divide-gray-50 dark:divide-slate-700">
         <div class="pt-5 pb-6 px-5">
             <div class="flex items-center justify-between">
                 <button on:click={e => {e.stopPropagation(); navigate("/"); hide()}} >

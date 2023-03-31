@@ -1,5 +1,5 @@
 <script type="ts">
-import {navigate} from "svelte-navigator";
+    import {navigate} from "svelte-navigator";
 </script>
 
 
@@ -23,5 +23,14 @@ import {navigate} from "svelte-navigator";
             <img class="rounded-md transform translate-x-6 translate-y-6 object-cover object-left-top sm:translate-x-16 lg:translate-y-20" src="https://tailwindui.com/img/component-images/full-width-with-sidebar.jpg" alt="App screenshot">
         </div>
     </div>
+<!--    <div class="-mt-6 aspect-w-5 aspect-h-3 md:aspect-w-2 md:aspect-h-1 hidden lg:flex items-center justify-center py-20">-->
+<!--        <div class="gradient-mask-b-90 h-full w-full filter grayscale">-->
+<!--            <img src="https://lh3.googleusercontent.com/p/AF1QipMclVg0MzvaoCeYfrRQMYGxWi5io36AWkrkN0fq=s1360-w1360-h1020" alt="Bild von Frau Rojzman und einer Patientin" class="w-full h-full object-cover rounded-lg">-->
+<!--        </div>-->
+<!--        <div class="w-[50rem] hidden 2xl:block">-->
+<!--            <OfficeHours/>-->
+<!--        </div>-->
+
+<!--    </div>-->
 </div>
 

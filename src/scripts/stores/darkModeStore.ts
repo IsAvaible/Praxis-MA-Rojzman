@@ -1,19 +1,25 @@
-import { writable } from 'svelte/store';
+import {persisted} from 'svelte-local-storage-store';
+import {get, writable} from "svelte/store";
 
-// Get the current system value of the dark mode preference
-export const getSystemTheme = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-// This stores whether the user has set the preferred color scheme to dark mode
-export const darkModeStore = writable( (!('theme' in localStorage) ? getSystemTheme() : localStorage.theme === 'dark'));
+const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+export const darkModeStore = writable(); // Stores whether dark mode is enabled
+export const themePreferenceStore = persisted('themePreference', 'system'); // Stores the user's theme preference
 
-
-// When the user changes the preferred color scheme, this updates the dark mode store
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-    console.log("Color scheme changed!")
-    if (!('theme' in localStorage)) darkModeStore.set(event.matches);
-});
 
 // Propagate the dark mode preference to the document
-darkModeStore.subscribe(value => {
-    if (value) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark')
+darkModeStore.subscribe(darkMode => {
+    if (darkMode) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+});
+
+// Monitor the system theme
+prefersDarkMode.addEventListener('change', event => {
+    console.log("System color scheme changed!")
+    if (get(themePreferenceStore) === 'system') darkModeStore.set(event.matches);
+});
+
+// Keep the dark mode store in sync with the theme preference
+themePreferenceStore.subscribe(value => {
+    if (value === 'system') darkModeStore.set(prefersDarkMode.matches);
+    else darkModeStore.set(value === 'dark');
 })

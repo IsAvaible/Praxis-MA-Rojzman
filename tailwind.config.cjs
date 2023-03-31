@@ -64,7 +64,7 @@ module.exports = {
         require("tailwind-heropatterns")({
             variants: [],
             patterns: ["leaf", "topography"],
-            colors: {...primary, purple: '#6c50bd'},
+            colors: {100: primary[100], 600: primary[600], 700: primary[700]},
             opacity: {
                 default: "0.47",
             }

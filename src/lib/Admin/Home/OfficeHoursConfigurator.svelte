@@ -1,12 +1,17 @@
 <script lang="ts">
     import {
-        getOfficeHourByWeekday, updateOfficeHourComment, updateOfficeHour,
-        addTimePeriod, updateTimePeriod, deleteTimePeriod, calculateEndTime, calculateDateDistance
+        addTimePeriod,
+        calculateDateDistance,
+        calculateEndTime,
+        deleteTimePeriod,
+        getOfficeHourByWeekday,
+        updateOfficeHour,
+        updateOfficeHourComment,
+        updateTimePeriod
     } from "../../../scripts/database/database";
-    import {numberToWeekdayDE} from "../../../scripts/misc/dateFormat";
+    import {formatHHMM, numberToWeekdayDE} from "../../../scripts/misc/dateFormat";
     import Alert from "../../Essentials/Alert.svelte";
     import LoadingWheel from "../../Misc/LoadingWheel.svelte";
-    import {formatHHMM} from "../../../scripts/misc/dateFormat";
     import {officeHoursChangedStore} from "../../../scripts/stores/officeHoursChangedStore";
 
     let selectedWeekday: number = 0;
@@ -134,7 +139,7 @@
                                 <!--If the div body is clicked (not the children) set the expandedTimePeriodId to -1-->
                                 <div class="flex mt-2 ml-2 items-center parent-node">
                                     {#if id !== expandedTimePeriodId}
-                                        <button on:click={() => expandTimePeriod(id)} class="bg-white text-lg min-h-[3rem] dark:bg-slate-900 active:ring-2 active:ring-primary-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-md h-full px-2">
+                                        <button on:click={() => expandTimePeriod(id)} class="bg-white text-lg min-h-[3rem] dark:bg-slate-800 active:ring-2 active:ring-primary-400 hover:bg-gray-50 dark:hover:bg-slate-900 rounded-md h-full px-2">
                                             <span class="font-bold">{index + 1}.</span>
                                             <span>{[startTime, calculateEndTime(startTime, duration)].map(formatHHMM).join(' - ')}</span>
                                         </button>
