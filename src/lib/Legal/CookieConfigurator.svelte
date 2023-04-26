@@ -7,7 +7,7 @@
     ``
 
     export let realtimeCookieState = true; // Whether the cookie state should be updated in real time or only on exit
-export let showAdditionalControls = false; // Whether to show the "Accept all" and "Decline all" buttons
+    export let showAdditionalControls = false; // Whether to show the "Accept all" and "Decline all" buttons
 
 // This stores the state of the checkboxes
 // (we cannot use reactive statements on the stores, because Svelte only supports reactive statements on top level imports)
@@ -24,14 +24,14 @@ for (let i = 0; i < siteCookies.length; i++) {
 }
 
 export function acceptAllCookies() {
-    for (let i = 1; i < cookieStates.length; i++) {
+    for (let i = 0; i < cookieStates.length; i++) {
         cookieStates[i] = true;
     }
     siteCookieStore.set(cookieState.ALL);
 }
 
 export function denyAllCookies() {
-    for (let i = 1; i < cookieStates.length; i++) {
+    for (let i = 0; i < cookieStates.length; i++) {
         cookieStates[i] = false;
     }
     siteCookieStore.set(cookieState.NONE);

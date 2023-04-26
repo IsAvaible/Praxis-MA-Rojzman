@@ -36,11 +36,25 @@
     }
 </script>
 
-<div class="wrapper flex items-center" use:longpress={1500} on:click|preventDefault={updateThemePreference} on:longpress={restoreSystemTheme} on:keydown={e => {if (e.code==='Space'||e.code==='Enter') {e.preventDefault(); checked = !checked; updateThemePreference()}}} >
-    <input type="checkbox" id="hide-checkbox" class="peer" bind:checked={checked}>
-    <label for="hide-checkbox" class="toggle peer-focus-visible:ring-1 peer-focus:ring-blue-400 dark:peer-focus-visible:ring-purple-600">
-        <span class="sr-only">{checked ? 'Dunklen' : 'Hellen'} Modus aktivieren</span>
-        <span class="toggle-button">
+<div class="flex gap-x-3 items-center">
+    {#if $themePreferenceStore !== 'system'}
+        <button in:fade={{duration: 200}} class="rounded-full text-gray-700 hover:text-black dark:text-slate-400 dark:hover:text-slate-300 has-tooltip" on:click={() => {if (get(themePreferenceStore) !== 'system') restoreSystemTheme(); else updateThemePreference()}}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+            </svg>
+            <span class="absolute tooltip pointer-events-none
+            left-0 right-0 mx-auto text-center table
+            md:left-auto md:right-auto md:text-left md:mx-0 md:block mt-2 md:-ml-20
+            z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                <nobr>System Präferenz befolgen</nobr>
+            </span>
+        </button>
+    {/if}
+    <div class="wrapper flex items-center" use:longpress={1500} on:click|preventDefault={updateThemePreference} on:longpress={restoreSystemTheme} on:keydown={e => {if (e.code==='Space'||e.code==='Enter') {e.preventDefault(); checked = !checked; updateThemePreference()}}} >
+        <input type="checkbox" id="hide-checkbox" class="peer" bind:checked={checked}>
+        <label for="hide-checkbox" class="toggle peer-focus-visible:ring-1 peer-focus:ring-blue-400 dark:peer-focus-visible:ring-purple-600">
+            <span class="sr-only">{checked ? 'Dunklen' : 'Hellen'} Modus aktivieren</span>
+            <span class="toggle-button">
           <span class="crater crater-1"></span>
           <span class="crater crater-2"></span>
           <span class="crater crater-3"></span>
@@ -49,25 +63,26 @@
           <span class="crater crater-6"></span>
           <span class="crater crater-7"></span>
         </span>
-        <span class="star star-1"></span>
-        <span class="star star-2"></span>
-        <span class="star star-3"></span>
-        <span class="star star-4"></span>
-        <span class="star star-5"></span>
-        <span class="star star-6"></span>
-        <span class="star star-7"></span>
-        <span class="star star-8"></span>
-    </label>
+            <span class="star star-1"></span>
+            <span class="star star-2"></span>
+            <span class="star star-3"></span>
+            <span class="star star-4"></span>
+            <span class="star star-5"></span>
+            <span class="star star-6"></span>
+            <span class="star star-7"></span>
+            <span class="star star-8"></span>
+        </label>
 
-    {#if showSystemNotification || showAlreadySystemNotification || showNotSystemNotification}
-        <div in:fade out:fade class="absolute
+        {#if showSystemNotification || showAlreadySystemNotification || showNotSystemNotification}
+            <div in:fade out:fade class="absolute pointer-events-none
         left-0 right-0 mx-auto text-center table
         md:left-auto md:right-auto md:text-left md:mx-0 md:block md:mt-24 md:-ml-28
         z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
-            <nobr>Der Modus folgt {#if showSystemNotification}jetzt wieder{:else if showAlreadySystemNotification}bereits{:else}nicht mehr{/if} dem System.</nobr>
-        </div>
-    {/if}
+                <nobr>Der Modus folgt {#if showSystemNotification}jetzt wieder{:else if showAlreadySystemNotification}bereits{:else}nicht mehr{/if} dem System.</nobr>
+            </div>
+        {/if}
 
+    </div>
 </div>
 
 
@@ -94,7 +109,7 @@
         position: absolute;
         display: inline-block;
         top: 1px;
-        left: 0px;
+        left: 0;
         width: 27px;
         height: 27px;
         border-radius: 50%;
@@ -210,7 +225,7 @@
         height: 2px;
         border-radius: 2px;
         transform: rotate(-45deg);
-        box-shadow: 5px 0px 4px 1px #FFF;
+        box-shadow: 5px 0 4px 1px #FFF;
         animation-name: travel;
         animation-duration: 1.5s;
         animation-timing-function: ease-out;
@@ -241,7 +256,7 @@
 
         50% {
             transform: rotate(-45deg) translateX(-5px);
-            box-shadow: 5px 0px 6px 1px #FFF;
+            box-shadow: 5px 0 6px 1px #FFF;
         }
 
         100% {

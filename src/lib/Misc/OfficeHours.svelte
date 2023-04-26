@@ -1,11 +1,9 @@
 <script lang="ts">
     import {calculateEndTime, getOfficeHours} from "../../scripts/database/database";
-    import {formatHHMM} from "../../scripts/misc/dateFormat";
+    import {formatHHMM, numberToWeekdayDE} from "../../scripts/misc/dateFormat";
     import {officeHoursChangedStore} from "../../scripts/stores/officeHoursChangedStore";
     import LoadingWheel from "./LoadingWheel.svelte";
     import Alert from "../Essentials/Alert.svelte";
-
-    let weekdays: string[] = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
 
     // If the office hours were changed by the admin, the cache is not used and the office hours are reloaded
 
@@ -41,7 +39,7 @@
                     {#each officeHours as day}
                         {#if day.timePeriods.length > 0}
                             <p class="font-medium text-md text-gray-600 dark:text-slate-200">
-                                {weekdays[day.weekday]}
+                                {numberToWeekdayDE(day.weekday)}
                                 {#if day.comment}<span class="text-sm text-gray-500 dark:text-slate-300"> - {day.comment}</span>{/if}
                             </p>
                             {#each day.timePeriods.sort(compareTimePeriods) as period}

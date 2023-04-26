@@ -1,14 +1,14 @@
 <script lang="ts">
-import {darkModeStore} from "../scripts/stores/darkModeStore";
-import {conditionalInputTypeReset} from "../scripts/ui/conditionalInputTypeReset";
-import Footer from "../lib/Essentials/Footer.svelte";
-import {fade, slide} from "svelte/transition";
-import HCaptcha, {CaptchaTheme} from "svelte-hcaptcha/src/HCaptcha.svelte";
-import {removeItem} from "../scripts/misc/arrayRemoveItem";
-import {onMount} from "svelte";
-import PageTitle from "../lib/Admin/Navigation/PageTitle.svelte";
+    import {darkModeStore} from "../scripts/stores/darkModeStore";
+    import {conditionalInputTypeReset} from "../scripts/ui/conditionalInputTypeReset";
+    import Footer from "../lib/Essentials/Footer.svelte";
+    import {fade, slide} from "svelte/transition";
+    import HCaptcha, {CaptchaTheme} from "svelte-hcaptcha/src/HCaptcha.svelte";
+    import {removeItem} from "../scripts/misc/arrayRemoveItem";
+    import {onMount} from "svelte";
+    import PageTitle from "../lib/Admin/Navigation/PageTitle.svelte";
 
-onMount(() => scrollTo(0, 0)); // The HCaptcha is messing up the scroll
+    onMount(() => scrollTo(0, 0)); // The HCaptcha is messing up the scroll
 
 let currentId: number = 1; // The id is used by svelte to identify each input field
 let recipes = [
@@ -102,7 +102,7 @@ let request: {name: string, surname: string, birthday: Date, email: string, phon
                                     on:error={handleError}
                                     on:success={handleSuccess}
                             ></HCaptcha>
-                            <input type="checkbox" bind:value={requiredInputValue} required class="relative top-0 opacity-0 pointer-events-none">
+                            <input type="checkbox" bind:value={solved} required class="relative top-0 opacity-0 pointer-events-none">
                         {/key}
                     </div>
                 </div>

@@ -89,7 +89,7 @@
                                         </svg>
                                     </div>
                                 {/if}
-                                {#if selectedFeature.index === i}<span class="float-right h-3 w-3 mr-1 mt-1 justify-center inline-flex h-full w-full rounded-full bg-primary-500 opacity-100"></span>{/if}
+                                {#if selectedFeature.index === i}<span class="float-right h-3 w-3 mr-1 mt-1 justify-center inline-flex rounded-full bg-primary-500 opacity-100"></span>{/if}
                                 <FeatureCard {...feature} expandViaIcon={false}></FeatureCard>
                             </button>
                         {/each}

@@ -200,7 +200,7 @@
                     <span class="tooltip absolute mt-28 -ml-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
                         {!editingComment ? 'Kommentar bearbeiten' : (editedComment === oldComment ? 'Zeitspannen bearbeiten' : 'Kommentar zurücksetzen')}
                     </span>
-                    {#if oldComment && (!editingComment || editedComment !== oldComment)}<span class="absolute right-0 top-0 h-2 w-2 mr-1 mt-1 justify-center inline-flex h-full w-full rounded-full bg-primary-500 opacity-100"></span>{/if}
+                    {#if oldComment && (!editingComment || editedComment !== oldComment)}<span class="absolute right-0 top-0 h-2 w-2 mr-1 mt-1 justify-center inline-flex rounded-full bg-primary-500 opacity-100"></span>{/if}
                 </button>
             </div>
         </div>

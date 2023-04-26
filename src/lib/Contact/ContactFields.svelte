@@ -23,6 +23,7 @@
                         <path fill-rule="evenodd" d={path}/>
                     {/each}
                 </svg>
+                <span class="sr-only">{title}</span>
             </a>
         {/if}
         <div class="w-full">

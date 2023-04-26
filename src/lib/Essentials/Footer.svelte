@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { navigate } from "svelte-navigator";
+    import {navigate} from "svelte-navigator";
     import confetti from "canvas-confetti";
     import disableScroll from "disable-scroll";
 
@@ -29,7 +29,7 @@
 <!--This means that every page on the site is developed within the context of a flex container-->
 <div class="flex flex-col h-screen justify-between overflow-x-clip rounded-[inherit]">
     <slot/>
-    <footer class="w-full mt-auto p-4 bg-white dark:text-slate-400 dark:bg-slate-800 rounded-lg shadow flex flex-col items-center gap-y-2 md:flex-row md:justify-between md:p-6">
+    <footer class="w-full mt-auto p-4 bg-white dark:text-slate-400 dark:bg-slate-800 rounded-lg shadow flex flex-col items-center gap-y-2 md:flex-row md:justify-between md:p-6 z-10">
         <span class="text-sm text-gray-500 dark:text-gray-400 lg:flex-1 order-last md:order-first">
             © {copyrightDate} <a href={copyrightLink} target="_blank" rel="noreferrer" on:click={easterEgg} class="hover:underline">{copyrightName}</a>
         </span>
