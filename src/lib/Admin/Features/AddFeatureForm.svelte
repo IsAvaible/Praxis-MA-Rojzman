@@ -1,5 +1,11 @@
 <script lang="ts">
-    import {getFeatures, addFeature, updateFeature, addShowcasedFeature, deleteShowcasedFeature} from "../../../scripts/database/database";
+    import {
+        addFeature,
+        addShowcasedFeature,
+        deleteShowcasedFeature,
+        getFeatures,
+        updateFeature
+    } from "../../../scripts/database/database";
     import {createEventDispatcher} from "svelte";
     import Alert from "../../Essentials/Alert.svelte";
     import SvgSelector from "../General/SvgSelector.svelte";
@@ -61,7 +67,7 @@
 {#if !editMode || startName}
     {#if svgSelectorState} <SvgSelector modalTopModal={true} iframeHeight="420px" on:submit={(event) => {svgPaths = event.detail; disableSubmitted(); svgSelectorState = false}} on:close={() => {disableSubmitted(); svgSelectorState = false}}/>{/if}
 
-    <form on:submit|preventDefault={() => loading = submitted = true} class="{svgSelectorState?'invisible':''}">
+    <form on:submit|preventDefault={() => loading = submitted = true} class="{svgSelectorState?'invisible h-0':''}">
         <input autocomplete="off" bind:value={title} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Ein prägnanter Titel (*)" type="text" title={editMode?'Titel (*)':''} />
         <input autocomplete="off" bind:value={shortDescription} on:focus={disableSubmitted} required class="mb-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Eine kurze Beschreibung (*)" type="text" title={editMode?'Kurzbeschreibung (*)':''}/>
         <input autocomplete="off" bind:value={name} disabled={editMode} on:focus={disableSubmitted} on:blur={() => nameInvalidState = nameInvalidState === 'syntax' ? '' : nameInvalidState} required class="{!nameInvalidState ? 'mb-6' : ''} w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none disabled:bg-gray-100 disabled:dark:bg-slate-800 {!nameInvalidState?'focus:border-primary-500':'border-red-500'}" placeholder="Ein einmaliger Name für die Leistung (URL) (*)" pattern="[a-z0-9-_+]+" title="Der einmalige Name der Leistung" type="text" id="featureName"/>
@@ -75,7 +81,7 @@
             <input bind:checked={showcase} on:focus={disableSubmitted} disabled={!startShowcase && showcasedFeatures.length === 3} type="checkbox" id="showcase" class="w-5 h-5 rounded-md border border-[f0f0f0] dark:border-slate-900 focus-visible:shadow-none focus:border-primary-500 mr-2" />
             <label for="showcase">Auf der Startseite anzeigen</label>
             {#if !startShowcase && showcasedFeatures.length === 3}
-                <div class="tooltip bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400 text-xs p-2 rounded-md shadow-md w-60">
+                <div class="tooltip bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400 text-xs p-2 rounded-md shadow-md w-60 text-center">
                     Es können maximal 3 Leistungen auf der Startseite angezeigt werden.
                 </div>
             {/if}

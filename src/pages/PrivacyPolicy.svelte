@@ -1,16 +1,14 @@
 <script lang="ts">
 
-import Footer from "../lib/Essentials/Footer.svelte";
-import DarkModeGlow from "../lib/Misc/DarkModeGlow.svelte";
-import CookieConfigurator from "../lib/Legal/CookieConfigurator.svelte";
+    import Footer from "../lib/Essentials/Footer.svelte";
+    import DarkModeGlow from "../lib/Misc/DarkModeGlow.svelte";
+    import CookieConfigurator from "../lib/Legal/CookieConfigurator.svelte";
 </script>
 
 <Footer>
     <DarkModeGlow/>
-    <div class="font-medium px-10" style="width: 100%">
-        <br>
-
-        <h1 class="text-2xl focus:outline-transparent"><strong>Datenschutzerklärung </strong></h1>
+    <div class="font-medium p-10 w-full">
+        <h1 class="text-3xl focus:outline-transparent"><strong>Datenschutzerklärung </strong></h1>
 
         <p>&nbsp;</p>
 

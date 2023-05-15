@@ -89,8 +89,13 @@
                                         <p class="font-normal">Ein neues Konto wurde erfolgreich hinzugefügt. Bitte bestätigen sie die Anmeldung mit dem Link in ihrem Email Postfach.</p>
                                     {/if}
                                 {:catch e}
-                                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
-                                        <span class="font-medium">Error!</span> {captchaSolved ? e.message : 'Validate the captcha before submitting the form'}. <button class="hover:text-red-500 cursor-pointer font-medium" on:click={() => {failedAttempts+=(e.message==="Request Failed"?0:1); if (captcha) {captcha.reset()}; email=''; password=''; doSignUp = false; formSubmitted = false}}>Click here to reset.</button>
+                                    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800 flex justify-center gap-x-2" role="alert">
+                                        <span class="font-medium">Fehler!</span>
+                                        {captchaSolved ? e.message : 'Validate the captcha before submitting the form'}.
+                                        <button class="hover:text-red-500 cursor-pointer font-medium"
+                                                on:click={() => {failedAttempts+=(e.message==="Request Failed"?0:1); if (captcha) {captcha.reset()} email=''; password=''; doSignUp = false; formSubmitted = false}}>
+                                            Erneut versuchen
+                                        </button>
                                     </div>
                                 {/await}
                             {/if}

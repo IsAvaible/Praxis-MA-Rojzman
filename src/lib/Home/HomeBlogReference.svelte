@@ -15,7 +15,7 @@
             <p class="mt-3 text-xl text-gray-500 sm:mt-4 dark:text-slate-200">In unsere Kategorie <Link to='/aktuelles' class="cursor-pointer hover:text-gray-800 hover:underline dark:hover:text-slate-200">Aktuelles</Link> halten wir sie stets über Neuigkeiten rund um die Praxis und Gesundheit auf dem Laufenden.</p>
         </div>
         <!-- The four most recent blog entries are queried -->
-        {#await getBlogEntries(false, 4, false)}
+        {#await getBlogEntries(false, 4)}
             <div class="w-full mt-12 pt-12 flex justify-center">
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>

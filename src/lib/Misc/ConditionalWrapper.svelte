@@ -1,9 +1,11 @@
 <script lang="ts">
+    import type {ComponentType} from "svelte";
+
     export let condition: boolean|undefined
-    export let component: Function|undefined = undefined
+    export let component: ComponentType | undefined = undefined
     export let a = false
     export let span = false
-    export let element: HTMLElement|undefined = undefined
+    export let element: HTMLElement | undefined = undefined
     $: passthrough = (({ condition, component, a, span, element, ...passthrough }) => passthrough)($$props)
 </script>
 

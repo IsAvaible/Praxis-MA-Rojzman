@@ -1,12 +1,17 @@
 <script lang="ts">
-    /* The html content of the tag */
+    /**
+     * This is a svelte component that allows you to insert other components into a raw html string
+     * It works by splitting the html into parts that match the regexes in the rules and inserting the components in between
+     */
+    import type Component from "svelte/types/compiler/compile/Component";
+
     export let html: string;
     /* regex: Regex that matches the parts of the html around which the component should be inserted
     *  component: The component to insert
     *  props: The props to pass to the component
     *  predicateProp: A function that returns additional props to pass to the component based on the match
     * */
-    export let rules: {regex: RegExp, component: any, props: any, predicateProp: (wrappedContent: string) => object}[];
+    export let rules: {regex: RegExp, component: Component, props: object, predicateProp: (wrappedContent: string) => object}[];
 
 
     let parsedHTML = [html];

@@ -6,13 +6,16 @@
     let phoneNumberFull = "+4961239997085";
     let faxNumberShort = "06123 / 9997085";
     let faxNumberFull = "+4961239997085";
+    let email = "praxis@allgemeinmedizin-kiedrich.de";
 </script>
 
 
 {#each [
     {title: 'Unsere Adresse', linkText: 'Kammstr. 2, 65399 Kiedrich, Hessen DE', href: 'https://goo.gl/maps/sk8AD42LZAhWAvYD7', svgPaths: ['M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z'], viewBox: '20', target: '_blank'},
     {title: 'Telefonnummer', linkText: phoneNumberShort, href: `tel:${phoneNumberFull}`, svgPaths: ['M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z'], viewBox: '24', target: ''},
-    {title: 'Fax', linkText: faxNumberShort, href: `tel:${faxNumberFull}`, svgPaths: ['M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z'], viewBox: '20', target: ''}]
+    {title: 'Fax', linkText: faxNumberShort, href: `tel:${faxNumberFull}`, svgPaths: ['M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z'], viewBox: '20', target: ''},
+    {title: "Email", linkText: email, href: `mailto:${email}`, svgPaths: ["M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z", "M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"], viewBox: '24', target: ''}
+]
         as {title, linkText, href, svgPaths, viewBox, target}}
 
     <div class="flex mb-8 w-full">

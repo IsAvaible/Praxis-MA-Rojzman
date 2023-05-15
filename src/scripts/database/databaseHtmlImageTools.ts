@@ -29,11 +29,11 @@ export const deleteImagesFromHTML = async (html: string) => {
     if (html === null || html === undefined) return; // If the HTML string is null or undefined, do nothing
     let imageKeys = findImagesInHtml(html); // Find all images in the HTML string
     if (imageKeys.length == 0) return; // No images to delete
-    let imageKeyGroups = groupBy( // Group the image keys by bucket
+    let imageKeyGroups = groupBy(
         imageKeys.map(key => { // Split each key into an object with the bucket and the path
         let match = key.match(/(^.*?)\/(.*)/); // Using regex capture groups to split the key
         return {bucket: match[1], path: match[2]}}),
-        key => key.bucket
+        key => key.bucket  // Group the image keys by bucket
     );
     for (let bucket in imageKeyGroups) { // Delete all images in each bucket
         await deleteFiles(bucket, imageKeyGroups[bucket].map(key => key.path));

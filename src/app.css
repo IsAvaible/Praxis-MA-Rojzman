@@ -155,6 +155,7 @@
     margin: 0 auto;
     max-width: 100%;
     min-width: 100%;
+    border-radius: 0.5rem;
 }
 /* ckeditor5-image/theme/image.css */
 .ck-content .image-inline {
@@ -403,6 +404,17 @@
     background: var(--ck-color-mention-background);
     color: var(--ck-color-mention-text);
 }
+
+.ck-content .media {
+    clear: both;
+    margin: 1em 0;
+    display: block;
+}
+
+.ck-content .media iframe {
+    border-radius: 0.5rem;
+}
+
 @media print {
     /* ckeditor5-page-break/theme/pagebreak.css */
     .ck-content .page-break {

@@ -1,6 +1,6 @@
 <script lang="ts">
     // 0: Error, 1: Warning, 2: Success
-    export let type: number;
+    export let type: number = 0;
     export let title: string;
     export let description: string;
 
@@ -16,16 +16,16 @@
 </script>
 
 <!-- @component A Component to alert users. 0: Error, 1: Warning -->
-<div class="rounded-md {bgColor} p-4">
-    <div class="flex">
+<div class="rounded-md {bgColor} p-4 text-center @lg:text-start @container w-full min-w-[10rem]">
+    <div class="flex items-center @lg:justify-center w-full">
         <div class="flex-shrink-0">
             <svg class="h-5 w-5 {svgColor}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d={svgPath} clip-rule="evenodd" />
             </svg>
         </div>
-        <div class="ml-3 inline-flex overflow-auto">
+        <div class="ml-3 inline-flex overflow-auto items-center flex-col @lg:flex-row">
             <h3 class="text-sm font-medium {titleColor} w-fit">{title}</h3>
-            <p class="ml-1 text-sm {textColor}">{description}</p>
+            <p class="@lg:ml-1 text-sm {textColor}">{description}</p>
             <slot/>
         </div>
     </div>

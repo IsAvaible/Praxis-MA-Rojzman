@@ -1,5 +1,5 @@
 import {createClient} from '@supabase/supabase-js';
-import type { Database } from './database.types';
+import type {Database} from './database.types';
 import type {User} from '@supabase/gotrue-js';
 import type {SearchOptions} from '@supabase/storage-js';
 import type {JSONObject} from "../misc/jsonTypes";
@@ -18,22 +18,11 @@ export type ConfigEntry = Database['public']['Tables']['Config-Entry']['Row'];
 
 export type Feature = Database['public']['Tables']['Feature']['Row'];
 
-export type ShowcasedFeature = {
-    name: string;
-    setAt: Date;
-}
+export type ShowcasedFeature = Omit<Database['public']['Tables']['Showcased-Feature']['Row'], 'setAt'> & { setAt: Date };
 
 export type TeamMember = Database['public']['Tables']['Team-Member']['Row'];
 
-export type BlogEntry = {
-    id: string;
-    createdAt: Date;
-    author: string;
-    title: string;
-    previewText: string;
-    content: string;
-    previewImageUrl: string;
-}
+export type BlogEntry = Omit<Database['public']['Tables']['Blog-Entry']['Row'], 'createdAt'> & { createdAt: Date };
 
 export type OfficeHour = {
     weekday: number;
@@ -41,34 +30,11 @@ export type OfficeHour = {
     comment: string;
 }
 
-export type TimePeriod = {
-    id: number;
-    startTime: Date;
-    duration: number;
-}
+export type TimePeriod = Omit<Database['public']['Tables']['Time-Period']['Row'], 'startTime'> & { startTime: Date };
 
-export type BannerConfig = {
-    name: string;
-    updatedAt: Date;
-    active: boolean;
-    hideable: boolean;
-    svgPaths: string[];
-    pulseIcon: boolean;
-    desktopText: string;
-    mobileText: string;
-    buttonText: string;
-    buttonUrl: string;
-    activeUntil: Date;
-}
+export type BannerConfig = Omit<Database['public']['Tables']['Banner-Config']['Row'], 'updatedAt' | 'activeUntil'> & { updatedAt: Date, activeUntil: Date };
 
-export type AdminAction = {
-    id: number;
-    performedAt: Date;
-    section: string;
-    action: string;
-    description: string;
-    author: string;
-}
+export type AdminAction = Omit<Database['public']['Tables']['Admin-Action']['Row'], 'performedAt'> & { performedAt: Date };
 
 
 // >>> Config <<<
@@ -113,8 +79,9 @@ export const addConfigEntry = async (id: string, data: JSONObject, customAdminAc
     let {data: dbData, error} = await supabase
         .from('Config-Entry')
         .insert([{id: id, data: data}])
+        .select()
         .single()
-        .select();
+
 
     if (error) throw error;
 
@@ -133,8 +100,8 @@ export const updateConfigEntry = async (id: string, data: JSONObject, customAdmi
         .from('Config-Entry')
         .update({data: data, updatedAt: new Date().toISOString()})
         .eq('id', id)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -154,8 +121,8 @@ export const deleteConfigEntry = async (id: string, customAdminActionMessage?: {
         .from('Config-Entry')
         .delete()
         .eq('id', id)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -185,10 +152,9 @@ export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
     let {data, error} = await supabase
         .from('Feature')
         .select('*')
-        .order('title')
 
     if (error) throw error;
-    else getFeaturesCache = data;
+    else getFeaturesCache = (data = data.sort((a,b)=>a.order<b.order?-1:1));
 
     return data;
 }
@@ -209,13 +175,14 @@ export const getFeature = async (name: string, noCache?: boolean): Promise<Featu
 }
 
 export const addFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
+    let order = (await getFeatures()).length;
     const { data, error } = await supabase
         .from('Feature')
         .insert([
-            { name: name, title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths },
+            { name: name, title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths, order: order },
         ])
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -223,17 +190,31 @@ export const addFeature = async (name: string, title: string, shortDescription: 
     return data;
 }
 
-export const updateFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
+export const updateFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[], order: number): Promise<Feature> => {
     const { data, error } = await supabase
         .from('Feature')
-        .update({ title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths })
+        .update({ title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths, order: order })
         .eq('name', name)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
     await addAdminAction('Leistungen', 'update', `Die Leistung mit dem Namen "${name}" wurde bearbeitet.`);
+    return data;
+}
+
+export const updateFeatureOrder = async (name: string, order: number, shouldAddAdminAction?: boolean): Promise<Feature> => {
+    const { data, error } = await supabase
+        .from('Feature')
+        .update({ order: order })
+        .eq('name', name)
+        .select()
+        .single();
+
+    if (error) throw error;
+
+    if (shouldAddAdminAction) await addAdminAction('Leistungen', 'update', `Die Ordnung der Leistung mit dem Namen "${name}" wurde geändert.`);
     return data;
 }
 
@@ -243,14 +224,19 @@ export const deleteFeature = async (name: string) => {
     // Delete all images in the long description of the feature
     await deleteImagesFromHTML(feature.longDescription)
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
         .from('Feature')
         .delete()
         .eq('name', name)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
+    // Update the order of all subsequent features
+    let features = await getFeatures(true);
+    for (let i = feature.order + 1; i < features.length; i++) {
+        await updateFeatureOrder(features[i].name, i - 1, false);
+    }
 
     await addAdminAction('Leistungen', 'delete', `Die Leistung mit dem Namen "${name}" wurde gelöscht.`);
     return data;
@@ -264,17 +250,17 @@ let getShowcasedFeaturesCache;
 export const getShowcasedFeatures = async (noCache?: boolean): Promise<ShowcasedFeature[]> => {
     if (getShowcasedFeaturesCache != undefined && !noCache) return getShowcasedFeaturesCache
 
-    let {data, error} = await supabase
+    const {data, error} = await supabase
         .from('Showcased-Feature')
         .select('*')
         .order('setAt', {ascending: false})
 
     if (error) throw error;
 
-    data.map(e => e.setAt = new Date(e.setAt));
-    getShowcasedFeaturesCache = data;
+    const parsed = [...data].map(e => {return {...e, setAt: new Date(e.setAt)}});
+    getShowcasedFeaturesCache = parsed;
 
-    return data;
+    return parsed;
 }
 
 export const addShowcasedFeature = async (name: string): Promise<ShowcasedFeature> => {
@@ -283,15 +269,15 @@ export const addShowcasedFeature = async (name: string): Promise<ShowcasedFeatur
         .insert([
             { name: name },
         ])
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
-    data.setAt = new Date(data.setAt);
+    const parsed = {...data, setAt: new Date(data.setAt)};
 
     await addAdminAction('Leistungen', 'insert', `Die Leistung mit dem Namen "${name}" wurde auf die Startseite gesetzt.`);
-    return data;
+    return parsed;
 }
 
 export const deleteShowcasedFeature = async (name: string) => {
@@ -299,14 +285,16 @@ export const deleteShowcasedFeature = async (name: string) => {
         .from('Showcased-Feature')
         .delete()
         .eq('name', name)
+        .select()
         .single()
 
     if (error) throw error;
     if (data === null) return data;
-    data.setAt = new Date(data.setAt);
+
+    const parsed = {...data, setAt: new Date(data.setAt)};
 
     await addAdminAction('Leistungen', 'delete', `Die Leistung mit dem Namen "${name}" wurde von der Startseite entfernt.`);
-    return data;
+    return parsed;
 }
 
 
@@ -314,55 +302,57 @@ export const deleteShowcasedFeature = async (name: string) => {
 
 
 let getBlogEntriesCache; // This results in each client only requesting the data once.
-export const getBlogEntries = async (noCache?: boolean, count?: number, withAuthor: boolean = true): Promise<BlogEntry[]> => {
+export const getBlogEntries = async (noCache?: boolean, count?: number): Promise<BlogEntry[]> => {
     if (typeof count === undefined) count = -1;
     if (getBlogEntriesCache != undefined && !noCache) return getBlogEntriesCache.limit(count)
 
     let {data, error} = await supabase
         .from('Blog-Entry')
-        .select('id, createdAt, title, content, previewImageUrl, previewText' + (withAuthor ? ', author' : ''))
+        .select('*')
         .order('createdAt', {ascending: false})
         .limit(count)
 
     if (error) { throw error; }
 
-    data.forEach((b) => b.createdAt = new Date(b.createdAt));
-    if (count == -1) getBlogEntriesCache = data;
+    const parsed = [...data].map(e => {return {...e, createdAt: new Date(e.createdAt)}})
+    if (count == -1) getBlogEntriesCache = parsed;
 
-    return data;
+    return parsed;
 }
 
-export const getBlogEntry = async (id: string, noCache?: boolean, withAuthor: boolean = true): Promise<BlogEntry> => {
+export const getBlogEntry = async (id: string, noCache?: boolean): Promise<BlogEntry> => {
     let find; // Only if the feature can not be found in the cache, a new request is sent.
     if (!noCache && (find = (await getBlogEntries()).find(e => e.id == id)) != undefined) return find
 
     let {data, error} = await supabase
         .from('Blog-Entry')
-        .select('id, createdAt, title, content, previewImageUrl, previewText' + (withAuthor ? ', author' : ''))
+        .select('*')
         .eq('id', id)
         .single();
 
     if (error) throw error;
 
-    data.createdAt = new Date(data.createdAt);
+    const parsed = {...data, createdAt: new Date(data.createdAt)};
 
-    return data;
+    return parsed;
 }
 
 // Adds a new blog entry to the database.
-export const addBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
+export const addBlogEntry = async (id: string, authorID: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
     const { data, error } = await supabase
         .from('Blog-Entry')
         .insert([
-            { id: id, author: author, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl },
+            { id: id, authorID: authorID, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl },
         ])
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
     await addAdminAction('Aktuelles', 'insert', `Der Blog Eintrag mit der id "${id}" wurde hinzugefügt.`);
-    return data;
+    const parsed = {...data, createdAt: new Date(data.createdAt)};
+
+    return parsed;
 }
 
 // Updates the blog entry with the given id.
@@ -371,13 +361,15 @@ export const updateBlogEntry = async (id: string, author: string, title: string,
         .from('Blog-Entry')
         .update( { id: id, author: author, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl })
         .eq('id', id)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
     await addAdminAction('Aktuelles', 'update', `Der Blog Eintrag mit der id "${id}" wurde bearbeitet.`);
-    return data;
+    const parsed = {...data, createdAt: new Date(data.createdAt)};
+
+    return parsed;
 }
 
 // Deletes the blog entry with the given id.
@@ -446,8 +438,8 @@ export const addTeamMember = async (id: string, name: string, role: string, desc
         .insert([
             { id: id, name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl },
         ])
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -461,8 +453,8 @@ export const updateTeamMember = async (id: string, name: string, role: string, d
         .from('Team-Member')
         .update({ name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl })
         .eq('id', id)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -479,8 +471,8 @@ export const deleteTeamMember = async (id: string) => {
         .from('Team-Member')
         .delete()
         .eq('id', id)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -504,8 +496,8 @@ export const getTimePeriod = async (id: number): Promise<TimePeriod> => {
 
     if (error) throw error;
 
-    dataToTimePeriod(data);
-    return data;
+    const parsed = dataToTimePeriod(data);
+    return parsed;
 }
 
 /**
@@ -521,13 +513,13 @@ export const addTimePeriod = async (startTime: Date, duration: number): Promise<
         .insert([
             { startTime: startTimeString, duration: duration },
         ])
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
-    dataToTimePeriod(data);
-    return data;
+    const parsed = dataToTimePeriod(data);
+    return parsed;
 }
 
 /**
@@ -543,13 +535,13 @@ export const updateTimePeriod = async (id: number, startTime: Date, duration: nu
         .from('Time-Period')
         .update({ startTime: startTimeString, duration: duration })
         .eq('id', id)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
-    dataToTimePeriod(data);
-    return data;
+    const parsed = dataToTimePeriod(data);
+    return parsed;
 }
 
 /*
@@ -561,8 +553,8 @@ export const deleteTimePeriod = async (id: number) => {
         .from('Time-Period')
         .delete()
         .eq('id', id)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
     return data;
@@ -593,8 +585,8 @@ export const calculateDateDistance = (startTime: Date, endTime: Date): number =>
  * @param data The row from the Time-Period table.
  */
 const dataToTimePeriod = (data) => {
-    data.startTime = new Date(Date.parse("1970-01-01T" + data.startTime.toString()));
-    return data;
+    const parsed = {...data, startTime: new Date(Date.parse("1970-01-01T" + data.startTime.toString()))};
+    return parsed;
 }
 
 // >>> Office-Hour <<<
@@ -614,9 +606,9 @@ export const getOfficeHours = async (noCache: boolean = false): Promise<OfficeHo
 
     if (error) throw error;
 
-    data = await Promise.all(data.map(formatDataToOfficeHour));
-    getOfficeHoursCache = data;
-    return data;
+    const parsed = await Promise.all(data.map(formatDataToOfficeHour));
+    getOfficeHoursCache = parsed;
+    return parsed;
 }
 
 
@@ -650,8 +642,8 @@ export const updateOfficeHour = async (weekday: number, timePeriods: TimePeriod[
         .from('Office-Hour')
         .update({ timePeriodIds: timePeriodIds, comment: comment })
         .eq('weekday', weekday)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) {
         //  If an error occurs, the time periods are deleted again.
@@ -674,8 +666,8 @@ export const updateOfficeHourComment = async (weekday: number, comment: string):
         .from('Office-Hour')
         .update({ comment: comment })
         .eq('weekday', weekday)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -727,9 +719,10 @@ export const getBannerConfig = async (name: string): Promise<BannerConfig> => {
 export const addBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
     const { data, error } = await supabase
         .from('Banner-Config')
+        // @ts-ignore
         .insert([bannerConfig])
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -741,10 +734,11 @@ export const addBannerConfig = async (bannerConfig: BannerConfig): Promise<Banne
 export const updateBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
     const { data, error } = await supabase
         .from('Banner-Config')
+        // @ts-ignore
         .update(bannerConfig)
         .eq('name', bannerConfig.name)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -758,8 +752,8 @@ export const deleteBannerConfig = async (name: string): Promise<BannerConfig> =>
         .from('Banner-Config')
         .delete()
         .eq('name', name)
-        .single()
-        .select();
+        .select()
+        .single();
 
     if (error) throw error;
 
@@ -768,7 +762,7 @@ export const deleteBannerConfig = async (name: string): Promise<BannerConfig> =>
     return formatDataToBannerConfig(data);
 }
 
-const formatDataToBannerConfig = (data: BannerConfig): BannerConfig => {
+const formatDataToBannerConfig = (data): BannerConfig => {
     let copy = { ...data };
     copy.updatedAt = copy.updatedAt ? new Date(copy.updatedAt) : null;
     copy.activeUntil = copy.activeUntil ? new Date(copy.activeUntil) : null;
@@ -790,8 +784,8 @@ export const getAdminActions = async (count?: number): Promise<AdminAction[]> =>
 
     if (error) throw error;
 
-    data.forEach((a) => a.performedAt = new Date(a.performedAt));
-    return data;
+    const parsed= data.map((a) => {return {...a, performedAt: new Date(a.performedAt)}});
+    return parsed;
 }
 
 export const addAdminAction = async (section: string, action: string, description: string, author?: string) => {

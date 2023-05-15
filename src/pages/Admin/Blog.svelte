@@ -1,17 +1,17 @@
 <script lang="ts">
-import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
-import { getBlogEntries } from "../../scripts/database/database";
-import { fade } from "svelte/transition";
-import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
-import Alert from "../../lib/Essentials/Alert.svelte";
-import BlogEntryComponent from "../../lib/Blog/BlogEntry.svelte";
-import Modal from "../../lib/Essentials/Modal.svelte";
-import AddEntryForm from "../../lib/Admin/Blog/AddEntryForm.svelte";
-import DeleteEntryForm from "../../lib/Admin/Blog/DeleteEntryForm.svelte";
-import BlogEntryOutline from "../../lib/Admin/Blog/BlogEntryOutlines.svelte";
+    import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
+    import {getBlogEntries} from "../../scripts/database/database";
+    import {fade} from "svelte/transition";
+    import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
+    import Alert from "../../lib/Essentials/Alert.svelte";
+    import BlogEntryComponent from "../../lib/Blog/BlogEntry.svelte";
+    import Modal from "../../lib/Essentials/Modal.svelte";
+    import AddEntryForm from "../../lib/Admin/Blog/AddEntryForm.svelte";
+    import DeleteEntryForm from "../../lib/Admin/Blog/DeleteEntryForm.svelte";
+    import BlogEntryOutline from "../../lib/Admin/Blog/BlogEntryOutlines.svelte";
 
 
-let options = [
+    let options = [
     {title: 'Neuen Beitrag Hinzufügen', shortDescription: 'Fügen sie einen neuen Beitrag hinzu.', svgPaths: ['M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z']},
     {title: 'Beitrag Bearbeiten', shortDescription: 'Editieren sie den ausgewählten Beitrag.', svgPaths: ['M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z']},
     {title: 'Löschen Bestätigen', shortDescription: 'Wollen sie den ausgewählten Beitrag wirklich löschen?', svgPaths: ['M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0']},
@@ -132,7 +132,7 @@ const deleteEntry = (blogEntry) => {
                                 <BlogEntryOutline/>
                             </div>
                             <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                                <button on:click={() => addEntry()} class="font-medium text-black rounded-full shadow bg-white dark:text-slate-200 dark:bg-slate-700 p-4 hover:shadow-lg flex items-center cursor-pointer focus:ring-1 ring-gray-400 dark:ring-slate-200">
+                                <button on:click={() => addEntry()} class="font-medium text-black rounded-full shadow bg-white dark:text-slate-200 dark:bg-slate-700 p-4 hover:shadow-lg flex items-center cursor-pointer focus:ring-1 ring-gray-400 dark:ring-slate-200 transition-shadow">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>

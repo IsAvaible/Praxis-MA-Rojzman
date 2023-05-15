@@ -1,11 +1,11 @@
 <script lang="ts">
-import {getAdminActions} from "../../../scripts/database/database";
-import {fade} from "svelte/transition";
-import {inview} from "svelte-inview";
-import Alert from "../../Essentials/Alert.svelte";
-import {adminActionsChangeStore} from "../../../scripts/stores/adminActionsChangeStore";
+    import {getAdminActions} from "../../../scripts/database/database";
+    import {fade} from "svelte/transition";
+    import {inview} from "svelte-inview";
+    import Alert from "../../Essentials/Alert.svelte";
+    import {adminActionsChangeStore} from "../../../scripts/stores/adminActionsChangeStore";
 
-let reload = 0;
+    let reload = 0;
 let actionsCount: number | string = 5;
 let increaseBy = actionsCount;
 
@@ -98,7 +98,7 @@ $: if (inView && $adminActionsChangeStore) {
                         {/if}
                         {#if actionsCount === 'all' || actionsCount > increaseBy * 2}
                             <button on:click={() => actionsCount = increaseBy} class="whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-1 active:ring-0 ring-inset ring-white">
-                                <span class="text-sm font-medium">Zurücksetzen</span>
+                                <span class="text-sm font-medium">Ansicht zurücksetzen</span>
                             </button>
                         {/if}
                         {#if actionsCount > increaseBy * 2 && actionsCount !== 'all'}

@@ -27,6 +27,10 @@
     import {cookieState, siteCookieStore} from "../../scripts/stores/cookies/siteCookieStore";
     import LazyRoute from "./LazyRoute.svelte";
     import PrivacyPolicy from "../../pages/PrivacyPolicy.svelte";
+    import Impressum from "../../pages/Impressum.svelte";
+    import PageTitle from "../Admin/Navigation/PageTitle.svelte";
+    import LoadingWheel from "../Misc/LoadingWheel.svelte";
+    import Footer from "../Essentials/Footer.svelte";
 
     let siteEnterPopUpData = {
         svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
@@ -192,12 +196,16 @@
     <div class="sticky top-0 z-50 bg-white dark:bg-slate-800" id="header">
         <div class="mx-auto px-4 sm:px-6 max-w-7xl">
             <div class="flex justify-between items-center border-b-2 border-gray-100 dark:border-none py-6 md:justify-start md:space-x-10">
-                <div class="flex justify-start lg:w-0 lg:flex-1 {mobileMenuOpen ? 'hidden' : ''}">
+                <!-- This is located here, so that it appears first in the tab order -->
+                {#if $siteCookieStore === cookieState.UNSET}
+                    <CookieBanner/>
+                {/if}
+                <div class="flex justify-start lg:w-0 lg:flex-1 {mobileMenuOpen ? '' : ''}">
                     <Icon/>
                 </div>
 
                 <div class="flex md:hidden space-x-10">
-                    <h1 class="text-base font-medium text-gray-500 dark:text-slate-200 text-center {mobileMenuOpen ? 'hidden' : ''}"> Praxis M.A. Rojzman </h1>
+                    <h1 class="text-base font-medium text-gray-500 dark:text-slate-200 text-center {mobileMenuOpen ? '' : ''}"> Praxis M.A. Rojzman </h1>
                 </div>
                 <div class="-mr-2 -my-2 md:hidden">
                     <button on:click={toggleMobileMenu} type="button" class="bg-white dark:bg-transparent rounded-md p-2 inline-flex items-center justify-center text-gray-400 dark:text-slate-300 hover:text-gray-500 hover:bg-gray-100 dark:hover:text-slate-400 dark:hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-expanded="false">
@@ -233,9 +241,9 @@
 <!--                            </div>-->
 <!--                        {/if}-->
 <!--                    </div>-->
-                    <Link to="leistungen" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Leistungen </Link>
-                    <Link to="team" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Unser Team </Link>
-                    <Link to="aktuelles" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white"> Aktuelles </Link>
+                    <Link to="leistungen" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white text-center"> Leistungen </Link>
+                    <Link to="team" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white text-center"> Unser Team </Link>
+                    <Link to="aktuelles" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white text-center"> Aktuelles </Link>
 
                     <div class="relative">
                         <!-- Item active: "text-gray-900", Item inactive: "text-gray-500" -->
@@ -274,9 +282,6 @@
         {/if}
         {#if adminPreviewBannerActive}
             <Banner {...adminPreviewBannerData} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}} id="admin-preview-banner"/>
-        {/if}
-        {#if $siteCookieStore === cookieState.UNSET}
-            <CookieBanner/>
         {/if}
         <SiteEnterPopUp {...siteEnterPopUpData}/>
     </div>
@@ -322,15 +327,22 @@
             <NotFound/>
         </Route>
 
-        <Route path="datenschutzerklaerung">
+        <Route path="datenschutz">
             <PrivacyPolicy/>
         </Route>
 
         <Route path="impressum">
-            <NotFound/>
+            <Impressum/>
         </Route>
 
-        <LazyRoute path="admin/*" component={AdminSection}/>
+        <LazyRoute path="admin/*" component={AdminSection}>
+            <Footer>
+                <div in:fade={{duration: 200}} class="w-full h-full -mt-20 flex items-center justify-center flex-col gap-y-3 text-white">
+                    <PageTitle title="Admin Sektion" subTitle="Die Admin Sektion wird geladen..."/>
+                    <LoadingWheel size={20}/>
+                </div>
+            </Footer>
+        </LazyRoute>
 
         <Route>
             <NotFound/>

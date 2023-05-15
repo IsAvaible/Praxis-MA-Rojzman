@@ -16,7 +16,7 @@
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
         {:then showcasedFeatures}
-            <div class="space-y-10 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
+            <dl class="space-y-10 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-8">
                 {#each showcasedFeatures as {name, title, shortDescription, longDescription, svgPaths}}
                     <div in:fade={{duration: 100}}>
                         <div>
@@ -33,10 +33,10 @@
                             <p class="mt-5 text-lg leading-6 font-medium text-gray-900 dark:text-slate-100">{title}</p>
                         </div>
                         <dd class="mt-2 text-base text-gray-500 dark:text-slate-200">{shortDescription}</dd>
-                        <div class="w-full"><Link to={'leistungen/' + (longDescription ? name : '')}><span class="ml-auto mr-4 table cursor-pointer text-gray-900 dark:text-slate-200 hover:underline">Mehr erfahren</span></Link></div>
+                        <div class="w-full"><Link to={'leistungen/' + (longDescription ? name : '')} aria-label={shortDescription}><span class="ml-auto mr-4 table cursor-pointer text-gray-900 dark:text-slate-200 hover:underline">Mehr erfahren</span></Link></div>
                     </div>
                 {/each}
-            </div>
+            </dl>
         {:catch e}
             <Alert type={1} title='Leistungen konnten nicht geladen werden.' description="Wir konnten die angeforderten Daten nicht laden. Überprüfen sie bitte ihre Internetverbindung."/>
         {/await}

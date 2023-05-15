@@ -1,12 +1,15 @@
 <script lang="ts">
-    import {scale, fade, slide} from "svelte/transition";
+    import {fade, scale, slide} from "svelte/transition";
     import {sineInOut} from "svelte/easing"
     import {
-        getTeamMember,
         addTeamMember,
-        updateTeamMember,
+        deleteFiles,
         deleteTeamMember,
-        uploadFile, deleteFiles, getPublicFileUrl, getTeamMembers
+        getPublicFileUrl,
+        getTeamMember,
+        getTeamMembers,
+        updateTeamMember,
+        uploadFile
     } from "../../../scripts/database/database";
     import {longpress} from "../../../scripts/ui/longpress";
     import TwitterIcon from "../../Icons/TwitterIcon.svelte";
@@ -230,7 +233,7 @@
             <textarea bind:value={role} rows="1" placeholder="Rolle (*)" class="text-gray-800 dark:text-slate-100 bg-transparent text-sm text-center w-full max-w-full"></textarea>
             <textarea bind:value={description} rows="1" placeholder="Beschreibung (*)" class="text-center text-gray-600 bg-transparent dark:text-slate-200 text-base pt-3 font-normal w-full max-w-full"></textarea>
 
-            <div class="w-full flex justify-center pt-5 pb-5 text-gray-500 dark:text-slate-400 [&>*:hover]:text-gray-800 [&>*:dark:hover]:text-slate-300">
+            <div class="w-full flex justify-center pt-5 pb-5 text-gray-500 dark:text-slate-400 [&>*:hover]:text-gray-800 [&>*:hover]:dark:text-slate-300">
                 <EditableLinkIconWrapper on:change={e => flexUrl = e.detail} url={flexUrl} ariaLabel="Flex"><FlexIcon/></EditableLinkIconWrapper>
                 <EditableLinkIconWrapper on:change={e => twitterUrl = e.detail} url={twitterUrl} ariaLabel="Twitter"><TwitterIcon/></EditableLinkIconWrapper>
                 <EditableLinkIconWrapper on:change={e => instagramUrl = e.detail} url={instagramUrl} ariaLabel="Instagram"><InstagramIcon/></EditableLinkIconWrapper>

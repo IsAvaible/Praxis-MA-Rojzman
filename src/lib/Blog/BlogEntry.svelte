@@ -4,7 +4,7 @@
     import DSGVODialogHTMLInjector from "../Legal/DSGVODialogHTMLInjector.svelte";
 
     export let id: string;
-    export let author: string;
+    export let authorID: string;
     export let title: string;
     export let previewText: string;
     export let content: string;
@@ -17,7 +17,7 @@
     onMount(() => dispatch('mount'));
 </script>
 
-<div class="w-full flex rounded-lg overflow-clip flex-col sm:flex-row" style="max-height: inherit">
+<div id="blog-entry-{id}" class="w-full flex rounded-lg overflow-clip flex-col sm:flex-row" style="max-height: inherit">
     {#if previewImageUrl && !expanded}
         <img src="{previewImageUrl}" alt="Image with the URL {previewImageUrl}" class="bg-primary-50 rounded-lg w-full mb-2 sm:mb-0 sm:max-w-[25%] md:max-w-[20%] h-full aspect-video mr-3" in:fade/>
     {/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type {Writable} from "svelte/store";
     import {writable} from "svelte/store";
     import {onDestroy} from "svelte";
 
@@ -6,7 +7,7 @@
     export let link;
     export let linkText = 'Mehr erfahren';
     export let buttonText = 'Inhalt laden';
-    export let cookieStore: writable<boolean>;
+    export let cookieStore: Writable<boolean> = writable(false)
     export let backgroundStyle = 'bg-hero-topography-700';
     export let blurBackground = false;
 
@@ -26,6 +27,11 @@
     }
 </script>
 
+<!--
+  @component
+  This component defers the loading of it's slot until the user has accepted the appropriate cookie.
+-->
+
 
 {#if accepted}
     <slot/>
@@ -37,10 +43,10 @@
                 <a href={link} rel="noreferrer" target="_blank" class="text-primary-600 hover:underline">{linkText}</a>
             {/if}
             <button on:click={loadContent} class="bg-white text-gray-800 font-bold mt-2 px-4 py-2 rounded-md shadow-lg hover:shadow-md transition-shadow duration-300 hover:ring-1 hover:ring-black focus:shadow-md focus:ring-1 focus:ring-black">{buttonText}</button>
-            <div class="flex items-center gap-1">
+            <label class="flex items-center gap-1">
                 <input type="checkbox" class="my-auto hover:cursor-pointer h-full" bind:checked={alwaysAllow}/>
-                <p class="text-gray-800 -mt-[2px]">Immer zulassen</p>
-            </div>
+                <span class="text-gray-800 -mt-[2px]">Immer zulassen</span>
+            </label>
         </div>
     </div>
 {/if}

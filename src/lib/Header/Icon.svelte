@@ -6,42 +6,42 @@
     import {rainbowHeaderIconAnimationStore} from "../../scripts/stores/rainbowHeaderIconAnimationStore";
 
     let canvas;
-let regularIcon;
-let windowWidth;
-let rainbowAnimate = true;
+    let regularIcon;
+    let windowWidth;
+    let rainbowAnimate = true;
 
-const initAnimation = async () => {
-    // Source: https://svelte.dev/tutorial/bind-this
-    const ctx = canvas.getContext('2d', {willReadFrequently: true});
-    ctx.willReadFrequently = true;
-    let frame = requestAnimationFrame(loop);
+    const initAnimation = async () => {
+        // Source: https://svelte.dev/tutorial/bind-this
+        const ctx = canvas.getContext('2d', {willReadFrequently: true});
+        ctx.willReadFrequently = true;
+        let frame = requestAnimationFrame(loop);
 
-    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    function loop(t) {
-        if (!canvas) return;
-        frame = requestAnimationFrame(loop);
+        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        function loop(t) {
+            if (!canvas) return;
+            frame = requestAnimationFrame(loop);
 
-        for (let p = 0; p < imageData.data.length; p += 4) {
-            const i = p / 4;
-            const x = i % canvas.width;
-            const y = i / canvas.width >>> 0;
+            for (let p = 0; p < imageData.data.length; p += 4) {
+                const i = p / 4;
+                const x = i % canvas.width;
+                const y = i / canvas.width >>> 0;
 
-            const r = 64 + (128 * x / canvas.width) + (64 * Math.sin(t / 1000));
-            const g = 64 + (128 * y / canvas.height) + (64 * Math.cos(t / 1000));
-            const b = 128;
+                const r = 64 + (128 * x / canvas.width) + (64 * Math.sin(t / 1000));
+                const g = 64 + (128 * y / canvas.height) + (64 * Math.cos(t / 1000));
+                const b = 128;
 
-            imageData.data[p + 0] = r;
-            imageData.data[p + 1] = g;
-            imageData.data[p + 2] = b;
-            imageData.data[p + 3] = 255;
+                imageData.data[p + 0] = r;
+                imageData.data[p + 1] = g;
+                imageData.data[p + 2] = b;
+                imageData.data[p + 3] = 255;
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+            if ($prefersReducedMotionStore || !rainbowAnimate) {
+                cancelAnimationFrame(frame);
+                return;
+            }
         }
-
-        ctx.putImageData(imageData, 0, 0);
-        if ($prefersReducedMotionStore || !rainbowAnimate) {
-            cancelAnimationFrame(frame);
-            return;
-        }
-    }
 
     return () => {
         cancelAnimationFrame(frame);
@@ -60,7 +60,6 @@ onMount(async () => {
     }
     loaded = true;
     rainbowHeaderIconAnimationStore.set(rainbowAnimate);
-    await initAnimation();
 
     unsubscribe = rainbowHeaderIconAnimationStore.subscribe(value => {
         rainbowAnimate = value;
@@ -78,13 +77,13 @@ onMount(async () => {
 });
 
 onDestroy(() => {
-    unsubscribe();
+    if (unsubscribe) unsubscribe();
 });
 
 </script>
 <svelte:window bind:outerWidth={windowWidth}/>
 
-<Link to="/" id="headerIcon">
+<Link to="/" id="header-icon">
     <span class="sr-only">Homepage</span>
     <div class="has-tooltip">
         <canvas

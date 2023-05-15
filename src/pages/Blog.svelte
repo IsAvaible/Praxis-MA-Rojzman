@@ -9,6 +9,8 @@
     import LoadingWheel from "../lib/Misc/LoadingWheel.svelte";
     import Footer from "../lib/Essentials/Footer.svelte";
     import disableScroll from "disable-scroll";
+    import {get} from "svelte/store";
+    import {bannerPushContentStore} from "../scripts/stores/bannerPushContentStore";
 
     let urlID;
     let showErrorAlertDialog = false;
@@ -34,13 +36,17 @@
     }
 
     const scrollToElement = (element: HTMLElement, smooth: boolean) => {
-        let bannerElement = document.getElementById("banner");
         let elementPosition = element.getBoundingClientRect().top;
-        if (bannerElement) {
+        // If the header will be visible, add offset
+        let headerVisible = (elementPosition - document.body.getBoundingClientRect().top) < window.innerHeight;
+        let headerOffset = headerVisible ? 80 : 0;
+        // If the banner is visible add additional offset
+        let bannerElement = document.getElementById("banner");
+        if (bannerElement && get(bannerPushContentStore)) {
             let bannerHeight = bannerElement.getBoundingClientRect().height;
             elementPosition -= bannerHeight;
         }
-        window.scrollBy({top: elementPosition - 80, behavior: smooth ? "smooth" : "auto"});
+        window.scrollBy({top: elementPosition - headerOffset, behavior: smooth ? "smooth" : "auto"});
     }
 
     let expandedEntryIndex: number = undefined;
@@ -53,31 +59,31 @@
     }
 
     const onEntryExpandClick = (id: string, index: number) => {
-        const oldScrollStateY = window.scrollY;
         toggleEntryExpand(id, index);
         // The history state is replaced to prevent users from having to click back multiple times
         if (expandedEntryIndex == index) { // If a new entry is expanded set the url to the id of the new entry
-            history.replaceState({}, '', `aktuelles/${id}`)
             urlID = id;
-            delay(120).then(() => {
+            delay(0).then(() => {
                 disableScroll.on();
                 scrollToElement(document.getElementById(id), true);
                 disableScroll.off();
+                history.replaceState({}, '', `aktuelles/${id}`);
             });
         } else { // If the entry is collapsed, the URL is reset
-            history.replaceState({}, '', 'aktuelles')
+            history.replaceState({}, '', 'aktuelles');
             urlID = undefined;
         }
     }
 
     const onParamsIdChange = (paramsId) => {
+        if (urlID == paramsId) return;
         urlID = paramsId;
         if (!document.getElementById(urlID)) return;
         expandedEntryIndex = undefined;
         scrollToElement(document.getElementById(urlID), true);
     }
 
-    $: onParamsIdChange($params.id);
+    $: onParamsIdChange($params.id);  // When the id in the url changes, the entry with the id is scrolled into view
 
 </script>
 
@@ -99,7 +105,7 @@
         </div>
     {/if}
     <div class="max-w-[100rem] w-full flex flex-col justify-between gap-y-8">
-        {#await getBlogEntries(false, undefined, false)}
+        {#await getBlogEntries(false, undefined)}
             <div class="w-full flex justify-center">
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
@@ -124,7 +130,9 @@
                 </div>
             </div>
         {:catch e}
-            <Alert type={1} title="Blog konnte nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
+            <div class="h-[45vh] w-full flex items-center justify-center">
+                <Alert type={1} title="Blog konnte nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
+            </div>
         {/await}
     </div>
 </div>

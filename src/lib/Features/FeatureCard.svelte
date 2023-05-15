@@ -30,17 +30,17 @@
 <div class="pt-6 h-full group">
     <div class="flow-root bg-gray-50 dark:bg-slate-800 rounded-lg px-6 pb-8 h-full">
         <div class="-mt-6 text-start">
-            <ConditionalWrapper condition={longDescription && expandViaIcon} on:click={onLinkFollow} href={'leistungen/' + name} a={true}>
             <div class="{centerSvg ? 'justify-center' : 'justify-start'} flex items-center">
-                <span class="inline-flex p-3 bg-primary-600 rounded-md shadow-lg {longDescription && expandViaIcon ? 'hover:bg-primary-800' : ''}">
-                  <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      {#each svgPaths as path}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={path} />
-                      {/each}
-                  </svg>
-                </span>
+                <ConditionalWrapper condition={longDescription && expandViaIcon} on:click={onLinkFollow} href={'leistungen/' + name} a={true}>
+                    <span class="inline-flex p-3 bg-primary-600 rounded-md shadow-lg {longDescription && expandViaIcon ? 'hover:bg-primary-800' : ''}">
+                      <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                          {#each svgPaths as path}
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={path} />
+                          {/each}
+                      </svg>
+                    </span>
+                </ConditionalWrapper>
             </div>
-            </ConditionalWrapper>
             <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight dark:text-slate-200">{title}</h3>
             <p class="mt-5 text-base text-gray-500 dark:text-slate-300">{shortDescription}</p>
         </div>

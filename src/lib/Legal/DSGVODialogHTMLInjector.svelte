@@ -1,11 +1,14 @@
 <script lang="ts">
-import InjectableHTMLTag from "../Misc/InjectableHTMLTag.svelte";
-import DSGVODialog from "./DSGVODialog.svelte";
-import {externalContentAllowedStore} from "../../scripts/stores/cookies/externalContentAllowedStore";
-import {urlRegex} from "../../scripts/misc/urlRegex";
-import {youtubeAllowedStore} from "../../scripts/stores/cookies/youtubeAllowedStore";
+    import InjectableHTMLTag from "../Misc/InjectableHTMLTag.svelte";
+    import DSGVODialog from "./DSGVODialog.svelte";
+    import {externalContentAllowedStore} from "../../scripts/stores/cookies/externalContentAllowedStore";
+    import {urlRegex} from "../../scripts/misc/urlRegex";
+    import {youtubeAllowedStore} from "../../scripts/stores/cookies/youtubeAllowedStore";
 
 
+    /**
+ * The HTML that should be wrapped.
+ */
 export let html: string;
 
 const parseWrappedContent = (wrappedContent: string) => {
@@ -19,6 +22,12 @@ const parseWrappedContent = (wrappedContent: string) => {
 
 }
 </script>
+
+<!--
+    @component
+    A component that wraps content from other websites and displays a dialog that informs the user about the data transfer.
+    Uses the InjectableHTMLTag component to inject a DSGVO dialog into the HTML.
+-->
 
 <InjectableHTMLTag html={html} rules={[
         {regex: RegExp('(<figure class=\"media".*?<\/figure>)', 'gi'), component: DSGVODialog,

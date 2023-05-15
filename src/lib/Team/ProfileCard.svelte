@@ -17,7 +17,7 @@
     export let flexUrl = undefined;
 </script>
 
-<div role="listitem" class="relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-lg">
+<div id="profile-card-{id}" role="listitem" class="relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-lg">
     <div class="rounded-lg overflow-hidden shadow-md">
         <div class="absolute -mt-20 w-full flex justify-center">
             <div in:scale={{easing: sineInOut, start: 0.3 * ($prefersReducedMotionStore ? 0 : 1), duration: 500 * ($prefersReducedMotionStore ? 0 : 1)}} class="h-32 w-32">

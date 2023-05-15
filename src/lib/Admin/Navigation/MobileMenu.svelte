@@ -19,7 +19,7 @@
     <!--
       Off-canvas menu overlay
     -->
-    <div in:fade={{duration: 300}} out:fade|local={{duration: 300}} class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
+    <div in:fade={{duration: 300}} out:fade|local={{duration: 300}} class="fixed inset-0 bg-gray-600 dark:bg-slate-800 bg-opacity-75 dark:bg-opacity-75" aria-hidden="true"></div>
 
     <!--
       Off-canvas menu, show/hide based on off-canvas menu state.

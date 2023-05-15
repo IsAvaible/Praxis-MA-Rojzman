@@ -1,7 +1,7 @@
 <script lang="ts">
-    import {createEventDispatcher} from "svelte";
-    import { slide } from "svelte/transition";
-    import { backInOut } from "svelte/easing";
+    import {createEventDispatcher, onMount} from "svelte";
+    import {slide} from "svelte/transition";
+    import {backInOut} from "svelte/easing";
     import {bannerPushContentStore} from "../../scripts/stores/bannerPushContentStore";
 
     export let name: string;
@@ -22,6 +22,12 @@
     const hide = () => {
         dispatch("hide", true);
     }
+
+    onMount(() => {
+        if (activeUntil && activeUntil.getTime() > Date.now()) {
+            active = false;
+        }
+    });
 </script>
 
 {#if active}
@@ -46,7 +52,7 @@
                 {#if buttonText && (buttonAction || buttonUrl)}
                     <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto flex justify-center">
                         {#if buttonAction}
-                            <button on:click={buttonAction} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-primary-50"> {buttonText} </button>
+                            <button on:click={() => buttonAction()} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-primary-50"> {buttonText} </button>
                         {:else if buttonUrl}
                             <a href={buttonUrl} target={(buttonUrl.startsWith("/") || buttonUrl.startsWith(window.location.origin)) ? '_self' : '_blank'} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:ring-2 hover:ring-primary-400"> {buttonText} </a>
                         {/if}

@@ -2,8 +2,8 @@
     import {conditionalInputTypeReset} from "../../scripts/ui/conditionalInputTypeReset";
 </script>
 
-<div class="w-full lg:w-1/2 xl:w-5/12 px-4">
-    <div class="contact-form bg-white dark:bg-slate-800 relative rounded-lg p-8 sm:p-12 shadow-lg">
+<div class="w-full self-stretch relative lg:w-1/2 xl:w-5/12 px-4 flex items-center justify-stretch">
+    <div class="contact-form bg-white dark:bg-slate-800 relative rounded-lg p-8 sm:p-12 shadow-lg w-full">
         <form>
             <div class="mb-6">
                 <input placeholder="Gewünschtes Datum und Uhrzeit (*)" type="text" id="datetime" min={new Date().toISOString().split('.')[0].slice(0,-3)} onfocus="(this.type='datetime-local')" on:blur={conditionalInputTypeReset} class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" />
@@ -19,7 +19,7 @@
             </div>
             <div class="mb-6">
                 <textarea
-                        class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 resize-none outline-none focus-visible:shadow-none focus:border-primary-500"
+                        class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 resize-y outline-none focus-visible:shadow-none focus:border-primary-500"
                         placeholder="Ihre Nachricht"
                         rows="6"
                 ></textarea>

@@ -40,15 +40,13 @@
                             <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" rel="noreferrer" class="hidden md:flex mx-auto mb-2 font-medium text-gray-800 dark:text-slate-100 hover:underline">
                                 <p>Kammstr. 2, 65399 Kiedrich</p>
                             </a>
-                            <Link to="/kontakt" class="w-full inline-flex justify-center focus:outline-1 rounded-md border border-transparent shadow-sm px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none text-sm font-medium text-white text-center hover:bg-primary-700 sm:w-auto sm:text-base">Kontaktieren sie uns!</Link>
+                            <Link to="/kontakt" class="w-full inline-flex justify-center rounded-md focus:outline-1
+                            px-8 py-4 bg-primary-600 shadow-md shadow-gray-400 dark:shadow-none font-medium
+                            text-white text-center hover:bg-primary-700 sm:w-auto sm:text-base">Kontaktieren sie uns!</Link>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--    {:else}-->
-        <!--        <div class="min-h-[50vh]"></div>-->
-        <!--    {/if}-->
-        <!--</div>-->
     </div>
 </Footer>

@@ -22,7 +22,7 @@
         disableScroll.on();
         window.scrollTo({ top: 0, behavior: 'smooth' });
         disableScroll.off();
-        window.setTimeout(() => window.document.getElementById('headerIcon').focus(), 250)
+        window.setTimeout(() => window.document.getElementById('header-icon').focus(), 250)
     }
 </script>
 
@@ -41,7 +41,7 @@
         <ul class="flex flex-wrap lg:justify-end text-sm text-gray-500 dark:text-gray-400 lg:flex-1">
             <!--   Using the navigate() method is faster than the href attribute   -->
             <li>
-                <a href="/datenschutzerklaerung" on:click|preventDefault={() => navigate("/datenschutzerklaerung")} class="mr-4 hover:underline md:mr-6 cursor-pointer">Datenschutzerklärung</a>
+                <a href="/datenschutz" on:click|preventDefault={() => navigate("/datenschutz")} class="mr-4 hover:underline md:mr-6 cursor-pointer">Datenschutzerklärung</a>
             </li>
             <li>
                 <a href="/lizensierung" on:click|preventDefault={() => navigate("/lizensierung")}  class="mr-4 hover:underline md:mr-6 cursor-pointer">Lizensierung</a>

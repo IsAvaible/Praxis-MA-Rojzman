@@ -114,13 +114,13 @@
     </p>
     <div class="w-full grid lg:grid-cols-7 rounded-md shadow lg:divide-x divide-y lg:divide-y-0 dark:divide-slate-300 dark:shadow-slate-600 max-h-44 overflow-y-scroll lg:overflow-y-auto">
         {#each [...Array(7).keys()] as weekday}
-            <button on:click={() => selectWeekday(weekday)} class="{weekday === selectedWeekday ? 'bg-gray-100 dark:bg-slate-800' : 'hover:bg-gray-50 dark:hover:bg-slate-800'} hover:shadow-gray-300 text-center py-3 font-semibold text-gray-700 dark:text-slate-300 dark:bg-slate-900">
+            <button on:click={() => selectWeekday(weekday)} class="{weekday === selectedWeekday ? 'bg-gray-100 dark:bg-slate-800' : 'dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800'} hover:shadow-gray-300 text-center py-3 font-semibold text-gray-700 dark:text-slate-300">
                 {numberToWeekdayDE(weekday)}
             </button>
         {/each}
     </div>
-    <div class="w-full flex flex-col xl:flex-row space-y-2 xl:space-y-0 xl:space-x-2 bg-primary-300 p-2 rounded-md">
-        <div class="flex-grow flex space-x-2 justify-center xl:justify-start min-h-[3rem]">
+    <div class="w-full flex flex-col items-center xl:flex-row space-y-2 xl:space-y-0 xl:space-x-2 bg-primary-300 p-2 rounded-md">
+        <div class="flex-grow flex space-x-2 justify-center xl:justify-start min-h-[3rem] w-full">
             {#await getOfficeHourByWeekday(selectedWeekday)}
                 <div class="w-full flex justify-center items-center"><LoadingWheel size={9}/></div>
             {:then {weekday, timePeriods, comment}}
@@ -134,12 +134,12 @@
                 {/if}
                 {#if !editingComment}
                     {#key expandedTimePeriodId}
-                        <div class="flex flex-wrap justify-center -mt-2 -ml-2">
+                        <div class="flex flex-wrap justify-center -mt-2 -ml-2 w-full">
                             {#each currentTimePeriods as {id, startTime, duration}, index}
                                 <!--If the div body is clicked (not the children) set the expandedTimePeriodId to -1-->
                                 <div class="flex mt-2 ml-2 items-center parent-node">
                                     {#if id !== expandedTimePeriodId}
-                                        <button on:click={() => expandTimePeriod(id)} class="bg-white text-lg min-h-[3rem] dark:bg-slate-800 active:ring-2 active:ring-primary-400 hover:bg-gray-50 dark:hover:bg-slate-900 rounded-md h-full px-2">
+                                        <button on:click={() => expandTimePeriod(id)} class="bg-white text-lg min-h-[3rem] dark:bg-slate-900 active:ring-2 active:ring-primary-400 hover:bg-gray-50 dark:hover:bg-black rounded-md h-full px-2">
                                             <span class="font-bold">{index + 1}.</span>
                                             <span>{[startTime, calculateEndTime(startTime, duration)].map(formatHHMM).join(' - ')}</span>
                                         </button>
@@ -164,7 +164,7 @@
                                     {/if}
                                 </div>
                             {:else}
-                            <span class="mt-2 ml-2">
+                            <span class="mt-2 ml-2 w-full">
                                 <Alert type="1" title="Keine Zeitabschnitte" description="Sie können neue Zeitabschnitte mithilfe des [+]-Knopf hinzufügen"/>
                             </span>
                             {/each}

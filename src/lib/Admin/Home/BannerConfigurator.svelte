@@ -155,9 +155,6 @@
 <!--<div class={showConfigScreen ? '' : 'hidden'}><Modal on:hide={() => showConfigScreen = false}>-->
 {#if showConfigScreen}
     <div id="BannerConfigurator" out:slide|local>
-<!--        <div class="w-full mb-2 pt-6 space-y-2">-->
-<!--            <p class="font-semibold text-center text-gray-800 dark:text-slate-200 text-xl">Banner Konfigurieren</p>-->
-<!--        </div>-->
         {#await getInitialConfig()}
             <div class="flex justify-center"><LoadingWheel size={20} showAfter={1000}/></div>
         {:then _}
@@ -171,7 +168,7 @@
                         <select on:change={onConfigurationNameSelection} bind:value={bannerConfig.name} class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-slate-800 dark:text-slate-200 dark:border-black leading-tight focus:outline-none focus:shadow-outline" id="nameSelector">
                             {#each presetNames as option}
                                 {#if option !== "preset"}
-                                    <option value={option} class="flex space-x-2 {selectedBannerConfig === option ? 'bg-primary-50' : ''}">
+                                    <option value={option} class="flex space-x-2 {selectedBannerConfig === option ? 'bg-primary-50 dark:bg-slate-900' : ''}">
                                         {option}
                                         {#if selectedBannerConfig === option}
                                             <span class="text-primary-600 dark:text-primary-200">(Aktuell öffentlich ausgewählt)</span>

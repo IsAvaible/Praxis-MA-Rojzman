@@ -64,7 +64,7 @@ onDestroy(() => {
                     <input type="checkbox" checked={true} disabled={true}>
                 {:else}
                     {#key $siteCookieStore}
-                        <input type="checkbox" bind:checked={cookieStates[i-1]} on:change={() => {if (realtimeCookieState) cookie.store.update(value => !value)}}>
+                        <input type="checkbox" aria-label="Checkbox für {cookie.name} - {cookie.description}" bind:checked={cookieStates[i-1]} on:change={() => {if (realtimeCookieState) cookie.store.update(value => !value)}}>
                     {/key}
                 {/if}
             </label>

@@ -108,7 +108,7 @@
     .toggle-button {
         position: absolute;
         display: inline-block;
-        top: 1px;
+        top: 5%;
         left: 0;
         width: 27px;
         height: 27px;

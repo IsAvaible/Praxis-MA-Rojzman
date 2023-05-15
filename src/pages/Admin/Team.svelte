@@ -1,18 +1,23 @@
 <script lang="ts">
-import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
-import EditableProfileCard from "../../lib/Admin/Team/EditableProfileCard.svelte";
-import Alert from "../../lib/Essentials/Alert.svelte";
-import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
-import {getTeamMembers} from "../../scripts/database/database";
-import {slide, fade} from "svelte/transition";
-import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
+    import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
+    import EditableProfileCard from "../../lib/Admin/Team/EditableProfileCard.svelte";
+    import Alert from "../../lib/Essentials/Alert.svelte";
+    import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
+    import {getTeamMembers} from "../../scripts/database/database";
+    import {fade, slide} from "svelte/transition";
+    import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
 
-let refreshTeam = 0;
+    let refreshTeam = 0;
 let addedTeamMembers = [];
 
 let addingMember = false;
 let id = '';
+let idValid = true;
 $: idValid = (!addedTeamMembers || addedTeamMembers.findIndex(m => m.id == id) === -1) && id === (id = id.match(/[a-z-_+]*/g)?.join(''));
+let nameInput: HTMLInputElement;
+$: if (addingMember && nameInput) {
+    nameInput.focus();
+}
 
 const handleTeamMemberAdd = () => {
     if (addingMember) {
@@ -31,11 +36,11 @@ const handleTeamMemberAdd = () => {
     }
 }
 
-let editStates = [];
-let anyEdit = false;
+let editStates = [];  // Array of booleans, true if member is being edited
+let anyEdit = false;  // True if any member is being edited
 $: anyEdit = editStates.findIndex(v => v) != -1;
 
-$: unsavedChangesStore.set(anyEdit || addingMember);
+$: unsavedChangesStore.set(anyEdit);
 </script>
 
 <div class="flex flex-col mx-2 sm:mx-auto w-full">
@@ -65,11 +70,11 @@ $: unsavedChangesStore.set(anyEdit || addingMember);
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-40 w-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d={addingMember ? (id ? "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" : "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z") : "M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"}/>
                                         </svg>
-                                        <p class="font-medium text-center text-xl">Mitglied Hinzufügen</p>
+                                        <span class="font-medium text-center text-xl">Mitglied Hinzufügen</span>
                                     </button>
                                     {#if addingMember}
                                         <div out:fade|local={{duration: 250}} class="w-full flex">
-                                            <input bind:value={id} in:slide={{duration: 300}} out:slide|local={{duration: 300}} on:keydown={(e) => {if (e.keyCode === 10 || e.keyCode === 13) {e.preventDefault(); handleTeamMemberAdd()}}} on:keyup={e => {if (e.which === 27) {addingMember = false}}}
+                                            <input bind:this={nameInput} bind:value={id} in:slide={{duration: 300}} out:slide|local={{duration: 300}} on:keydown={(e) => {if (e.keyCode === 10 || e.keyCode === 13) {e.preventDefault(); handleTeamMemberAdd()}}} on:keyup={e => {if (e.which === 27) {addingMember = false}}}
                                                    autocomplete="off" pattern="[a-z0-9-_+]+" required class="text-center mt-6 w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none {idValid?'focus:border-primary-500':'border-red-500'}" placeholder="Ein identifizierender Name (ID)" type="text" />
                                         </div>
                                     {/if}

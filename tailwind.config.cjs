@@ -69,6 +69,7 @@ module.exports = {
                 default: "0.47",
             }
         }),
-        require("tailwind-gradient-mask-image")
+        require("tailwind-gradient-mask-image"),
+        require('@tailwindcss/container-queries')
     ],
 }

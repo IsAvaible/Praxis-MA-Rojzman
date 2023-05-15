@@ -3,7 +3,7 @@
     import {createEventDispatcher} from 'svelte';
     import MenuBlogReference from "./MenuBlogReference.svelte";
     import {Link} from "svelte-navigator";
-    import {fade} from "svelte/transition";
+    import fadeScale from "../../scripts/ui/transitionFadeScale";
 
     let dispatch = createEventDispatcher();
 
@@ -18,7 +18,7 @@
 -->
 
 {#if show}
-<div in:fade={{duration: 300}} out:fade|local={{duration: 300}} on:outroend|once={() => dispatch('hide', true)} use:clickOutside on:clickOutside={hide} class="absolute z-10 left-1/2 transform -translate-x-1/2 mt-3 px-2 w-screen max-w-md sm:px-0">
+<div in:fadeScale={{duration: 200, from: 0.95}} out:fadeScale|local={{duration: 150, from: 1, to: 0.95}} on:outroend|once={() => dispatch('hide', true)} use:clickOutside on:clickOutside={hide} class="absolute z-10 left-1/2 origin-top-center transform -translate-x-1/2 mt-3 px-2 w-screen max-w-md sm:px-0">
     <div class="rounded-lg shadow-lg ring-1 ring-black dark:ring-slate-700 ring-opacity-5 overflow-hidden">
         <div class="relative grid gap-6 bg-white dark:bg-slate-800 px-5 py-6 sm:gap-8 sm:p-8">
             <Link on:click={hide} to="/FAQ" class="cursor-pointer -m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700">

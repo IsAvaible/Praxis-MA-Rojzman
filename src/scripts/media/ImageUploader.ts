@@ -1,4 +1,4 @@
-import {getPublicFileUrl, uploadFile, listFiles} from "../database/database";
+import {getPublicFileUrl, listFiles, uploadFile} from "../database/database";
 import {compressImage} from "./Compressor";
 
 /**
@@ -57,7 +57,7 @@ export class ImageUploader {
                             // Upload the original image to the database
                             .catch(e => uploadFile(this.bucket, this.path + fileName + imageCounter + file.name.split(".").reverse()[0], file)))
                             // Update the uploads array and return the url of the uploaded image. This is called when either the compressed or the original image is uploaded
-                                .then(data => {this.uploads.push(data.Key); return getPublicFileUrl(data.Key.split('/')[0], data.Key.substring(data.Key.split('/')[0].length + 1))
+                                .then(data => {this.uploads.push(this.bucket + "\\" + data.path); return getPublicFileUrl(this.bucket, data.path)
                                     .then(url => {ret.default = url; resolve(ret)})
                                     .catch(e => reject(e))})
                                 .catch(e => reject(e))
