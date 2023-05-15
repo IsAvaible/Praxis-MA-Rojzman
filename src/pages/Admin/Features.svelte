@@ -76,7 +76,7 @@
             </button>
         {/each}
     </div>
-    <div class="divide-gray-200 divide-y-2 dark:divide-slate-700 my-4 mx-4 lg:my-10">
+    <div class="divide-gray-200 divide-y-2 dark:divide-slate-700 my-4 sm:mx-4 lg:my-10">
         <div class="text-center mb-3">
             <h2 class="text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl dark:text-slate-100">Bisherige Leistungen</h2>
             <p class="mt-3 text-xl text-gray-500 dark:text-slate-400 sm:mt-4">Um eine der bisherigen Leistung auszuwählen, einfach diese anklicken.</p>

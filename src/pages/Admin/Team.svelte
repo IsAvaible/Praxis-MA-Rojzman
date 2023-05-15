@@ -43,7 +43,7 @@ $: anyEdit = editStates.findIndex(v => v) != -1;
 $: unsavedChangesStore.set(anyEdit);
 </script>
 
-<div class="flex flex-col mx-2 sm:mx-auto w-full">
+<div class="flex flex-col sm:mx-auto w-full">
     <PageTitle titleAccent="Team" subTitle="Hier können neue Mitglieder dem Team hinzugefügt werden oder bisherige modifiziert oder gelöscht werden."/>
     {#key refreshTeam}
         {#await getTeamMembers(true)}
@@ -51,9 +51,9 @@ $: unsavedChangesStore.set(anyEdit);
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
         {:then teamMembers}
-            <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 w-full px-10 pt-10 pb-16">
+            <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 w-full sm:px-10 pt-10 pb-16">
                 <div class="container mx-auto">
-                    <div role="list" aria-label="Mitarbeiter" class="md:flex items-center flex-wrap sm:justify-around">
+                    <div role="list" aria-label="Mitarbeiter" class="max-sm:mx-3 md:flex items-center flex-wrap sm:justify-around">
                         {#each teamMembers as member, i}
                             <EditableProfileCard {...member} on:edited={event => editStates[i] = event.detail}/>
                         {:else}
@@ -63,7 +63,7 @@ $: unsavedChangesStore.set(anyEdit);
                         {#each addedTeamMembers as member, i}
                             <EditableProfileCard {...member} on:edited={event => editStates[i] = event.detail}/>
                         {/each}
-                        <div role="listitem" class="relative mt-24 mx-2 sm:min-w-[300px] md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-md">
+                        <div role="listitem" class="relative mt-24 sm:mx-2 sm:min-w-[300px] md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-md">
                             <div class="rounded overflow-hidden shadow-lg h-full">
                                 <div class="px-6 w-full my-20 text-primary-500 group cursor-pointer">
                                     <button on:click={() => handleTeamMemberAdd()} class="w-full flex items-center justify-center flex-col rounded-md hover:text-primary-600 focus:text-primary-600">

@@ -139,7 +139,7 @@
                                 <!--If the div body is clicked (not the children) set the expandedTimePeriodId to -1-->
                                 <div class="flex mt-2 ml-2 items-center parent-node">
                                     {#if id !== expandedTimePeriodId}
-                                        <button on:click={() => expandTimePeriod(id)} class="bg-white text-lg min-h-[3rem] dark:bg-slate-900 active:ring-2 active:ring-primary-400 hover:bg-gray-50 dark:hover:bg-black rounded-md h-full px-2">
+                                        <button on:click={() => expandTimePeriod(id)} class="bg-white text-lg min-h-[3rem] dark:bg-slate-900 active:ring-2 active:ring-primary-400 hover:bg-gray-50 dark:hover:bg-slate-950 rounded-md h-full px-2">
                                             <span class="font-bold">{index + 1}.</span>
                                             <span>{[startTime, calculateEndTime(startTime, duration)].map(formatHHMM).join(' - ')}</span>
                                         </button>
@@ -181,7 +181,7 @@
         </div>
         <div class="flex space-x-2 justify-center">
             <div>
-                <button on:click={!editingComment?onAddTimePeriod:editComment} type="button" class="h-12 flex justify-center items-center has-tooltip align-middle p-2 aspect-[1] rounded-md bg-white dark:bg-slate-900 dark:hover:bg-black text-primary-600 dark:text-primary-400 active:ring-2 active:ring-primary-400 hover:bg-gray-50">
+                <button on:click={!editingComment?onAddTimePeriod:editComment} type="button" class="h-12 flex justify-center items-center has-tooltip align-middle p-2 aspect-[1] rounded-md bg-white dark:bg-slate-900 dark:hover:bg-slate-950 text-primary-600 dark:text-primary-400 active:ring-2 active:ring-primary-400 hover:bg-gray-50">
                     <span class="sr-only">{!editingComment ? 'Zeitspanne hinzufügen' : 'Kommentar speichern'}</span>
                     <svg class="h-7 w-full" stroke-width="2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d={!editingComment ? "M12 4.5v15m7.5-7.5h-15" : "M4.5 12.75l6 6 9-13.5"}/>
@@ -192,7 +192,7 @@
                 </button>
             </div>
             <div>
-                <button on:click={onEditCommentButton} type="button" class="h-12 relative flex justify-center items-center align-middle has-tooltip p-2 aspect-[1] rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-black focus:dark:ring-white dark:bg-slate-900 dark:hover:bg-black text-primary-600 dark:text-primary-400 active:ring-2 active:ring-primary-400 {editingComment ? 'ring-2 ring-inset ring-primary-500' : ''} hover:bg-gray-50">
+                <button on:click={onEditCommentButton} type="button" class="h-12 relative flex justify-center items-center align-middle has-tooltip p-2 aspect-[1] rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-black focus:dark:ring-white dark:bg-slate-900 dark:hover:bg-slate-950 text-primary-600 dark:text-primary-400 active:ring-2 active:ring-primary-400 {editingComment ? 'ring-2 ring-inset ring-primary-500' : ''} hover:bg-gray-50">
                     <span class="sr-only">Komentar bearbeiten</span>
                     <svg class="h-7 w-full" stroke-width="2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d={!editingComment || editedComment === oldComment ? "M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" : "M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"}/>

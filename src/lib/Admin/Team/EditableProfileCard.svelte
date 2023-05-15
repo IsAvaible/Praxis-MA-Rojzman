@@ -199,7 +199,7 @@
 {#if showImageCropper}<ImageCropperPopUp image={currentEditFile} on:submit={(e) => imageUrl = e.detail} on:close={() => showImageCropper = false}/>{/if}
 
 {#if !deleted}
-<div use:filedrop={fileDropOptions} on:filedrop={e => {fileDropFiles = e.detail.files}} on:filedragover={() => fileDragOver = true} on:filedragleave={() => fileDragOver = false} in:fade={{duration: 500}} out:scale|local={{duration: deleted ? 400 : 0}} role="listitem" class="{deleted ? 'hidden' : ''} relative mt-24 sm:min-w-[300px] mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-md">
+<div use:filedrop={fileDropOptions} on:filedrop={e => {fileDropFiles = e.detail.files}} on:filedragover={() => fileDragOver = true} on:filedragleave={() => fileDragOver = false} in:fade={{duration: 500}} out:scale|local={{duration: deleted ? 400 : 0}} role="listitem" class="{deleted ? 'hidden' : ''} relative mt-24 sm:min-w-[300px] sm:mx-2 md:w-2/5 lg:w-2/5 xl:w-1/3 xl:max-w-sm bg-white dark:bg-slate-800 rounded-md">
     <div class="rounded-md overflow-hidden shadow-lg">
         <div class="absolute -mt-20 w-full flex justify-center">
             <div in:scale={{easing: sineInOut, start: 0.3, duration: 500}} class="h-32 w-32 rounded-full overflow-hidden">

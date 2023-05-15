@@ -74,8 +74,8 @@ const deleteEntry = (blogEntry) => {
                 <LoadingWheel size={25} showAfter={1000}/>
             </div>
         {:then blogEntries}
-            <div role="list" aria-label="Blog Einträge" class="md:flex items-center flex-wrap sm:justify-around mx-10">
-                <div class="w-full divide-gray-200 divide-y-4 dark:divide-slate-700 my-4 mx-4 lg:my-10">
+            <div role="list" aria-label="Blog Einträge" class="md:flex items-center flex-wrap sm:justify-around mr-2 sm:mx-10">
+                <div class="w-full divide-gray-200 divide-y-4 dark:divide-slate-700 my-4 px-2 sm:px-4 lg:my-10">
                     <div class="w-full divide-gray-200 divide-y dark:divide-slate-700">
                         {#each blogEntries as blogEntry, i}
                             <div class="py-3 sm:py-2">

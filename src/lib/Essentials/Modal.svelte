@@ -1,7 +1,7 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from "svelte";
     import {fade} from "svelte/transition";
-    import {circIn} from "svelte/easing";
+    import fadeScale from "../../scripts/ui/transitionFadeScale";
     import {clickOutside} from "../../scripts/ui/clickOutside";
     import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
 
@@ -53,11 +53,11 @@
 <div class="inset-0 fixed h-full" style="z-index: {zIndex}" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <dialog bind:this={dialog} id="dialog" class="flex items-center justify-center w-screen {modalTopModal?'min-h-full':'pt-8 px-4 pb-20 min-h-screen'} text-center sm:block sm:p-0 bg-transparent dark:text-slate-200">
         {#if open}
-        <div in:fade={{duration: 200, easing: circIn}} out:fade|local={{duration: 300}} on:outroend={hide} class="fixed inset-0 {modalTopModal ? '' : 'bg-gray-500 dark:bg-slate-800 bg-opacity-75 dark:bg-opacity-75 transition-opacity'}" aria-hidden="true"></div>
+        <div in:fade={{duration: 200}} out:fade|local={{duration: 300}} on:outroend={hide} class="fixed inset-0 {modalTopModal ? '' : 'bg-gray-500 dark:bg-slate-800 bg-opacity-75 dark:bg-opacity-75 transition-opacity'}" aria-hidden="true"></div>
 
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-        <div use:clickOutside on:clickOutside={() => {if (hideOnClickOutside) {startHide()}}} in:fade={{duration: 300*(modalTopModal?0:1)}} out:fade|local={{duration: 200*(modalTopModal?0:1), easing: circIn}}
+        <div use:clickOutside on:clickOutside={() => {if (hideOnClickOutside) {startHide()}}} in:fadeScale={{duration: 300*(modalTopModal?0:1), from: 1}} out:fadeScale|local={{duration: 200*(modalTopModal?0:1), from: 1, to: 0.95}}
              class="overflow-y-auto overflow-x-auto max-h-[90vh] scrollbar relative inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all rounded-[inherit]
                      sm:align-middle sm:max-w-[80vw] lg:max-w-[70vw] {modalTopModal ? 'w-full':''} {addSpacing ? 'pl-1 sm:my-8 sm:p-6' : 'm-0 p-0'}">
             {#if showCornerCloseButton}

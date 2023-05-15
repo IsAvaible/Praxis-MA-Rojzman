@@ -19,7 +19,7 @@ const links = [
 
 // Create a stream to write to
 const stream = new SitemapStream( { hostname: siteUrl } )
-const path = `./sitemap.xml`;
+const path = `./public/sitemap.xml`;
 
 // Return a promise that resolves with your XML string
 streamToPromise(Readable.from(links).pipe(stream)).then((data) =>
