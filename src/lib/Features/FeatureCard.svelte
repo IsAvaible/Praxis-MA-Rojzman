@@ -31,7 +31,7 @@
     <div class="flow-root bg-gray-50 dark:bg-slate-800 rounded-lg px-6 pb-8 h-full">
         <div class="-mt-6 text-start">
             <div class="{centerSvg ? 'justify-center' : 'justify-start'} flex items-center">
-                <ConditionalWrapper condition={longDescription && expandViaIcon} on:click={onLinkFollow} href={'leistungen/' + name} a={true}>
+                <ConditionalWrapper condition={longDescription && expandViaIcon} on:click={onLinkFollow} href={'leistungen/' + name} a={true} title={name}>
                     <span class="inline-flex p-3 bg-primary-600 rounded-md shadow-lg {longDescription && expandViaIcon ? 'hover:bg-primary-800' : ''}">
                       <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           {#each svgPaths as path}
@@ -58,7 +58,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </a>
-                    <span class="tooltip absolute -ml-12 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                    <span class="tooltip absolute -ml-12 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                     Mehr erfahren
                     </span>
                 </div>

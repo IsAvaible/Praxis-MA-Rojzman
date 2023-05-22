@@ -31,6 +31,8 @@
     import PageTitle from "../Admin/Navigation/PageTitle.svelte";
     import LoadingWheel from "../Misc/LoadingWheel.svelte";
     import Footer from "../Essentials/Footer.svelte";
+    import MetaTitle from "../SEO/MetaTitle.svelte";
+    import MetaTag from "../SEO/MetaTag.svelte";
 
     let siteEnterPopUpData = {
         svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
@@ -241,9 +243,9 @@
 <!--                            </div>-->
 <!--                        {/if}-->
 <!--                    </div>-->
-                    <Link to="leistungen" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white text-center"> Leistungen </Link>
-                    <Link to="team" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white text-center"> Unser Team </Link>
-                    <Link to="aktuelles" class="text-base font-medium text-gray-500 hover:text-gray-900 dark:text-slate-200 dark:hover:text-white text-center"> Aktuelles </Link>
+                    <Link to="leistungen" class="text-base font-medium text-center {pathname === '/leistungen' ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-slate-200'} hover:text-gray-900 dark:hover:text-white"> Leistungen </Link>
+                    <Link to="team" class="text-base font-medium text-center {pathname === '/team' ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-slate-200'} hover:text-gray-900 dark:hover:text-white"> Unser Team </Link>
+                    <Link to="aktuelles" class="text-base font-medium text-center {pathname === '/aktuelles' ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-slate-200'} hover:text-gray-900 dark:hover:text-white"> Aktuelles </Link>
 
                     <div class="relative">
                         <!-- Item active: "text-gray-900", Item inactive: "text-gray-500" -->
@@ -286,15 +288,25 @@
         <SiteEnterPopUp {...siteEnterPopUpData}/>
     </div>
     <div id="#Routes">
+        <!-- TODO: Add og:image meta tag -->
         <Route path="/">
+            <MetaTitle title="Praxis M.A. Rojzman - Kiedrich"/>
+            <MetaTag name="description" content="Hausarztpraxis im Herzen von Kiedrich. Bei uns fühlen sie sich wie zu hause! Kommen sie vorbei!"/>
+            <MetaTag name="keywords" content="Hausarztpraxis, Kiedrich, Arzt, Doktor, Praxis, Rojzman"/>
             <Home/>
         </Route>
 
         <Route path="team">
+            <MetaTitle title="Team - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Erfahren Sie mehr über unser Team."/>
+            <MetaTag name="keywords" content="Team, Praxis, Rojzman, Mitarbeiter"/>
             <Team/>
         </Route>
 
         <Route path="leistungen/*">
+            <MetaTitle title="Leistungen - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Wir bieten eine Vielzahl von Leistungen an, um Ihre Gesundheit zu erhalten und zu verbessern."/>
+            <MetaTag name="keywords" content="Leistungen, Gesundheit, Praxis, Rojzman"/>
             <Route path="/">
                 <Features/>
             </Route>
@@ -304,6 +316,9 @@
         </Route>
 
         <Route path="aktuelles/*">
+            <MetaTitle title="Aktuelles - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Bleiben Sie auf dem Laufenden über Neuigkeiten und Aktuelles aus der Praxis."/>
+            <MetaTag name="keywords" content="Aktuelles, Neuigkeiten, Blog, Praxis, Rojzman"/>
             <Route path="/">
                 <Blog/>
             </Route>
@@ -316,26 +331,42 @@
         </Route>
 
         <Route path="kontakt">
+            <MetaTitle title="Kontakt - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Kontaktieren Sie uns, um einen Termin zu vereinbaren oder Fragen zu unseren Leistungen zu stellen."/>
+            <MetaTag name="keywords" content="Kontakt, Termin, Praxis, Rojzman"/>
             <Contact/>
         </Route>
 
         <Route path="rezeptanforderung">
+            <MetaTitle title="Rezeptanforderung - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Beantragen Sie ein Rezept online bei der Praxis M.A. Rojzman - Kiedrich."/>
+            <MetaTag name="keywords" content="Rezeptanforderung, Online, Praxis, Rojzman"/>
             <PrescriptionRequest/>
         </Route>
 
         <Route path="vertretung">
+            <MetaTitle title="Vertretung - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Erfahren Sie mehr über unsere Vertretungsregelungen und werfen Sie einen Blick auf unsere Partnerpraxen."/>
+            <MetaTag name="keywords" content="Vertretung, Partnerpraxen, Praxis, Rojzman"/>
             <NotFound/>
         </Route>
 
         <Route path="datenschutz">
+            <MetaTitle title="Datenschutz - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Erfahren Sie mehr über unsere Datenschutzrichtlinien und wie wir Ihre Daten schützen."/>
+            <MetaTag name="keywords" content="Datenschutz, Richtlinien, Praxis, Rojzman"/>
             <PrivacyPolicy/>
         </Route>
 
         <Route path="impressum">
+            <MetaTitle title="Impressum - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="Hier finden sie das Impressum der Praxis."/>
+            <MetaTag name="keywords" content="Impressum, Praxis, Rojzman"/>
             <Impressum/>
         </Route>
 
         <LazyRoute path="admin/*" component={AdminSection}>
+            <MetaTitle title="Admin Sektion - Praxis M.A. Rojzman"/>
             <Footer>
                 <div in:fade={{duration: 200}} class="w-full h-full -mt-20 flex items-center justify-center flex-col gap-y-3 text-white">
                     <PageTitle title="Admin Sektion" subTitle="Die Admin Sektion wird geladen..."/>
@@ -345,6 +376,8 @@
         </LazyRoute>
 
         <Route>
+            <MetaTitle title="404 - Praxis M.A. Rojzman"/>
+            <MetaTag name="description" content="noindex"/>
             <NotFound/>
         </Route>
     </div>

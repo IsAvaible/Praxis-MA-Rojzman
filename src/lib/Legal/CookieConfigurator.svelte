@@ -49,25 +49,23 @@ onDestroy(() => {
 {#each [{name: 'Unbedingt Erforderliche Cookies', description: 'Cookies welche die ordnungsgemäße Funktionsweise der Webseite ermöglichen', store: undefined}].concat(siteCookies) as cookie, i}
     <div class="flex items-center justify-between">
         <div class="flex items-start">
-            <div class="">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-slate-200">
+            <label for="{cookie.name}">
+                <span class="text-lg leading-6 font-medium text-gray-900 dark:text-slate-200 block">
                     {cookie.name}
-                </h3>
-                <p class="text-sm text-gray-500 dark:text-slate-200">
+                </span>
+                <span class="text-sm text-gray-500 dark:text-slate-200 block">
                     {cookie.description}
-                </p>
-            </div>
+                </span>
+            </label>
         </div>
         <div class="ml-3 h-7 flex items-center">
-            <label class="container">
-                {#if i === 0}
-                    <input type="checkbox" checked={true} disabled={true}>
-                {:else}
-                    {#key $siteCookieStore}
-                        <input type="checkbox" aria-label="Checkbox für {cookie.name} - {cookie.description}" bind:checked={cookieStates[i-1]} on:change={() => {if (realtimeCookieState) cookie.store.update(value => !value)}}>
-                    {/key}
-                {/if}
-            </label>
+            {#if i === 0}
+                <input id="{cookie.name}" type="checkbox" aria-label="Checkbox für essenzielle Cookies" checked={true} disabled={true}>
+            {:else}
+                {#key $siteCookieStore}
+                    <input id="{cookie.name}" type="checkbox" aria-label="Checkbox für {cookie.name} - {cookie.description}" bind:checked={cookieStates[i-1]} on:change={() => {if (realtimeCookieState) cookie.store.update(value => !value)}}>
+                {/key}
+            {/if}
         </div>
     </div>
 {/each}

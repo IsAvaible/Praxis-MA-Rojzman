@@ -42,7 +42,7 @@
             {#if link}
                 <a href={link} rel="noreferrer" target="_blank" class="text-primary-600 hover:underline">{linkText}</a>
             {/if}
-            <button on:click={loadContent} class="bg-white text-gray-800 font-bold mt-2 px-4 py-2 rounded-md shadow-lg hover:shadow-md transition-shadow duration-300 hover:ring-1 hover:ring-black focus:shadow-md focus:ring-1 focus:ring-black">{buttonText}</button>
+            <button on:click={loadContent} class="bg-white text-gray-800 font-bold mt-2 mb-2 px-4 py-2 rounded-md shadow-lg hover:shadow-md transition-shadow duration-300 hover:ring-1 hover:ring-black focus:shadow-md focus:ring-1 focus:ring-black">{buttonText}</button>
             <label class="flex items-center gap-1">
                 <input type="checkbox" class="my-auto hover:cursor-pointer h-full" bind:checked={alwaysAllow}/>
                 <span class="text-gray-800 -mt-[2px]">Immer zulassen</span>

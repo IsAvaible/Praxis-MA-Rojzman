@@ -93,7 +93,7 @@ onDestroy(() => {
                 height={windowWidth >= 640 ? 40 : 32}
         ></canvas>
         <img bind:this={regularIcon} class="h-8 w-auto sm:h-10 hidden fadeIn" src="assets/favicon.svg" alt="">
-        <div class="tooltip inline-block ml-12 absolute z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+        <div class="tooltip inline-block ml-12 absolute z-10 py-2 px-3 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
             Startseite
         </div>
     </div>

@@ -22,7 +22,7 @@
 
 .tooltip {
     @apply opacity-0 absolute pointer-events-none;
-    @apply transition-opacity;
+    @apply transition-opacity duration-200;
 }
 
 .has-tooltip:hover .tooltip {

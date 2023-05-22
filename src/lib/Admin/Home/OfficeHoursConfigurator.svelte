@@ -156,7 +156,7 @@
                                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                                 </svg>
-                                                <span class="tooltip absolute -ml-16 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                                                <span class="tooltip absolute -ml-16 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                                                     Zeitspanne Löschen
                                                 </span>
                                             </button>
@@ -186,7 +186,7 @@
                     <svg class="h-7 w-full" stroke-width="2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d={!editingComment ? "M12 4.5v15m7.5-7.5h-15" : "M4.5 12.75l6 6 9-13.5"}/>
                     </svg>
-                    <span class="tooltip absolute mt-24 -ml-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                    <span class="tooltip absolute mt-24 -ml-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                         {!editingComment ? 'Zeitspanne hinzufügen' : 'Kommentar speichern'}
                     </span>
                 </button>
@@ -197,7 +197,7 @@
                     <svg class="h-7 w-full" stroke-width="2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d={!editingComment || editedComment === oldComment ? "M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" : "M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"}/>
                     </svg>
-                    <span class="tooltip absolute mt-28 -ml-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                    <span class="tooltip absolute mt-28 -ml-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                         {!editingComment ? 'Kommentar bearbeiten' : (editedComment === oldComment ? 'Zeitspannen bearbeiten' : 'Kommentar zurücksetzen')}
                     </span>
                     {#if oldComment && (!editingComment || editedComment !== oldComment)}<span class="absolute right-0 top-0 h-2 w-2 mr-1 mt-1 justify-center inline-flex rounded-full bg-primary-500 opacity-100"></span>{/if}

@@ -245,7 +245,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
-                    <div class="tooltip absolute mt-1 -ml-4 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                    <div class="tooltip absolute mt-1 -ml-4 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                         Löschen
                     </div>
                 </div>
@@ -256,7 +256,7 @@
                         </svg>
                     </button>
                     {#if !newMember && edited}
-                        <div class="tooltip absolute mt-1 -ml-8 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                        <div class="tooltip absolute mt-1 -ml-8 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                             Zurücksetzen
                         </div>
                     {/if}
@@ -267,7 +267,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
-                    <div class="tooltip absolute mt-1 -ml-5 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                    <div class="tooltip absolute mt-1 -ml-5 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                         {submitState === 2 ? 'Schließen' : 'Speichern'}
                     </div>
                 </div>

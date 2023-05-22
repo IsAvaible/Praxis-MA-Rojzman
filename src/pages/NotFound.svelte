@@ -1,9 +1,9 @@
 <script lang="ts">
-import {Link} from "svelte-navigator";
-import Footer from "../lib/Essentials/Footer.svelte";
-import ConditionalWrapper from "../lib/Misc/ConditionalWrapper.svelte";
+    import {Link} from "svelte-navigator";
+    import Footer from "../lib/Essentials/Footer.svelte";
+    import ConditionalWrapper from "../lib/Misc/ConditionalWrapper.svelte";
 
-export let redirectTo: string = '/';
+    export let redirectTo: string = '/';
 export let withFooter: boolean = true;
 </script>
 
@@ -29,11 +29,11 @@ export let withFooter: boolean = true;
                             >
                                 404
                             </h2>
-                            <h4
+                            <h3
                                     class="text-white font-semibold text-[22px] leading-tight mb-3"
                             >
                                 Diese Seite kann nicht gefunden werden
-                            </h4>
+                            </h3>
                             <p class="text-lg text-white mb-8">
                                 Bitte überprüfen Sie die URL in der Adressleiste und versuchen Sie es erneut
                             </p>

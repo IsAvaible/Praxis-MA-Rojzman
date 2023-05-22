@@ -5,6 +5,9 @@
     import Alert from "../Essentials/Alert.svelte";
     import LoadingWheel from "../Misc/LoadingWheel.svelte";
     import DSGVODialogHTMLWrapper from "../Legal/DSGVODialogHTMLInjector.svelte";
+    import MetaTag from "../SEO/MetaTag.svelte";
+    import MetaTitle from "../SEO/MetaTitle.svelte";
+    import {toTitleCase} from "../../scripts/misc/textTransform";
 
 
     export let name: string;
@@ -21,6 +24,8 @@
     {#await getFeature(name)}
         <LoadingWheel showAfter={1000} size={17}/>
     {:then feature}
+        <MetaTitle title="{toTitleCase(feature.name)} - Praxis M.A. Rojzman"/>
+        <MetaTag name="description" content={feature.shortDescription}/>
         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
             <div class="flex justify-center items-center w-full gap-x-3 xl:gap-x-4">
                 <div class="flex items-center justify-center h-9 w-9 rounded-full bg-primary-100 dark:bg-primary-500 xl:h-10 xl:w-10">

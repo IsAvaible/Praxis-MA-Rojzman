@@ -182,7 +182,7 @@
 <!--                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">-->
 <!--                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />-->
 <!--                            </svg>-->
-<!--                            <span class="tooltip absolute -ml-24 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">-->
+<!--                            <span class="tooltip absolute -ml-24 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">-->
 <!--                                Diese Konfiguration löschen-->
 <!--                            </span>-->
 <!--                        </button>-->
@@ -255,7 +255,7 @@
                             <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            <span class="tooltip absolute -ml-24 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                            <span class="tooltip absolute -ml-24 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                                 Auslaufdatum löschen
                             </span>
                         </button>

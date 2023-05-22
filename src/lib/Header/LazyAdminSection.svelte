@@ -8,17 +8,38 @@
     import AdminFeatures from "../../pages/Admin/Features.svelte";
     import AdminBlog from '../../pages/Admin/Blog.svelte';
     import AdminTeam from '../../pages/Admin/Team.svelte';
+    import MetaTitle from "../SEO/MetaTitle.svelte";
+    import MetaTag from "../SEO/MetaTag.svelte";
 </script>
 
-<Route path="/login"><AdminLogin/></Route>
+<MetaTag name="robots" content="noindex"/>
+<Route path="/login">
+    <MetaTitle title="Admin Login - Praxis M.A. Rojzman"/>
+    <AdminLogin/>
+</Route>
 <Route path="/*">
     <Footer>
         <AdminSidebar>
-            <Route path="/"><AdminHome/></Route>
-            <Route path="/leistungen"><AdminFeatures/></Route>
-            <Route path="/aktuelles"><AdminBlog/></Route>
-            <Route path="/team"><AdminTeam/></Route>
-            <Route path="/*"><NotFound redirectTo="/admin" withFooter={false}/></Route>
+            <Route path="/">
+                <MetaTitle title="Admin Sektion - Praxis M.A. Rojzman"/>
+                <AdminHome/>
+            </Route>
+            <Route path="/leistungen">
+                <MetaTitle title="Admin Leistungen - Praxis M.A. Rojzman"/>
+                <AdminFeatures/>
+            </Route>
+            <Route path="/aktuelles">
+                <MetaTitle title="Admin Aktuelles - Praxis M.A. Rojzman"/>
+                <AdminBlog/>
+            </Route>
+            <Route path="/team">
+                <MetaTitle title="Admin Team - Praxis M.A. Rojzman"/>
+                <AdminTeam/>
+            </Route>
+            <Route path="/*">
+                <MetaTitle title="404 - Praxis M.A. Rojzman"/>
+                <NotFound redirectTo="/admin" withFooter={false}/>
+            </Route>
         </AdminSidebar>
     </Footer>
 </Route>

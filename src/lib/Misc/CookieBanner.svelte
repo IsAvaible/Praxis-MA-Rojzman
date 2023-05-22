@@ -40,7 +40,7 @@
         </h3>
         <div class="flex gap-4 items-center flex-shrink-0">
             <button on:click={() => {if (!showConfigurator) showConfigurator = true; else cookieConfigurator.denyAllCookies()}} class="text-primary-600 dark:text-primary-500 hover:underline">{#if !showConfigurator}Konfigurieren{:else}Alle Ablehnen{/if}</button>
-            <button on:click={() => {siteCookieStore.set(showConfigurator ? cookieState.SOME : cookieState.ALL)}} class="bg-primary-500 dark:bg-primary-600 px-5 py-2 text-white rounded-md hover:bg-primary-700 focus:ring-1 focus:ring-inset focus:ring-white">Akzeptieren</button>
+            <button on:click={() => {siteCookieStore.set(showConfigurator ? cookieState.SOME : cookieState.ALL)}} class="bg-primary-600 dark:bg-primary-600 px-5 py-2 text-white rounded-md hover:bg-primary-700 focus:ring-1 focus:ring-inset focus:ring-white">Akzeptieren</button>
         </div>
     </div>
 </dialog>

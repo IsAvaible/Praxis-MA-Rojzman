@@ -119,7 +119,7 @@
                              id={blogEntry.id}>
                             <BlogEntry {...blogEntry} expanded={expanded} on:mount={() => {if (i === blogEntries.length-1) onBlogEntriesMount()}}/>
                             <div class="w-full absolute {expanded ? '-bottom-3' : 'bottom-0'} rounded-md flex {expanded?'':'hidden'} lg:flex justify-end">
-                                <a href={`aktuelles/${blogEntry.id}`} on:click|preventDefault|stopPropagation={() => onEntryExpandClick(blogEntry.id, i)} class="underline text-sm font-semibold dark:font-medium w-fulll">
+                                <a href={`aktuelles/${blogEntry.id}`} on:click|preventDefault|stopPropagation={() => onEntryExpandClick(blogEntry.id, i)} class="underline text-sm font-semibold dark:font-medium bg-white rounded-md pl-1 pt-1 dark:bg-slate-900">
                                 Beitrag {expanded ? 'einklappen' : 'lesen'}
                                 </a>
                             </div>

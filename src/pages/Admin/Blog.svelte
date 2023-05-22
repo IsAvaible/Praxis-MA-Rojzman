@@ -91,7 +91,7 @@ const deleteEntry = (blogEntry) => {
                                                     </svg>
                                                     <span class="sr-only">Artikel Lesen</span>
                                                 </button>
-                                                <div class="tooltip absolute mt-1 -ml-9 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                                                <div class="tooltip absolute mt-1 -ml-9 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                                                     Artikel Lesen
                                                 </div>
                                             </div>
@@ -102,7 +102,7 @@ const deleteEntry = (blogEntry) => {
                                                     </svg>
                                                     <span class="sr-only">Bearbeiten</span>
                                                 </button>
-                                                <div class="tooltip absolute mt-1 -ml-7 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                                                <div class="tooltip absolute mt-1 -ml-7 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                                                     Bearbeiten
                                                 </div>
                                             </div>
@@ -113,7 +113,7 @@ const deleteEntry = (blogEntry) => {
                                                     </svg>
                                                     <span class="sr-only">Löschen</span>
                                                 </button>
-                                                <div class="tooltip absolute mt-1 -ml-5 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-200 dark:bg-slate-700">
+                                                <div class="tooltip absolute mt-1 -ml-5 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                                                     Löschen
                                                 </div>
                                             </div>
