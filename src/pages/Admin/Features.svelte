@@ -52,7 +52,7 @@
 <!--{/if}-->
 
 {#if activeOption !== -1}
-    <Modal on:hide={() => {if (activeOption !== 1) selectedFeature={index: -1, data: undefined}; activeOption = -1; if (modification) refreshFeatures++; modification = false;}}>
+    <Modal alwaysShowMobileCloseButton={modification} on:hide={() => {if (activeOption !== 1) selectedFeature={index: -1, data: undefined}; activeOption = -1; if (modification) refreshFeatures++; modification = false;}}>
         <div class="flex flex-col">
             <PageTitle titleAccent="{options[activeOption].title}" subTitle={options[activeOption].shortDescription} showTitle={false}/>
             {#key refreshFeatures}{#await getShowcasedFeatures() then showcasedFeatures}
@@ -97,7 +97,7 @@
                     {:then showcasedFeatures}
                         {#if showcasedFeatures.length !== 3}
                             <div class="pt-6">
-                                <Alert type={1} title="Zu wenige Leistungen auf der Startseite." description="Monentan werden nur {showcasedFeatures.length} Leistungen auf der Startseite angezeigt. Bitte setzen sie mehr Leistungen über den Bearbeitungsdialog auf die Startseite um die Anzahl auf 3 zu erhöhen."/>
+                                <Alert type={1} title="Zu wenige Leistungen auf der Startseite." description="Momentan werden nur {showcasedFeatures.length} Leistungen auf der Startseite angezeigt. Bitte setzen sie mehr Leistungen über den Bearbeitungsdialog auf die Startseite um die Anzahl auf 3 zu erhöhen."/>
                             </div>
                         {/if}
                         <div class="mt-6 pt-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 py-5 gap-y-3">

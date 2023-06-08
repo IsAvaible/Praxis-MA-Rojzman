@@ -12,8 +12,8 @@
     let fileDropFiles;
     let fileDragOver = false;
     let readerLoading = false;
-    $: fileDropOptions = {accept: 'image/*', multiple: false, windowDrop: false, clickToUpload: false, hideInput: false, tabIndex: -1, fileLimit: readerLoading ? 0 : 1};
-    $: if (fileDropFiles && fileDropFiles.accepted.length > 0) {files = fileDropFiles.accepted; fileDragOver = false}
+    $: fileDropOptions = {accept: 'image/*', multiple: false, windowDrop: false, clickToUpload: false, hideInput: false, tabIndex: -1, fileLimit: readerLoading ? 0 : 1};  // Disable file drop while loading
+    $: if (fileDropFiles && fileDropFiles.accepted.length > 0) {files = fileDropFiles.accepted; fileDragOver = false}  // Update files on file drop
 
     let files;
     let file;
@@ -23,16 +23,16 @@
     let showImageCropper;
     let currentEditFile;
 
-    $: if (files) {
-        file = files[0];
+    $: if (files) {  // When a file is uploaded (drop or input)
+        file = files[0];  // Get the first (and only) file
 
         imageElement.title = file.name;
 
-        fileReader.onloadstart = function () {
+        fileReader.onloadstart = function () {  // Show loading animation
             readerLoading = true;
         }
 
-        fileReader.onload = function(event) {
+        fileReader.onload = function(event) {  // When the file is loaded open it in the image cropper
             readerLoading = false;
             currentEditFile = event.target.result;
             showImageCropper = true;
@@ -52,24 +52,35 @@
 
     let imageUrl;
 
+    /**
+     * Uploads the current image to the server and returns the url
+     * Can be called from outside the component
+     * @param filePath The path to the file
+     * @param fileName The name of the file
+     * @param compressOptions The options for the image compression
+     */
     export async function uploadCurrent(filePath: string, fileName: string, compressOptions: {quality: number, maxHeight: number, maxWidth: number}): Promise<string> {
         let serverUrl: string;
         let imageElement: HTMLImageElement = document.getElementById('buttonImageElement') as HTMLImageElement;
-        if (imageElement.src.match(/^blob:.+/g)) { // A new image was uploaded
+        if (imageElement.src.match(/^blob:.+/g)) { // If a new image was uploaded
             try {
                 await deleteFiles('images', [filePath]) // Delete the old image
             } catch (e) { // This will not trigger, when there was no old image!
                 throw e
             }
 
+            // Get the image as a file
             let image = await fetch(imageElement.src).then(r => r.blob()).then(blobFile => new File([blobFile], `${fileName}.png`, { type: "image/png" }));
+            // Compress the image
             let cImage = await compressImage(image, compressOptions.quality, compressOptions.maxHeight, compressOptions.maxWidth);
+            // Upload the image
             await uploadFile('images', filePath, cImage);
+            // Get the url of the image
             serverUrl = await getPublicFileUrl('images', filePath) + `?t=${Date.now()}`;
-        } else { // The old avatar is used
-            serverUrl = imageUrl;
+        } else { // If no new image was uploaded
+            serverUrl = imageUrl;  // Use the old url
         }
-        return serverUrl;
+        return serverUrl;  // Return the url
     }
 </script>
 

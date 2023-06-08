@@ -37,7 +37,7 @@
                             <OfficeHours/>
                         </div>
                         <div class="my-auto grid grid-cols-1 md:ml-3 w-56">
-                            <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" rel="noreferrer" class="hidden md:flex mx-auto mb-2 font-medium text-gray-800 dark:text-slate-100 hover:underline">
+                            <a href="https://goo.gl/maps/sk8AD42LZAhWAvYD7" target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="hidden md:flex mx-auto mb-2 font-medium text-gray-800 dark:text-slate-100 hover:underline">
                                 <p>Kammstr. 2, 65399 Kiedrich</p>
                             </a>
                             <Link to="/kontakt" class="w-full inline-flex justify-center rounded-md focus:outline-1

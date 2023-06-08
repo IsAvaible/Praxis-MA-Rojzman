@@ -193,7 +193,7 @@
 {/if}
 
 <div class="block">
-    <div class="border border-gray-200 dark:border-slate-900 rounded-lg">
+    <div class="border border-gray-200 dark:border-slate-900 rounded-lg max-w-[99%] w-full mx-auto">
         <Ckeditor
                 bind:editor
                 on:ready={onReady}

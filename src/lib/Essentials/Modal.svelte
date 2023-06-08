@@ -59,7 +59,7 @@
 
         <div use:clickOutside on:clickOutside={() => {if (hideOnClickOutside) {startHide()}}} in:fadeScale={{duration: 300*(modalTopModal?0:1), from: 1}} out:fadeScale|local={{duration: 200*(modalTopModal?0:1), from: 1, to: 0.95}}
              class="overflow-y-auto overflow-x-auto max-h-[90vh] scrollbar relative inline-block align-bottom bg-white dark:bg-slate-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all
-                     sm:align-middle sm:max-w-[80vw] lg:max-w-[70vw] {modalTopModal ? 'w-full':''} {addSpacing ? 'pl-1 max-sm:mt-12 sm:my-8 sm:px-6 sm:py-3' : 'm-0 p-0'}">
+                     sm:align-middle sm:max-w-[80vw] lg:max-w-[70vw] {modalTopModal ? 'w-full':''} {addSpacing ? 'pl-1 max-sm:mt-12 sm:my-8 sm:px-3 lg:px-6 sm:py-3 lg:py-6' : 'm-0 p-0'}">
             {#if showCornerCloseButton}
                 <div class="absolute top-0 right-0 pt-1 pr-1 mt-5 sm:mx-4">
                     <button on:click={() => startHide()} type="button" class="p-1 rounded-md
@@ -76,7 +76,7 @@
             <div class="sm:flex sm:items-start {addSpacing ? 'mx-5 my-5' : 'm-0 p-0'}">
                 <slot/>
                 {#if showMobileCloseButton}
-                <button on:click={startHide} type="button" class="sm:hidden mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-slate-900 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:text-slate-200 hover:dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Schließen</button>
+                    <button on:click={startHide} type="button" class="sm:hidden mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-slate-900 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 dark:bg-slate-800 dark:text-slate-200 hover:dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Schließen</button>
                 {/if}
             </div>
         </div>

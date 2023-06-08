@@ -35,7 +35,7 @@
                         {/each}
                     </svg>
                 </div>
-                <h3 class="xl:text-4xl text-3xl text-gray-800 dark:text-slate-200 font-bold focus:outline-transparent uppercase truncate" style="max-width: 70%" id="modal-title">{feature.title}</h3>
+                <h3 class="xl:text-3xl 2xl:text-4xl sm:text-2xl text-lg text-gray-800 dark:text-slate-200 font-bold focus:outline-transparent uppercase truncate max-lg:mr-auto" style="max-width: 70%" id="modal-title">{feature.title}</h3>
             </div>
             <div class="mt-4 dark:text-slate-100">
                 {#if feature.longDescription}

@@ -16,7 +16,7 @@
     </div>
     <!--  Stylized button link to the Supabase auth settings page -->
     <div class="ml-3 h-7 flex items-center">
-        <a href="https://app.supabase.com/project/{import.meta.env.VITE_SUPABASE_PROJECT_REFERENCE_ID}/settings/auth" target="_blank" rel="noreferrer" class="text-sm font-medium text-primary-600 dark:text-primary-500 hover:underline flex space-x-1 items-center">
+        <a href="https://app.supabase.com/project/{import.meta.env.VITE_SUPABASE_PROJECT_REFERENCE_ID}/settings/auth" target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="text-sm font-medium text-primary-600 dark:text-primary-500 hover:underline flex space-x-1 items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 3h-6m6 0l-9 9m9-9v6" />

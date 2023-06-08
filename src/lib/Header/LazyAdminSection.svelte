@@ -8,6 +8,7 @@
     import AdminFeatures from "../../pages/Admin/Features.svelte";
     import AdminBlog from '../../pages/Admin/Blog.svelte';
     import AdminTeam from '../../pages/Admin/Team.svelte';
+    import AdminBanner from '../../pages/Admin/BannerConfigurationPage.svelte';
     import MetaTitle from "../SEO/MetaTitle.svelte";
     import MetaTag from "../SEO/MetaTag.svelte";
 </script>
@@ -35,6 +36,14 @@
             <Route path="/team">
                 <MetaTitle title="Admin Team - Praxis M.A. Rojzman"/>
                 <AdminTeam/>
+            </Route>
+            <Route path="/sprechzeiten">
+                <MetaTitle title="Admin Sprechzeiten - Praxis M.A. Rojzman"/>
+                Hier ist nichts :)
+            </Route>
+            <Route path="/banner">
+                <MetaTitle title="Admin Banner - Praxis M.A. Rojzman"/>
+                <AdminBanner/>
             </Route>
             <Route path="/*">
                 <MetaTitle title="404 - Praxis M.A. Rojzman"/>

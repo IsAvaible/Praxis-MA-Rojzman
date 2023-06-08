@@ -13,6 +13,7 @@
     import Alert from "../../Essentials/Alert.svelte";
     import LoadingWheel from "../../Misc/LoadingWheel.svelte";
     import {officeHoursChangedStore} from "../../../scripts/stores/officeHoursChangedStore";
+    import {fade} from "svelte/transition";
 
     let selectedWeekday: number = 0;
     let expandedTimePeriodId: number = -1;
@@ -122,7 +123,7 @@
     <div class="w-full flex flex-col items-center xl:flex-row space-y-2 xl:space-y-0 xl:space-x-2 bg-primary-300 p-2 rounded-md">
         <div class="flex-grow flex space-x-2 justify-center xl:justify-start min-h-[3rem] w-full">
             {#await getOfficeHourByWeekday(selectedWeekday)}
-                <div class="w-full flex justify-center items-center"><LoadingWheel size={9}/></div>
+                <div class="w-full flex justify-center items-center"><LoadingWheel size={9} showAfter={300}/></div>
             {:then {weekday, timePeriods, comment}}
                 <!-- Store the comment fetched in the await statement, if oldComment and editedComment are unset -->
                 {#if oldComment === undefined && editedComment === undefined}
@@ -133,8 +134,8 @@
                     {(() => {currentTimePeriods = timePeriods; return ''})()}
                 {/if}
                 {#if !editingComment}
-                    {#key expandedTimePeriodId}
-                        <div class="flex flex-wrap justify-center -mt-2 -ml-2 w-full">
+                    <div class="flex flex-wrap justify-center -mt-2 -ml-2 w-full" in:fade={{duration: 100}}>
+                        {#key expandedTimePeriodId}
                             {#each currentTimePeriods as {id, startTime, duration}, index}
                                 <!--If the div body is clicked (not the children) set the expandedTimePeriodId to -1-->
                                 <div class="flex mt-2 ml-2 items-center parent-node">
@@ -168,8 +169,8 @@
                                 <Alert type="1" title="Keine Zeitabschnitte" description="Sie können neue Zeitabschnitte mithilfe des [+]-Knopf hinzufügen"/>
                             </span>
                             {/each}
-                        </div>
-                    {/key}
+                        {/key}
+                    </div>
                 {:else}
                     <input bind:value={editedComment} class="w-full dark:bg-slate-900 rounded-md py-3 px-[14px] font-normal border border-[f0f0f0] dark:border-slate-900 outline-none focus-visible:shadow-none focus:border-primary-500" placeholder="Kommentar" type="text" id="comment" />
                 {/if}

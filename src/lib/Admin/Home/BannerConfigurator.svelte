@@ -13,15 +13,18 @@
     import {adminPreviewBannerDataStore} from "../../../scripts/stores/adminPreviewBannerDataStore";
     import SvgSelector from "../General/SvgSelector.svelte";
     import {delay} from "../../../scripts/misc/delay";
-    import {slide} from "svelte/transition";
     import {scrollToHeader} from "../../../scripts/misc/scrollToHeader";
     import {onDestroy} from "svelte";
 
-    let showConfigScreen = false;
+    export let showInfo = false;
+    export let showConfigScreen = true;
 
     let selectedBannerConfig; // The name of the config that is selected the database
     let bannerConfig;
     let presetNames;
+    let activeUntilString;
+    $: activeUntilString = bannerConfig && bannerConfig.activeUntil ? bannerConfig.activeUntil.toISOString().split('.')[0].slice(0, -3) : null;
+
     const getInitialConfig = async () => {
         selectedBannerConfig = (await getConfigEntry("selected-banner-config", true)).data["name"] as string;
 
@@ -126,6 +129,7 @@
 </script>
 
 
+{#if showInfo}
 <div class="flex items-center justify-between pt-6 pb-6">
     <div class="flex items-center">
         <div class="flex-shrink-0 h-10 w-10">
@@ -148,24 +152,25 @@
         </span>
     </div>
 </div>
+{/if}
 
 
 {#if svgSelectorState} <SvgSelector iframeHeight="420px" on:submit={(event) => {svgPaths = event.detail; svgSelectorState = false}} on:close={() => {svgSelectorState = false}}/>{/if}
 <!-- Form that allows the admin to configure Banner.svelte (../../Essentials/Banner.svelte) -->
 <!--<div class={showConfigScreen ? '' : 'hidden'}><Modal on:hide={() => showConfigScreen = false}>-->
 {#if showConfigScreen}
-    <div id="BannerConfigurator" out:slide|local>
+    <div id="BannerConfigurator" class="@container">
         {#await getInitialConfig()}
             <div class="flex justify-center"><LoadingWheel size={20} showAfter={1000}/></div>
         {:then _}
             <!--  Form that allows editing all the values in bannerConfig -->
-            <form in:slide on:submit|preventDefault>
+            <form on:submit|preventDefault>
                 <div class="mb-4">
-                    <label class="block text-gray-700 dark:text-slate-200 text-sm font-bold mb-2" for="nameSelector">
-                        Konfiguration Auswählen:
-                    </label>
                     <div class="flex">
-                        <select on:change={onConfigurationNameSelection} bind:value={bannerConfig.name} class="shadow border rounded w-full py-2 px-3 text-gray-700 dark:bg-slate-800 dark:text-slate-200 dark:border-black leading-tight focus:outline-none focus:shadow-outline" id="nameSelector">
+                        <label class="sr-only text-gray-700 dark:text-slate-200 text-sm font-bold mb-2" for="nameSelector">
+                            Konfiguration Auswählen:
+                        </label>
+                        <select on:change={onConfigurationNameSelection} bind:value={bannerConfig.name} class="shadow border rounded w-full py-2 text-center px-3 text-lg text-gray-700 dark:bg-slate-800 dark:text-slate-200 dark:border-black leading-tight focus:outline-none focus:shadow-outline" id="nameSelector">
                             {#each presetNames as option}
                                 {#if option !== "preset"}
                                     <option value={option} class="flex space-x-2 {selectedBannerConfig === option ? 'bg-primary-50 dark:bg-slate-900' : ''}">
@@ -250,25 +255,20 @@
                         Am wievielten soll der Banner von selbst wieder verschwinden? (Zum Beispiel Rückkehr aus dem Urlaub):
                     </label>
                     <div class="flex">
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-slate-800 dark:text-slate-200 dark:border-black leading-tight focus:outline-none focus:shadow-outline" id="active-until" type="datetime-local" min={new Date().toISOString().split('.')[0].slice(0,-3)} value={bannerConfig.activeUntil} on:change={e => bannerConfig.activeUntil = new Date(e.target.value)} />
-                        <button on:click={bannerConfig.activeUntil = undefined} class="ml-2 has-tooltip text-red-500 hover:text-red-600">
-                            <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            <span class="tooltip absolute -ml-24 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
-                                Auslaufdatum löschen
-                            </span>
-                        </button>
-                        {#if bannerConfig.activeUntil && bannerConfig.activeUntil < new Date()}
-                            <span class="ml-2 text-red-500">
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-slate-800 dark:text-slate-200 dark:border-black leading-tight focus:outline-none focus:shadow-outline" id="active-until" type="datetime-local" min={new Date().toISOString().split('.')[0].slice(0,-3)} bind:value={activeUntilString} on:change={e => bannerConfig.activeUntil = new Date(e.target.value)} />
+                        {#if bannerConfig.activeUntil}
+                            <button on:click={() => {bannerConfig.activeUntil = null}} class="ml-2 has-tooltip text-red-500 hover:text-red-600">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
-                            </span>
+                                <span class="tooltip absolute -ml-24 mt-2 z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
+                                    Auslaufdatum löschen
+                                </span>
+                            </button>
                         {/if}
                     </div>
                 </div>
-                <div class="flex items-center justify-between flex-col sm:flex-row gap-y-2 gap-x-1">
+                <div class="flex items-center justify-between flex-col @lg:flex-row gap-y-2 gap-x-1">
                     <button on:click={saveCurrentConfig} class="px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 flex space-x-2">
                         <span class="text-sm font-medium">{#if selectedBannerConfig = bannerConfig.name}Auswählen und {/if}Speichern</span>
                         {#if saveLoading}

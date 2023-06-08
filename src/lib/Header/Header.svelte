@@ -279,8 +279,8 @@
         {#if offlineBannerOpen}
             <Banner {...offlineBannerData} id="offline-banner"/>
         {/if}
-        {#if bannerOpen}
-            <Banner {...bannerData} on:hide={() => bannerOpen = false} id="banner"/>
+        {#if bannerOpen && !adminPreviewBannerActive}
+            <Banner {...bannerData} on:hide={() => bannerOpen = false} animateIn={true} id="banner"/>
         {/if}
         {#if adminPreviewBannerActive}
             <Banner {...adminPreviewBannerData} active={true} animateIn={true} on:hide={() => {adminPreviewBannerDataStore.set(null)}} id="admin-preview-banner"/>
@@ -291,7 +291,7 @@
         <!-- TODO: Add og:image meta tag -->
         <Route path="/">
             <MetaTitle title="Praxis M.A. Rojzman - Kiedrich"/>
-            <MetaTag name="description" content="Hausarztpraxis im Herzen von Kiedrich. Bei uns fühlen sie sich wie zu hause! Kommen sie vorbei!"/>
+            <MetaTag name="description" content="Ihre Hausarztpraxis im Herzen von Kiedrich. Bei uns fühlen sie sich wie zu hause! Kommen sie vorbei!"/>
             <MetaTag name="keywords" content="Hausarztpraxis, Kiedrich, Arzt, Doktor, Praxis, Rojzman"/>
             <Home/>
         </Route>

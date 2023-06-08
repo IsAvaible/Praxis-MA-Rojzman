@@ -18,7 +18,7 @@
 ]
         as {title, linkText, href, svgPaths, viewBox, target}}
 
-    <div class="flex mb-8 w-full">
+    <address class="flex mb-8 w-full not-italic">
         {#if showIcons}
             <a href={href} target={target} class="max-w-[60px] sm:max-w-[70px] w-full h-[60px] sm:h-[70px] flex items-center justify-center mr-6 overflow-hidden bg-primary-300 hover:bg-opacity-10 dark:hover:bg-opacity-20 bg-opacity-5 text-primary-500 text-primary-400 rounded">
                 <svg class="fill-current overflow-visible" height="24" width="24" viewBox="0 0 {viewBox} {viewBox}" >
@@ -31,9 +31,9 @@
         {/if}
         <div class="w-full">
             <h3 class="font-bold dark:text-slate-100 text-xl mb-1">{title}</h3>
-            <a href={href} target="_blank" rel="noreferrer" class="font-medium text-gray-600 hover:text-black dark:text-slate-300 dark:hover:text-slate-100">
+            <a href={href} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="font-medium text-gray-600 hover:text-black dark:text-slate-300 dark:hover:text-slate-100" translate="no">
                 {linkText}
             </a>
         </div>
-    </div>
+    </address>
 {/each}

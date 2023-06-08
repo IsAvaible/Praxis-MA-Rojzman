@@ -52,7 +52,7 @@ const deleteEntry = (blogEntry) => {
 
 
 {#if activeOption !== -1}
-    <Modal on:hide={() => {activeOption = -1; if (modification) refreshEntries++; modification = false; currentEntry=undefined}}>
+    <Modal alwaysShowMobileCloseButton={modification} on:hide={() => {activeOption = -1; if (modification) refreshEntries++; modification = false; currentEntry=undefined}}>
         <div class="flex flex-col">
             <PageTitle titleAccent="{options[activeOption].title}" subTitle={options[activeOption].shortDescription} showTitle={false}/>
             {#if activeOption === 0}
@@ -78,21 +78,22 @@ const deleteEntry = (blogEntry) => {
                 <div class="w-full divide-gray-200 divide-y-4 dark:divide-slate-700 my-4 px-2 sm:px-4 lg:my-10">
                     <div class="w-full divide-gray-200 divide-y dark:divide-slate-700">
                         {#each blogEntries as blogEntry, i}
+                            {@const expanded = expandedEntryIndex === i}
                             <div class="py-3 sm:py-2">
                             <div class="relative group focus:outline-none px-1 py-1 sm:py-2" tabindex="0" on:focus={() => currentHover = i} on:focusout={(e) => {if (!e.currentTarget.contains(e.relatedTarget)) currentHover = -1}} on:mouseenter={() => currentHover = i} on:mouseleave={() => currentHover = -1}>
-                                <BlogEntryComponent {...blogEntry} expanded={expandedEntryIndex === i}/>
+                                <BlogEntryComponent {...blogEntry} expanded={expanded}/>
                                 {#if currentHover === i}
                                     <div in:fade={{duration: 200}} out:fade|local={{duration: 200}} class="absolute top-0 left-0 z-10 w-full h-full bg-gray-500 dark:bg-slate-600 pointer-events-none {expandedEntryIndex === i ? 'bg-opacity-10 dark:bg-opacity-10' : 'bg-opacity-25 dark:bg-opacity-25'} rounded-lg transition-opacity">
                                         <div class="flex h-full items-center justify-center max-w-3xl mx-auto text-white {i === blogEntries.length ? '' : 'mb-2'}">
                                             <div class="has-tooltip mx-4 pointer-events-auto">
                                                 <button on:click={() => expandEntry(i)} class="h-9 w-9 rounded-full bg-primary-500 flex items-center justify-center ring-8 ring-white dark:ring-slate-900 hover:bg-primary-600 cursor-pointer">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6p" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                                     </svg>
-                                                    <span class="sr-only">Artikel Lesen</span>
+                                                    <span class="sr-only">{#if expanded}Artikel einklappen{:else}Artikel Lesen{/if}</span>
                                                 </button>
-                                                <div class="tooltip absolute mt-1 -ml-9 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
-                                                    Artikel Lesen
+                                                <div class="tooltip absolute mt-3 {expanded ? '-ml-14' : '-ml-9'} z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
+                                                    {#if expanded}Artikel einklappen{:else}Artikel Lesen{/if}
                                                 </div>
                                             </div>
                                             <div class="has-tooltip mx-4 pointer-events-auto">
@@ -102,7 +103,7 @@ const deleteEntry = (blogEntry) => {
                                                     </svg>
                                                     <span class="sr-only">Bearbeiten</span>
                                                 </button>
-                                                <div class="tooltip absolute mt-1 -ml-7 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
+                                                <div class="tooltip absolute mt-3 -ml-7 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                                                     Bearbeiten
                                                 </div>
                                             </div>
@@ -113,7 +114,7 @@ const deleteEntry = (blogEntry) => {
                                                     </svg>
                                                     <span class="sr-only">Löschen</span>
                                                 </button>
-                                                <div class="tooltip absolute mt-1 -ml-5 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
+                                                <div class="tooltip absolute mt-3 -ml-5 z-10 py-2 px-3 flex opacity-90 text-sm font-medium text-black rounded-lg shadow bg-white dark:text-slate-100 dark:bg-slate-700">
                                                     Löschen
                                                 </div>
                                             </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {createEventDispatcher} from "svelte";
+    import {createEventDispatcher, onDestroy} from "svelte";
     import {shown} from "../../scripts/stores/siteEnterPopupStore";
     import {navigate} from "svelte-navigator";
     import Modal from "./Modal.svelte";
@@ -13,8 +13,11 @@
 
     // This prevents the PopUp from showing up when changing routes. Only reloading the page will trigger the PopUp again.
     let initialLoad: boolean;
-    shown.subscribe(value => {
+    const unsubscribe = shown.subscribe(value => {
         initialLoad = !value;
+    });
+    onDestroy(() => {
+        unsubscribe();
     });
 
     let dispatch = createEventDispatcher();

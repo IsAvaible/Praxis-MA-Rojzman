@@ -1,8 +1,9 @@
 <script lang="ts">
-    import {createEventDispatcher, onMount} from "svelte";
+    import {createEventDispatcher} from "svelte";
     import {slide} from "svelte/transition";
     import {backInOut} from "svelte/easing";
     import {bannerPushContentStore} from "../../scripts/stores/bannerPushContentStore";
+    import {Link} from "svelte-navigator";
 
     export let name: string;
     export let mobileText: string;
@@ -15,6 +16,7 @@
     export let svgPaths: string[] = ["M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"];
     export let hideable: boolean = true;
     export let animateIn: boolean = false;
+    export let animateOut: boolean = true;
     export let pulseIcon: boolean = false;
     export let id: string = null;
 
@@ -23,16 +25,14 @@
         dispatch("hide", true);
     }
 
-    onMount(() => {
-        if (activeUntil && activeUntil.getTime() > Date.now()) {
-            active = false;
-        }
-    });
+    if (activeUntil && activeUntil.getTime() < Date.now()) {
+        active = false;
+    }
 </script>
 
 {#if active}
     <!-- The banner has a negative z-index to prevent it from appearing over dropdown menus during their fade animation -->
-    <div class="bg-primary-600 -z-10 {$bannerPushContentStore ? '' : 'absolute w-full'}" in:slide={{duration: 300 * (animateIn ? 1 : 0)}} out:slide={{duration: 400, easing: backInOut}} id={id}>
+    <div class="bg-primary-600 -z-10 {$bannerPushContentStore ? '' : 'absolute w-full'}" in:slide={{duration: 300 * (animateIn ? 1 : 0)}} out:slide={{duration: 400 * (animateOut ? 1 : 0), easing: backInOut}} id={id}>
         <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center sm:justify-between flex-wrap">
                 <div class="w-0 flex-1 flex items-center justify-center sm:justify-start">
@@ -54,9 +54,13 @@
                         {#if buttonAction}
                             <button on:click={() => buttonAction()} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:bg-primary-50"> {buttonText} </button>
                         {:else if buttonUrl}
-                            <a href={buttonUrl} target={(buttonUrl.startsWith("/") || buttonUrl.startsWith(window.location.origin)) ? '_self' : '_blank'} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:ring-2 hover:ring-primary-400"> {buttonText} </a>
+                            {#if buttonUrl.startsWith("/")}
+                                <Link to={buttonUrl} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:ring-2 hover:ring-primary-400">{buttonText}</Link>
+                                tst
+                            {:else}
+                                <a href={(buttonUrl.startsWith('www') ? 'https://' : '') + buttonUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:ring-2 hover:ring-primary-400"> {buttonText} </a>
+                            {/if}
                         {/if}
-
                     </div>
                 {/if}
                 <div class="order-2 flex-shrink-0 sm:order-3 sm:ml-3 {hideable ? '' : 'invisible sm:hidden'}">

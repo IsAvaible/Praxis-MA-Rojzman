@@ -356,10 +356,10 @@ export const addBlogEntry = async (id: string, authorID: string, title: string, 
 }
 
 // Updates the blog entry with the given id.
-export const updateBlogEntry = async (id: string, author: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
+export const updateBlogEntry = async (id: string, authorID: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
     const { data, error } = await supabase
         .from('Blog-Entry')
-        .update( { id: id, author: author, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl })
+        .update( { id: id, authorID: authorID, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl })
         .eq('id', id)
         .select()
         .single();
@@ -889,5 +889,13 @@ export const getUser = async (): Promise<User | null> => {
     } = await supabase.auth.getSession()
     if (session) return session.user;
     else return null;
+}
+
+export const getUserByID = async (id: string): Promise<User | null> => {
+    const { data, error } = await supabase.auth.admin.getUserById(id);
+
+    if (error) throw error;
+
+    return data.user;
 }
 

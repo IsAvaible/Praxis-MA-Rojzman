@@ -1,7 +1,7 @@
 <script lang="ts">
     import {fade} from "svelte/transition";
     import {linkEditorActive} from "../../../scripts/stores/adminTeamLinkEditorActiveStore";
-    import {createEventDispatcher, onMount} from "svelte";
+    import {createEventDispatcher, onDestroy, onMount} from "svelte";
     import {clickOutside} from "../../../scripts/ui/clickOutside";
 
     export let url;
@@ -14,9 +14,10 @@
     onMount(() => linkEditorActive.set(false));
 
     let differentEditorActive;
-    linkEditorActive.subscribe((b) => {
+    const unsubscribe = linkEditorActive.subscribe((b) => {
         differentEditorActive = b;
     });
+    onDestroy(() => unsubscribe());
 
     const onEditAddClick = () => {
         if (editing || adding) {
@@ -62,14 +63,17 @@
 
 <!--The enter and leave method may alternatively be assigned to mouseenter and mouseleave events.-->
 <div aria-label={ariaLabel} class="mx-5" use:clickOutside on:clickOutside={leave}>
-    <div class="cursor-pointer" tabindex="0" on:click={!showTooltip ? enter : leave} on:keydown={e=>{if (e.code==='Space'||e.code==='Enter')(!showTooltip ? enter : leave)()}}>
+    <div class="cursor-pointer relative" tabindex="0" on:click={!showTooltip ? enter : leave} on:keydown={e=>{if (e.code==='Space'||e.code==='Enter')(!showTooltip ? enter : leave)()}}>
         <slot/>
+        {#if url}
+            <span class="absolute rounded-full h-1 w-1 bg-gray-400 dark:bg-slate-400 mt-[2px] left-1/2 -translate-x-1/2"></span>
+        {/if}
     </div>
     {#if showTooltip}
         <div in:fade={{duration: 200}} out:fade={{duration: 150}} style="margin-left: {url?-Math.max(Math.min(url.length, 44)*0.3, 3):(editing?-6:-1.25)}rem" class="absolute z-10 py-2 px-3 flex text-sm font-medium text-black rounded-lg shadow bg-white dark:bg-slate-700 w-fit items-center justify-center">
             <!-- Editing Color: Primary; Adding Color: Lime -->
             <span class="flex items-center rounded-full p-2 hover:ring {(editing ? !adding : url) ? 'bg-primary-300 dark:bg-primary-400 hover:ring-primary-400 dark:hover:ring-primary-500' : 'bg-lime-300 hover:ring-lime-400 dark:hover:ring-lime-500'} {editing || adding ? '':'cursor-pointer'}">
-                {#if editing}<p bind:this={linkEditField} on:keydown={(e) => {if (e.code==='Space'||e.code==='Enter') e.preventDefault()}} on:paste|preventDefault={plainPaste} contenteditable="true" bind:innerHTML={url} placeholder="{ariaLabel}-Adresse eingeben" class="mr-1 max-w-[320px] focus:outline-none break-words"></p>
+                {#if editing}<p bind:this={linkEditField} on:keydown={(e) => {if (e.code==='Enter') {onEditAddClick(); e.preventDefault()} else if (e.code==='Space') {e.preventDefault()}}} on:paste|preventDefault={plainPaste} contenteditable="true" bind:innerHTML={url} placeholder="{ariaLabel}-Adresse eingeben" class="mr-1 max-w-[320px] focus:outline-none break-words"></p>
                 {:else if url}<p class="mr-1 max-w-[320px] focus:outline-none break-words">{url}</p>{/if}
                 <button on:click={onEditAddClick} on:keydown={(e) => {if (e.code==='Space'||e.code==='Enter') {onEditAddClick(); e.preventDefault()}}}>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer focus:outline-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

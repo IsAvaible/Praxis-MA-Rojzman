@@ -40,7 +40,7 @@
         <div class="w-full h-full flex flex-col justify-center items-center {blurBackground ? 'backdrop-blur-sm' : ''} gap-1 p-4">
             <p class="text-md text-gray-800 text-center">{text}</p>
             {#if link}
-                <a href={link} rel="noreferrer" target="_blank" class="text-primary-600 hover:underline">{linkText}</a>
+                <a href={link} referrerpolicy="strict-origin-when-cross-origin" target="_blank" class="text-primary-600 hover:underline">{linkText}</a>
             {/if}
             <button on:click={loadContent} class="bg-white text-gray-800 font-bold mt-2 mb-2 px-4 py-2 rounded-md shadow-lg hover:shadow-md transition-shadow duration-300 hover:ring-1 hover:ring-black focus:shadow-md focus:ring-1 focus:ring-black">{buttonText}</button>
             <label class="flex items-center gap-1">

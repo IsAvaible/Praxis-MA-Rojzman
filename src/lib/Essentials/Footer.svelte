@@ -31,7 +31,7 @@
     <slot/>
     <footer class="w-full mt-auto p-4 bg-white dark:text-slate-400 dark:bg-slate-800 rounded-lg shadow flex flex-col items-center gap-y-2 md:flex-row md:justify-between md:p-6 z-10">
         <span class="text-sm text-gray-500 dark:text-gray-400 lg:flex-1 order-last md:order-first">
-            © {copyrightDate} <a href={copyrightLink} target="_blank" rel="noreferrer" on:click={easterEgg} class="hover:underline">{copyrightName}</a>
+            © {copyrightDate} <a href={copyrightLink} target="_blank" referrerpolicy="strict-origin-when-cross-origin" on:click={easterEgg} class="hover:underline">{copyrightName}</a>
         </span>
         <div class="lg:flex-1 text-center hidden lg:inline">
             <button on:click={scrollToTop} class="text-sm text-center text-gray-500 dark:text-slate-400 hover:underline cursor-pointer">

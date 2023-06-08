@@ -210,9 +210,9 @@
                         </div>
                     {/if}
                     <div class="{readerLoading ? 'hidden' : 'block'} h-full">
-                        <img bind:this={avatarImage} src="{imageUrl}" alt="Profilbild von {name}" class="rounded-full object-cover h-full w-full drop-shadow-xl bg-white" />
-                        <label on:focusin={() => mouseFocus = true} on:keydown={() => mouseFocus = false} on:mouseenter={() => removeImageToggle = false} on:click={() => {if (removeImageToggle) {imageUrl = defaultImageUrl; delay(1).then(() => removeImageToggle = false)}}} on:contextmenu|preventDefault={() => removeImageToggle = !removeImageToggle} bind:this={avatarLabel} for="avatar-input-{id}" class="has-tooltip absolute cursor-pointer inset-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center text-sm font-medium text-white opacity-0 hover:opacity-100 focus-within:opacity-100 {fileDragOver ? 'opacity-100' : ''}">
-                            <span class="{removeImageToggle ? 'hidden' : ''} text-md font-medium">Ändern</span>
+                        <img bind:this={avatarImage} src="{imageUrl}" alt="Profilbild von {name}" class="rounded-full object-cover h-full w-full drop-shadow-xl bg-white text-center" />
+                        <label on:focusin={() => mouseFocus = true} on:keydown={() => mouseFocus = false} on:mouseenter={() => removeImageToggle = false} on:click={() => {if (removeImageToggle) {imageUrl = defaultImageUrl; delay(1).then(() => removeImageToggle = false)}}} on:contextmenu|preventDefault={() => removeImageToggle = !removeImageToggle} bind:this={avatarLabel} for="avatar-input-{id}" class="has-tooltip absolute cursor-pointer inset-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center text-sm font-medium text-white hover:opacity-100 focus-within:opacity-100 transition-opacity {fileDragOver ? 'opacity-100' : 'opacity-0'}">
+                            <span class="{removeImageToggle ? 'hidden' : ''} text-lg font-medium">Ändern</span>
                             <span class="sr-only {removeImageToggle ? 'hidden' : ''}"> sie das Profilbild</span>
                             <input disabled={removeImageToggle} bind:this={avatarInput} bind:files on:focus={() => {if (inputFocusCount++%2!==0 && mouseFocus) avatarInput.blur()}} type="file" accept="image/*" id="avatar-input-{id}" name="avatar" class="absolute opacity-0 w-0">
                             {#if removeImageToggle}

@@ -21,7 +21,7 @@
     <div class="rounded-lg overflow-hidden shadow-md">
         <div class="absolute -mt-20 w-full flex justify-center">
             <div in:scale={{easing: sineInOut, start: 0.3 * ($prefersReducedMotionStore ? 0 : 1), duration: 500 * ($prefersReducedMotionStore ? 0 : 1)}} class="h-32 w-32">
-                <img src="{imageUrl}" alt="Profilbild von {name}" class="rounded-full object-cover h-full w-full drop-shadow-xl bg-white" />
+                <img src="{imageUrl}" alt="Profilbild von {name}" class="rounded-full object-cover h-full w-full drop-shadow-xl bg-white text-center" />
             </div>
         </div>
         <div class="px-6 mt-16 rounded-lg">
@@ -31,21 +31,21 @@
             {#if [flexUrl, twitterUrl, instagramUrl].findIndex(e => e !== undefined) !== -1}
                 <div class="w-full flex justify-center pt-5 pb-5">
                     {#if flexUrl}
-                        <a href={flexUrl} target="_blank" rel="noreferrer" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
+                        <a href={flexUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
                             <div aria-label="Flex" role="img">
                                 <FlexIcon/>
                             </div>
                         </a>
                     {/if}
                     {#if twitterUrl}
-                        <a href={twitterUrl} target="_blank" rel="noreferrer" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
+                        <a href={twitterUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
                             <div aria-label="Twitter" role="img">
                                 <TwitterIcon/>
                             </div>
                         </a>
                     {/if}
                     {#if instagramUrl}
-                        <a href={instagramUrl} target="_blank" rel="noreferrer" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
+                        <a href={instagramUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
                             <div aria-label="Instagram" role="img">
                                 <InstagramIcon/>
                             </div>

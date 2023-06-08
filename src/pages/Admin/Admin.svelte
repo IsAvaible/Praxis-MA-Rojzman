@@ -3,8 +3,8 @@
     import OfficeHoursConfigurator from "../../lib/Admin/Home/OfficeHoursConfigurator.svelte";
     import PageTitle from "../../lib/Admin/Navigation/PageTitle.svelte";
     import AllowRegistrationConfigurator from "../../lib/Admin/Home/AllowRegistrationConfigurator.svelte";
-    import BannerConfigurator from "../../lib/Admin/Home/BannerConfigurator.svelte";
-    import RainbowHeaderIconAnimationConfigurator from "../../lib/Admin/Home/RainbowHeaderIconAnimationConfigurator.svelte";
+    import RainbowHeaderIconAnimationConfigurator
+        from "../../lib/Admin/Home/RainbowHeaderIconAnimationConfigurator.svelte";
     // import DeveloperContact from "../../lib/Admin/Home/DeveloperContact.svelte";
 </script>
 
@@ -16,7 +16,6 @@
         <OfficeHoursConfigurator/>
         <div>
             <RainbowHeaderIconAnimationConfigurator/>
-            <BannerConfigurator/>
             <AllowRegistrationConfigurator/>
         </div>
 <!--        <DeveloperContact/>-->
