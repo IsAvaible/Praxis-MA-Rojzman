@@ -38,7 +38,7 @@
                 Zurück Nach Oben
             </button>
         </div>
-        <ul class="flex flex-wrap lg:justify-end text-sm text-gray-500 dark:text-gray-400 lg:flex-1">
+        <ul class="flex flex-wrap justify-center lg:justify-end text-sm text-gray-500 dark:text-gray-400 lg:flex-1">
             <!--   Using the navigate() method is faster than the href attribute   -->
             <li>
                 <a href="/datenschutz" on:click|preventDefault={() => navigate("/datenschutz")} class="mr-4 hover:underline md:mr-6 cursor-pointer">Datenschutzerklärung</a>

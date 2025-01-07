@@ -17,7 +17,7 @@
         {title: 'Leistung Löschen', shortDescription: 'Löschen sie die ausgewählte Leistungen.', svgPaths: ['M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0']},
     ];
     let activeOption: number = -1;
-    let selectedFeature: {index: number, data} = {index: -1, data: undefined};
+    let selectedFeature: {index: number, data: Feature} = {index: -1, data: undefined};
     let refreshFeatures = 0; // Refresh features on increment
     let modification = false; // Whether the features were actually modified
     const changeOrder = async (feature: Feature, features: Feature[], by: number) => {
@@ -37,7 +37,7 @@
         refreshFeatures++;
     }
 
-    const onFeatureClick = (feature, i: number) => {
+    const onFeatureClick = (feature: Feature, i: number) => {
         if (selectedFeature.index === i) activeOption = 1;
         else selectedFeature = {index: i, data: feature};
     }
@@ -52,7 +52,7 @@
 <!--{/if}-->
 
 {#if activeOption !== -1}
-    <Modal alwaysShowMobileCloseButton={modification} on:hide={() => {if (activeOption !== 1) selectedFeature={index: -1, data: undefined}; activeOption = -1; if (modification) refreshFeatures++; modification = false;}}>
+    <Modal showMobileCloseButton={true} on:hide={() => {if (activeOption !== 1) selectedFeature={index: -1, data: undefined}; activeOption = -1; if (modification) refreshFeatures++; modification = false;}}>
         <div class="flex flex-col">
             <PageTitle titleAccent="{options[activeOption].title}" subTitle={options[activeOption].shortDescription} showTitle={false}/>
             {#key refreshFeatures}{#await getShowcasedFeatures() then showcasedFeatures}

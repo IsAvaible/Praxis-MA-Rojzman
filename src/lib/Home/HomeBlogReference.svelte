@@ -34,7 +34,7 @@
                         <div class="flex space-x-1 text-sm text-gray-500 dark:text-slate-400">
                             <time datetime="{entry.createdAt.toISOString().split('T')[0]}"> {formatDDMMYYYY(entry.createdAt)} </time>
                             <span aria-hidden="true"> &middot; </span>
-                            <span> ~{Math.max(1, Math.ceil(readTime(entry.content).duration))} Min. Lesezeit</span>
+                            <span> {Math.max(1, Math.ceil(readTime(entry.content).duration + 0.3))} Min. Lesezeit</span>
                         </div>
                     </a>
                 {/each}

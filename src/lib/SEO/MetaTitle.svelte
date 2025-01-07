@@ -1,5 +1,6 @@
 <script>
     import {onDestroy} from "svelte";
+    import {unsavedChangesStore} from "../../scripts/stores/unsavedChangesStore";
 
     export let title;
 
@@ -12,5 +13,5 @@
 </script>
 
 <svelte:head>
-    <title>{title}</title>
+    <title>{$unsavedChangesStore ? '(*) ' : ''}{title}</title>
 </svelte:head>

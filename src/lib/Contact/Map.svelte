@@ -10,7 +10,7 @@
 
 
 <div>
-    <div class="relative resize-y overflow-y-auto max-h-[60vh]" style="min-height: 250px; background-color: #e5e3df">
+    <div class="relative resize-y overflow-y-auto max-h-[60vh] @container" style="min-height: 30vh; background-color: #e5e3df">
         <DSGVODialog text="Diese Webseite nutzt Google Maps um den Standort der Praxis anzuzeigen. Beim Laden der Karte werden eventuell Daten übertragen und Cookies gesetzt."
                      link="https://policies.google.com/privacy" buttonText="Karte laden" cookieStore={googleMapsAllowedStore} backgroundStyle="bg-hero-topography-700 absolute top-0 bottom-0" blurBackground={true}>
             <div class="absolute top-0 bottom-0 -z-10 w-full flex justify-center items-center">
@@ -22,7 +22,7 @@
                     class="absolute top-0 bottom-0 w-full h-full"
                     allowfullscreen referrerpolicy="no-referrer" title="Google Maps Karte mit der Praxis als markierten Standort (Kammstr. 2, Kiedrich).">
             </iframe>
-            <span id="triangle" class="absolute bottom-0 right-0 bg-white w-5 aspect-square"></span>
+            <span id="triangle" class="absolute bottom-0 right-0 bg-white w-5 aspect-square hidden @md:block"></span>
         </DSGVODialog>
     </div>
 </div>

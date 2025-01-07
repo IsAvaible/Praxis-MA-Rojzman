@@ -56,7 +56,6 @@
                         {:else if buttonUrl}
                             {#if buttonUrl.startsWith("/")}
                                 <Link to={buttonUrl} class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:ring-2 hover:ring-primary-400">{buttonText}</Link>
-                                tst
                             {:else}
                                 <a href={(buttonUrl.startsWith('www') ? 'https://' : '') + buttonUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="cursor-pointer flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-600 bg-white hover:ring-2 hover:ring-primary-400"> {buttonText} </a>
                             {/if}

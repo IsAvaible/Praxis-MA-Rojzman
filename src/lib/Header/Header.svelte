@@ -197,7 +197,7 @@
 <Router a11y="{{onRouterNavigate}}">
     <div class="sticky top-0 z-50 bg-white dark:bg-slate-800" id="header">
         <div class="mx-auto px-4 sm:px-6 max-w-7xl">
-            <div class="flex justify-between items-center border-b-2 border-gray-100 dark:border-none py-6 md:justify-start md:space-x-10">
+            <div class="flex justify-between items-center border-b-2 border-gray-100 dark:border-none py-6 md:justify-start md:gap-x-10">
                 <!-- This is located here, so that it appears first in the tab order -->
                 {#if $siteCookieStore === cookieState.UNSET}
                     <CookieBanner/>

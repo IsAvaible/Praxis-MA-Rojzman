@@ -12,7 +12,7 @@
         uploadFile
     } from "../../../scripts/database/database";
     import {longpress} from "../../../scripts/ui/longpress";
-    import TwitterIcon from "../../Icons/TwitterIcon.svelte";
+    import XIcon from "../../Icons/XIcon.svelte";
     import FlexIcon from "../../Icons/FlexIcon.svelte";
     import InstagramIcon from "../../Icons/InstagramIcon.svelte";
     import ImageCropperPopUp from "../General/ImageCropperPopUp.svelte";
@@ -32,7 +32,7 @@
     export let imageUrl = defaultImageUrl;
 
     export let instagramUrl = undefined;
-    export let twitterUrl = undefined;
+    export let xUrl = undefined;
     export let flexUrl = undefined;
 
     export let newMember = false;
@@ -41,10 +41,10 @@
 
     // Checks whether the card has been edited by comparing start and current values
     let startName = name, startRole = role, startDescription = description, startImageUrl = imageUrl,
-        startInstagramUrl = instagramUrl, startTwitterUrl = twitterUrl, startFlexUrl = flexUrl;
+        startInstagramUrl = instagramUrl, startXUrl = xUrl, startFlexUrl = flexUrl;
 
     $: edited = (startName != name || startRole != role || startDescription != description || startImageUrl != imageUrl
-        || startInstagramUrl != instagramUrl || startTwitterUrl != twitterUrl || startFlexUrl != flexUrl)
+        || startInstagramUrl != instagramUrl || startXUrl != xUrl || startFlexUrl != flexUrl)
 
     $: dispatch('edited', edited);
 
@@ -94,17 +94,17 @@
             }
 
             if (newMember) {
-                await addTeamMember(id, name, role, description, serverUrl, instagramUrl, twitterUrl, flexUrl);
+                await addTeamMember(id, name, role, description, serverUrl, instagramUrl, xUrl, flexUrl);
             }
             else {
-                await updateTeamMember(id, name, role, description, serverUrl, instagramUrl, twitterUrl, flexUrl);
+                await updateTeamMember(id, name, role, description, serverUrl, instagramUrl, xUrl, flexUrl);
             }
             submitMessage = 'Team Mitglied erfolgreich ' + (newMember ? 'hinzugefügt' : 'bearbeitet') + '.';
             newMember = false;
             submitState = 2;
             // Reassigning start values
             startName = name; startRole = role; startDescription = description;  startImageUrl = imageUrl;
-                startInstagramUrl = instagramUrl; startTwitterUrl = twitterUrl; startFlexUrl = flexUrl;
+                startInstagramUrl = instagramUrl; startXUrl = xUrl; startFlexUrl = flexUrl;
             await getTeamMembers(true);
         } catch (e) { // Error
             submitState = 3;
@@ -120,10 +120,10 @@
                 description = res.description;
                 imageUrl = res.imageUrl;
                 instagramUrl = '';
-                twitterUrl = '';
+                xUrl = '';
                 flexUrl = '';
                 instagramUrl = res.instagramUrl;
-                twitterUrl = res.twitterUrl;
+                xUrl = res.twitterUrl;
                 flexUrl = res.flexUrl;
                 delay(1).then(() => textAreas.forEach(resize)); // Resizing doesn't work w/out the delay for some reason
             })
@@ -235,7 +235,7 @@
 
             <div class="w-full flex justify-center pt-5 pb-5 text-gray-500 dark:text-slate-400 [&>*:hover]:text-gray-800 [&>*:hover]:dark:text-slate-300">
                 <EditableLinkIconWrapper on:change={e => flexUrl = e.detail} url={flexUrl} ariaLabel="Flex"><FlexIcon/></EditableLinkIconWrapper>
-                <EditableLinkIconWrapper on:change={e => twitterUrl = e.detail} url={twitterUrl} ariaLabel="Twitter"><TwitterIcon/></EditableLinkIconWrapper>
+                <EditableLinkIconWrapper on:change={e => xUrl = e.detail} url={xUrl} ariaLabel="X"><XIcon/></EditableLinkIconWrapper>
                 <EditableLinkIconWrapper on:change={e => instagramUrl = e.detail} url={instagramUrl} ariaLabel="Instagram"><InstagramIcon/></EditableLinkIconWrapper>
             </div>
             <div class="w-full mb-2 flex items-center justify-around">

@@ -1,11 +1,11 @@
 <script lang="ts">
-import ProfileCard from "../lib/Team/ProfileCard.svelte";
-import Footer from "../lib/Essentials/Footer.svelte";
-import {getTeamMembers} from "../scripts/database/database";
-import Alert from "../lib/Essentials/Alert.svelte";
-import LoadingWheel from "../lib/Misc/LoadingWheel.svelte";
+    import ProfileCard from "../lib/Team/ProfileCard.svelte";
+    import Footer from "../lib/Essentials/Footer.svelte";
+    import {getTeamMembers} from "../scripts/database/database";
+    import Alert from "../lib/Essentials/Alert.svelte";
+    import LoadingWheel from "../lib/Misc/LoadingWheel.svelte";
 
-let title = "Unser Team";
+    let title = "Unser Team";
 let subTitle = "Die Personen, welche ihren Aufenthalt in unserer Praxis zum bestmöglichen Erlebnis machen";
 </script>
 
@@ -17,7 +17,7 @@ let subTitle = "Die Personen, welche ihren Aufenthalt in unserer Praxis zum best
             <p class="xl:text-4xl text-3xl text-center text-gray-800 dark:text-slate-200 font-extrabold pb-6 sm:w-4/6 w-5/6 mx-auto focus:outline-transparent">{subTitle}</p>
         </div>
     </div>
-    <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 z-20 w-full px-10 pt-10 pb-10 flex-grow">
+    <div class="bg-gray-100 bg-hero-leaf-600 dark:bg-slate-800 z-20 w-full px-10 pt-10 pb-10">
         {#await getTeamMembers()}
             <div class="w-full mb-12 flex justify-center items-center" style="min-height: 500px">
                 <LoadingWheel size={25} showAfter={1000}/>
@@ -35,5 +35,8 @@ let subTitle = "Die Personen, welche ihren Aufenthalt in unserer Praxis zum best
                 <Alert type={1} title="Team konnte nicht geladen werden." description="Wir konnten die angeforderten Daten nicht laden, überprüfen sie bitte ihre Internetverbindung."/>
             </div>
         {/await}
+    </div>
+    <div class="min-h-0 flex-grow flex overflow-y-clip">
+        <img src="assets/DarkModeGlowBg.png" alt="" class="w-full min-h-[20rem] justify-start opacity-30">
     </div>
 </Footer>

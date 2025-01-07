@@ -2,7 +2,7 @@
     import {scale} from "svelte/transition";
     import {sineInOut} from "svelte/easing"
     import {prefersReducedMotionStore} from "../../scripts/stores/prefersReducedMotionStore";
-    import TwitterIcon from "../Icons/TwitterIcon.svelte";
+    import XIcon from "../Icons/XIcon.svelte";
     import FlexIcon from "../Icons/FlexIcon.svelte";
     import InstagramIcon from "../Icons/InstagramIcon.svelte";
 
@@ -13,7 +13,7 @@
     export let imageUrl = "assets/DefaultProfilePicture.png";
 
     export let instagramUrl = undefined;
-    export let twitterUrl = undefined;
+    export let xUrl = undefined;
     export let flexUrl = undefined;
 </script>
 
@@ -28,7 +28,7 @@
             <h1 class="font-bold dark:text-slate-100 text-3xl text-center mb-1">{name}</h1>
             <p class="text-gray-800 dark:text-slate-100 text-sm text-center">{role}</p>
             <p class="text-center text-gray-600 dark:text-slate-200 text-base pt-3 font-normal">{description}</p>
-            {#if [flexUrl, twitterUrl, instagramUrl].findIndex(e => e !== undefined) !== -1}
+            {#if [flexUrl, xUrl, instagramUrl].findIndex(e => e !== undefined) !== -1}
                 <div class="w-full flex justify-center pt-5 pb-5">
                     {#if flexUrl}
                         <a href={flexUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
@@ -37,10 +37,10 @@
                             </div>
                         </a>
                     {/if}
-                    {#if twitterUrl}
-                        <a href={twitterUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
-                            <div aria-label="Twitter" role="img">
-                                <TwitterIcon/>
+                    {#if xUrl}
+                        <a href={xUrl} target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="mx-5 text-gray-500 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-300">
+                            <div aria-label="X" role="img">
+                                <XIcon/>
                             </div>
                         </a>
                     {/if}

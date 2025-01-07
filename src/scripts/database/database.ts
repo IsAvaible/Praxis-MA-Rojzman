@@ -39,13 +39,15 @@ export type AdminAction = Omit<Database['public']['Tables']['Admin-Action']['Row
 
 // >>> Config <<<
 
-let getConfigCache: ConfigEntry[];
+let getConfigCache: ConfigEntry[] = [];
 export const getConfigEntries = async (noCache?: boolean): Promise<ConfigEntry[]> => {
     if (getConfigCache != undefined && !noCache) return getConfigCache;
 
     let {data, error} = await supabase
         .from('Config-Entry')
         .select('*');
+
+    data = data || [];
 
     if (error) throw error;
     else getConfigCache = data;
@@ -56,7 +58,9 @@ export const getConfigEntries = async (noCache?: boolean): Promise<ConfigEntry[]
 
 export const getConfigEntry = async (id: string, noCache?: boolean): Promise<ConfigEntry> => {
     let find; // Only if the config entry can not be found in the cache, a new request is sent.
-    if (!noCache && (find = (await getConfigEntries()).find(e => e.id == id)) != undefined) return find
+    if (!noCache && !!(find = (await getConfigEntries()).find(e => e.id == id))) {
+        return find;
+    }
 
     let {data, error} = await supabase
         .from('Config-Entry')
@@ -85,7 +89,7 @@ export const addConfigEntry = async (id: string, data: JSONObject, customAdminAc
 
     if (error) throw error;
 
-    dbData = dataToConfigEntry(dbData);
+    dbData = dataToConfigEntry(dbData!);
     if (getConfigCache != undefined) getConfigCache.push(dbData);
     else getConfigCache = [dbData];
 
@@ -107,7 +111,7 @@ export const updateConfigEntry = async (id: string, data: JSONObject, customAdmi
 
     if (getConfigCache != undefined) {
         let index = getConfigCache.findIndex(e => e.id == id);
-        getConfigCache[index] = dbData;
+        getConfigCache[index] = dbData!;
     }
 
     if (customAdminActionMessage == undefined) await addAdminAction('Config', 'update', `Die Konfiguration mit der ID "${id}" wurde aktualisiert.`);
@@ -137,7 +141,7 @@ export const deleteConfigEntry = async (id: string, customAdminActionMessage?: {
     return dataToConfigEntry(dbData);
 }
 
-const dataToConfigEntry = (data): ConfigEntry => {
+const dataToConfigEntry = (data: ConfigEntry) => {
     data.updatedAt = new Date(Date.parse(data.updatedAt.toString()));
     return data;
 }
@@ -145,7 +149,7 @@ const dataToConfigEntry = (data): ConfigEntry => {
 // >>> Feature <<<
 
 
-let getFeaturesCache;
+let getFeaturesCache: Feature[];
 export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
     if (getFeaturesCache != undefined && !noCache) return getFeaturesCache
 
@@ -432,11 +436,11 @@ export const getTeamMember = async (id: string, noCache?: boolean): Promise<Team
 }
 
 // Adds the team member to the database.
-export const addTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
+export const addTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, xUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
         .from('Team-Member')
         .insert([
-            { id: id, name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl },
+            { id: id, name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: xUrl, flexUrl: flexUrl },
         ])
         .select()
         .single();
@@ -448,10 +452,10 @@ export const addTeamMember = async (id: string, name: string, role: string, desc
 }
 
 // Updates the team member with the given id.
-export const updateTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, twitterUrl: string, flexUrl: string): Promise<TeamMember> => {
+export const updateTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, xUrl: string, flexUrl: string): Promise<TeamMember> => {
     const { data, error } = await supabase
         .from('Team-Member')
-        .update({ name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: twitterUrl, flexUrl: flexUrl })
+        .update({ name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: xUrl, flexUrl: flexUrl })
         .eq('id', id)
         .select()
         .single();

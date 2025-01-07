@@ -12,7 +12,6 @@ export default ({mode}) => {
             svelte(),
             legacy({
                 targets: ['> 0.1%', 'not IE <= 11', 'not dead'],
-                ignoreBrowserslistConfig: true,
             }),
         ],
     });

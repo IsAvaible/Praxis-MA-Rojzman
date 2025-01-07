@@ -51,7 +51,7 @@
 
 <!-- @component This is a general skeleton for modals (pop-ups) -->
 <div class="inset-0 fixed h-full" style="z-index: {zIndex}" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <dialog bind:this={dialog} id="dialog" class="flex items-center justify-center w-screen {modalTopModal?'min-h-full':'pt-8 px-4 pb-20 min-h-screen'} text-center sm:block sm:p-0 bg-transparent dark:text-slate-200">
+    <dialog bind:this={dialog} id="dialog" class="flex items-center justify-center w-screen  overflow-y-hidden {modalTopModal?'min-h-full':'pt-8 px-4 pb-20 min-h-screen'} text-center sm:block sm:p-0 bg-transparent dark:text-slate-200">
         {#if open}
         <div in:fade={{duration: 200}} out:fade|local={{duration: 300}} on:outroend={hide} class="fixed inset-0 {modalTopModal ? '' : 'bg-gray-500 dark:bg-slate-800 bg-opacity-75 dark:bg-opacity-75 transition-opacity'}" aria-hidden="true"></div>
 

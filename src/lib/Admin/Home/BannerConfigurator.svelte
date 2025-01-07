@@ -15,20 +15,26 @@
     import {delay} from "../../../scripts/misc/delay";
     import {scrollToHeader} from "../../../scripts/misc/scrollToHeader";
     import {onDestroy} from "svelte";
+    import {unsavedChangesStore} from "../../../scripts/stores/unsavedChangesStore";
 
     export let showInfo = false;
     export let showConfigScreen = true;
+    export let showPreviewBanner = true;
 
-    let selectedBannerConfig; // The name of the config that is selected the database
+    let initialConfig;
+    let selectedBannerConfigName; // The name of the config that is selected the database
     let bannerConfig;
     let presetNames;
     let activeUntilString;
     $: activeUntilString = bannerConfig && bannerConfig.activeUntil ? bannerConfig.activeUntil.toISOString().split('.')[0].slice(0, -3) : null;
+    let bannerConfigChanged = false;
+    $: bannerConfigChanged = JSON.stringify(bannerConfig) !== JSON.stringify(initialConfig);
+    $: unsavedChangesStore.set(bannerConfigChanged);
 
     const getInitialConfig = async () => {
-        selectedBannerConfig = (await getConfigEntry("selected-banner-config", true)).data["name"] as string;
+        selectedBannerConfigName = (await getConfigEntry("selected-banner-config", true)).data["name"] as string;
 
-        bannerConfig = await getBannerConfig(selectedBannerConfig);
+        bannerConfig = await getBannerConfig(selectedBannerConfigName);
         const { data, error } = await supabase
             .from('Banner-Config')
             .select('name');
@@ -40,6 +46,8 @@
             presetNames.push(bannerConfig.name);
         }
         svgPaths = bannerConfig.svgPaths;
+        if (showPreviewBanner) togglePreviewBanner();
+        initialConfig = structuredClone(bannerConfig);
         return bannerConfig;
     }
 
@@ -65,7 +73,6 @@
                 scrollToHeader();
             }
         })
-
     }
 
     $: if (previewBannerActive) adminPreviewBannerDataStore.set(bannerConfig);
@@ -73,7 +80,15 @@
 
     const onConfigurationNameSelection = (event) => {
         const previousSelection = bannerConfig.name;
+        console.log(previousSelection, event.target.value);
+        if (bannerConfigChanged && !confirm("Es gibt ungespeicherte Änderungen. Wollen sie diese verwerfen?")) {
+            delay(1).then(async () => {
+                bannerConfig.name = previousSelection;
+            });
+            return;
+        }
         delay(1).then(async () => {
+            console.log(event.target.value);
             if (bannerConfig.name === '#new#') {
                 const newName = prompt('Geben sie den Namen der neuen Konfiguration ein:');
                 if (newName && !presetNames.includes(newName)) {
@@ -92,6 +107,7 @@
                 svgPaths = bannerConfig.svgPaths;
                 // await updateConfigEntry('selected-banner-config', {name: bannerConfig.name});
             }
+            initialConfig = structuredClone(bannerConfig);
         })
     }
 
@@ -99,7 +115,8 @@
         saveLoading = true;
         await updateBannerConfig(bannerConfig);
         await updateConfigEntry('selected-banner-config', {name: bannerConfig.name})
-        selectedBannerConfig = bannerConfig.name;
+        selectedBannerConfigName = bannerConfig.name;
+        initialConfig = structuredClone(bannerConfig);
         saveLoading = false;
     }
 
@@ -107,7 +124,7 @@
         if (confirm(`Wollen sie die Konfiguration "${bannerConfig.name}" wirklich löschen? Sie können stattdessen auch eine neue Konfiguration erstellen oder eine andere auswählen.`)) {
             deleteLoading = true;
             await deleteBannerConfig(bannerConfig.name);
-            let isSelected = bannerConfig.name == selectedBannerConfig;
+            let isSelected = bannerConfig.name == selectedBannerConfigName;
             presetNames = presetNames.filter((name) => name !== bannerConfig.name);
             if (presetNames.length > 1) { // Indexing position 1 to account for the preset which should always be present
                 bannerConfig.name = presetNames[1]; // Select the first non-preset config
@@ -121,8 +138,9 @@
             }
             if (isSelected) {
                 await updateConfigEntry('selected-banner-config', {name: bannerConfig.name});
-                selectedBannerConfig = bannerConfig.name;
+                selectedBannerConfigName = bannerConfig.name;
             }
+            initialConfig = structuredClone(bannerConfig);
             deleteLoading = false;
         }
     }
@@ -173,9 +191,9 @@
                         <select on:change={onConfigurationNameSelection} bind:value={bannerConfig.name} class="shadow border rounded w-full py-2 text-center px-3 text-lg text-gray-700 dark:bg-slate-800 dark:text-slate-200 dark:border-black leading-tight focus:outline-none focus:shadow-outline" id="nameSelector">
                             {#each presetNames as option}
                                 {#if option !== "preset"}
-                                    <option value={option} class="flex space-x-2 {selectedBannerConfig === option ? 'bg-primary-50 dark:bg-slate-900' : ''}">
+                                    <option value={option} class="flex space-x-2 {selectedBannerConfigName === option ? 'bg-primary-50 dark:bg-slate-900' : ''}">
                                         {option}
-                                        {#if selectedBannerConfig === option}
+                                        {#if selectedBannerConfigName === option}
                                             <span class="text-primary-600 dark:text-primary-200">(Aktuell öffentlich ausgewählt)</span>
                                         {/if}
                                     </option>
@@ -270,7 +288,7 @@
                 </div>
                 <div class="flex items-center justify-between flex-col @lg:flex-row gap-y-2 gap-x-1">
                     <button on:click={saveCurrentConfig} class="px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary-600 hover:bg-primary-700 flex space-x-2">
-                        <span class="text-sm font-medium">{#if selectedBannerConfig = bannerConfig.name}Auswählen und {/if}Speichern</span>
+                        <span class="text-sm font-medium">{#if selectedBannerConfigName = bannerConfig.name}Auswählen und {/if}Speichern</span>
                         {#if saveLoading}
                             <LoadingWheel size={5}/>
                         {/if}
