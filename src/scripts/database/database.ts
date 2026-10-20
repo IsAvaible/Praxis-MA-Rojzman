@@ -6,6 +6,8 @@ import type {JSONObject} from "../misc/jsonTypes";
 import {deleteImagesFromHTML, publicUrlToKey} from "./databaseHtmlImageTools";
 import {numberToWeekdayDE} from "../misc/dateFormat";
 import {adminActionsChangeStore} from "../stores/adminActionsChangeStore";
+import {get} from "svelte/store";
+import {DEMO_USER, isDemoModeStore} from "../stores/demoModeStore";
 
 const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co').toString();
 const supabaseKey = (import.meta.env.VITE_SUPABASE_KEY || 'placeholder').toString();
@@ -37,11 +39,28 @@ export type BannerConfig = Omit<Database['public']['Tables']['Banner-Config']['R
 export type AdminAction = Omit<Database['public']['Tables']['Admin-Action']['Row'], 'performedAt'> & { performedAt: Date };
 
 
+/**
+ * Checks whether the current operation should run in Demo (Sandbox) mode.
+ * Any unauthenticated session is automatically treated as Demo mode to protect the database.
+ */
+const isDemoSession = async (): Promise<boolean> => {
+    if (get(isDemoModeStore)) return true;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        isDemoModeStore.set(true);
+        return true;
+    }
+    return false;
+};
+
+
 // >>> Config <<<
 
 let getConfigCache: ConfigEntry[] = [];
+let demoConfigMap = new Map<string, ConfigEntry>();
+
 export const getConfigEntries = async (noCache?: boolean): Promise<ConfigEntry[]> => {
-    if (getConfigCache != undefined && !noCache) return getConfigCache;
+    if (getConfigCache != undefined && getConfigCache.length > 0 && (!noCache || get(isDemoModeStore))) return getConfigCache;
 
     let {data, error} = await supabase
         .from('Config-Entry')
@@ -50,13 +69,20 @@ export const getConfigEntries = async (noCache?: boolean): Promise<ConfigEntry[]
     data = data || [];
 
     if (error) throw error;
-    else getConfigCache = data;
+    else {
+        getConfigCache = data.map(dataToConfigEntry);
+        getConfigCache.forEach(entry => demoConfigMap.set(entry.id, entry));
+    }
 
-    return data;
+    return getConfigCache;
 }
 
 
 export const getConfigEntry = async (id: string, noCache?: boolean): Promise<ConfigEntry> => {
+    if (get(isDemoModeStore) && demoConfigMap.has(id)) {
+        return demoConfigMap.get(id)!;
+    }
+
     let find; // Only if the config entry can not be found in the cache, a new request is sent.
     if (!noCache && !!(find = (await getConfigEntries()).find(e => e.id == id))) {
         return find;
@@ -71,15 +97,32 @@ export const getConfigEntry = async (id: string, noCache?: boolean): Promise<Con
     if (error) throw error;
 
     data = dataToConfigEntry(data);
+    demoConfigMap.set(id, data);
     if (getConfigCache != undefined) {
         let index = getConfigCache.findIndex(e => e.id == id);
         if (index != -1) getConfigCache[index] = data;
+        else getConfigCache.push(data);
     }
 
     return data;
 }
 
 export const addConfigEntry = async (id: string, data: JSONObject, customAdminActionMessage?: {section: string, description: string}): Promise<ConfigEntry> => {
+    if (await isDemoSession()) {
+        const entry: ConfigEntry = { id, data, updatedAt: new Date() as any };
+        demoConfigMap.set(id, entry);
+        if (getConfigCache != undefined) {
+            const idx = getConfigCache.findIndex(e => e.id === id);
+            if (idx !== -1) getConfigCache[idx] = entry;
+            else getConfigCache.push(entry);
+        } else {
+            getConfigCache = [entry];
+        }
+        if (customAdminActionMessage == undefined) await addAdminAction('Config', 'insert', `Die Konfiguration mit der ID "${id}" wurde hinzugefügt.`);
+        else await addAdminAction(customAdminActionMessage.section, 'insert', customAdminActionMessage.description);
+        return entry;
+    }
+
     let {data: dbData, error} = await supabase
         .from('Config-Entry')
         .insert([{id: id, data: data}])
@@ -90,6 +133,7 @@ export const addConfigEntry = async (id: string, data: JSONObject, customAdminAc
     if (error) throw error;
 
     dbData = dataToConfigEntry(dbData!);
+    demoConfigMap.set(id, dbData);
     if (getConfigCache != undefined) getConfigCache.push(dbData);
     else getConfigCache = [dbData];
 
@@ -100,6 +144,19 @@ export const addConfigEntry = async (id: string, data: JSONObject, customAdminAc
 }
 
 export const updateConfigEntry = async (id: string, data: JSONObject, customAdminActionMessage?: {section: string, description: string}): Promise<ConfigEntry> => {
+    if (await isDemoSession()) {
+        const entry: ConfigEntry = { id, data, updatedAt: new Date() as any };
+        demoConfigMap.set(id, entry);
+        if (getConfigCache != undefined) {
+            let index = getConfigCache.findIndex(e => e.id == id);
+            if (index !== -1) getConfigCache[index] = entry;
+            else getConfigCache.push(entry);
+        }
+        if (customAdminActionMessage == undefined) await addAdminAction('Config', 'update', `Die Konfiguration mit der ID "${id}" wurde aktualisiert.`);
+        else await addAdminAction(customAdminActionMessage.section, 'update', customAdminActionMessage.description);
+        return entry;
+    }
+
     let {data: dbData, error} = await supabase
         .from('Config-Entry')
         .update({data: data, updatedAt: new Date().toISOString()})
@@ -121,6 +178,18 @@ export const updateConfigEntry = async (id: string, data: JSONObject, customAdmi
 }
 
 export const deleteConfigEntry = async (id: string, customAdminActionMessage?: {section: string, description: string}): Promise<ConfigEntry> => {
+    if (await isDemoSession()) {
+        const existing = demoConfigMap.get(id) || { id, data: {}, updatedAt: new Date() as any };
+        demoConfigMap.delete(id);
+        if (getConfigCache != undefined) {
+            let index = getConfigCache.findIndex(e => e.id == id);
+            if (index !== -1) getConfigCache.splice(index, 1);
+        }
+        if (customAdminActionMessage == undefined) await addAdminAction('Config', 'delete', `Die Konfiguration mit der ID "${id}" wurde gelöscht.`);
+        else await addAdminAction(customAdminActionMessage.section, 'delete', customAdminActionMessage.description);
+        return existing;
+    }
+
     let {data: dbData, error} = await supabase
         .from('Config-Entry')
         .delete()
@@ -142,7 +211,7 @@ export const deleteConfigEntry = async (id: string, customAdminActionMessage?: {
 }
 
 const dataToConfigEntry = (data: ConfigEntry) => {
-    data.updatedAt = new Date(Date.parse(data.updatedAt.toString()));
+    data.updatedAt = new Date(Date.parse(data.updatedAt.toString())) as any;
     return data;
 }
 
@@ -151,7 +220,7 @@ const dataToConfigEntry = (data: ConfigEntry) => {
 
 let getFeaturesCache: Feature[];
 export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
-    if (getFeaturesCache != undefined && !noCache) return getFeaturesCache
+    if (getFeaturesCache != undefined && (!noCache || get(isDemoModeStore))) return getFeaturesCache
 
     let {data, error} = await supabase
         .from('Feature')
@@ -165,7 +234,7 @@ export const getFeatures = async (noCache?: boolean): Promise<Feature[]> => {
 
 export const getFeature = async (name: string, noCache?: boolean): Promise<Feature> => {
     let find; // Only if the feature can not be found in the cache, a new request is sent.
-    if (!noCache && (find = (await getFeatures()).find(e => e.name == name)) != undefined) return find
+    if ((!noCache || get(isDemoModeStore)) && (find = (await getFeatures()).find(e => e.name == name)) != undefined) return find
 
     let {data, error} = await supabase
         .from('Feature')
@@ -179,7 +248,23 @@ export const getFeature = async (name: string, noCache?: boolean): Promise<Featu
 }
 
 export const addFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[]): Promise<Feature> => {
-    let order = (await getFeatures()).length;
+    let features = await getFeatures();
+    let order = features.length;
+
+    if (await isDemoSession()) {
+        const newFeature: Feature = {
+            name,
+            title,
+            shortDescription,
+            longDescription,
+            svgPaths,
+            order
+        };
+        getFeaturesCache = [...features, newFeature].sort((a, b) => a.order < b.order ? -1 : 1);
+        await addAdminAction('Leistungen', 'insert', `Die Leistung mit dem Namen "${name}" wurde hinzugefügt.`);
+        return newFeature;
+    }
+
     const { data, error } = await supabase
         .from('Feature')
         .insert([
@@ -194,7 +279,23 @@ export const addFeature = async (name: string, title: string, shortDescription: 
     return data;
 }
 
-export const updateFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[], order: number): Promise<Feature> => {
+export const updateFeature = async (name: string, title: string, shortDescription: string, longDescription: string, svgPaths: string[], order?: number): Promise<Feature> => {
+    if (await isDemoSession()) {
+        const features = await getFeatures();
+        const existing = features.find(f => f.name === name);
+        const updatedFeature: Feature = {
+            name,
+            title,
+            shortDescription,
+            longDescription,
+            svgPaths,
+            order: order !== undefined ? order : (existing?.order ?? features.length)
+        };
+        getFeaturesCache = features.map(f => f.name === name ? updatedFeature : f).sort((a, b) => a.order < b.order ? -1 : 1);
+        await addAdminAction('Leistungen', 'update', `Die Leistung mit dem Namen "${name}" wurde bearbeitet.`);
+        return updatedFeature;
+    }
+
     const { data, error } = await supabase
         .from('Feature')
         .update({ title: title, shortDescription: shortDescription, longDescription: longDescription, svgPaths: svgPaths, order: order })
@@ -209,6 +310,20 @@ export const updateFeature = async (name: string, title: string, shortDescriptio
 }
 
 export const updateFeatureOrder = async (name: string, order: number, shouldAddAdminAction?: boolean): Promise<Feature> => {
+    if (await isDemoSession()) {
+        const features = await getFeatures();
+        let updated: Feature | undefined;
+        getFeaturesCache = features.map(f => {
+            if (f.name === name) {
+                updated = { ...f, order };
+                return updated;
+            }
+            return f;
+        }).sort((a, b) => a.order < b.order ? -1 : 1);
+        if (shouldAddAdminAction) await addAdminAction('Leistungen', 'update', `Die Ordnung der Leistung mit dem Namen "${name}" wurde geändert.`);
+        return updated!;
+    }
+
     const { data, error } = await supabase
         .from('Feature')
         .update({ order: order })
@@ -223,6 +338,20 @@ export const updateFeatureOrder = async (name: string, order: number, shouldAddA
 }
 
 export const deleteFeature = async (name: string) => {
+    if (await isDemoSession()) {
+        const features = await getFeatures();
+        const feature = features.find(f => f.name === name);
+        getFeaturesCache = features
+            .filter(f => f.name !== name)
+            .sort((a, b) => a.order < b.order ? -1 : 1)
+            .map((f, index) => ({ ...f, order: index }));
+        if (getShowcasedFeaturesCache != undefined) {
+            getShowcasedFeaturesCache = getShowcasedFeaturesCache.filter(f => f.name !== name);
+        }
+        await addAdminAction('Leistungen', 'delete', `Die Leistung mit dem Namen "${name}" wurde gelöscht.`);
+        return feature;
+    }
+
     let feature = await getFeature(name, true);
 
     // Delete all images in the long description of the feature
@@ -250,9 +379,9 @@ export const deleteFeature = async (name: string) => {
 // >>> Showcased Feature <<<
 
 
-let getShowcasedFeaturesCache;
+let getShowcasedFeaturesCache: ShowcasedFeature[];
 export const getShowcasedFeatures = async (noCache?: boolean): Promise<ShowcasedFeature[]> => {
-    if (getShowcasedFeaturesCache != undefined && !noCache) return getShowcasedFeaturesCache
+    if (getShowcasedFeaturesCache != undefined && (!noCache || get(isDemoModeStore))) return getShowcasedFeaturesCache
 
     const {data, error} = await supabase
         .from('Showcased-Feature')
@@ -268,6 +397,14 @@ export const getShowcasedFeatures = async (noCache?: boolean): Promise<Showcased
 }
 
 export const addShowcasedFeature = async (name: string): Promise<ShowcasedFeature> => {
+    if (await isDemoSession()) {
+        const showcased = await getShowcasedFeatures();
+        const parsed: ShowcasedFeature = { name, setAt: new Date() };
+        getShowcasedFeaturesCache = [parsed, ...showcased.filter(f => f.name !== name)];
+        await addAdminAction('Leistungen', 'insert', `Die Leistung mit dem Namen "${name}" wurde auf die Startseite gesetzt.`);
+        return parsed;
+    }
+
     const { data, error } = await supabase
         .from('Showcased-Feature')
         .insert([
@@ -285,6 +422,14 @@ export const addShowcasedFeature = async (name: string): Promise<ShowcasedFeatur
 }
 
 export const deleteShowcasedFeature = async (name: string) => {
+    if (await isDemoSession()) {
+        const showcased = await getShowcasedFeatures();
+        const existing = showcased.find(f => f.name === name) || null;
+        getShowcasedFeaturesCache = showcased.filter(f => f.name !== name);
+        await addAdminAction('Leistungen', 'delete', `Die Leistung mit dem Namen "${name}" wurde von der Startseite entfernt.`);
+        return existing;
+    }
+
     const { data, error } = await supabase
         .from('Showcased-Feature')
         .delete()
@@ -305,28 +450,34 @@ export const deleteShowcasedFeature = async (name: string) => {
 // >>> Blog-Entry <<<
 
 
-let getBlogEntriesCache; // This results in each client only requesting the data once.
+let getBlogEntriesCache: BlogEntry[]; // This results in each client only requesting the data once.
 export const getBlogEntries = async (noCache?: boolean, count?: number): Promise<BlogEntry[]> => {
-    if (typeof count === undefined) count = -1;
-    if (getBlogEntriesCache != undefined && !noCache) return getBlogEntriesCache.limit(count)
+    if (getBlogEntriesCache != undefined && (!noCache || get(isDemoModeStore))) {
+        return count !== undefined && count > 0 ? getBlogEntriesCache.slice(0, count) : getBlogEntriesCache;
+    }
 
-    let {data, error} = await supabase
+    let query = supabase
         .from('Blog-Entry')
         .select('*')
-        .order('createdAt', {ascending: false})
-        .limit(count)
+        .order('createdAt', {ascending: false});
+
+    if (count !== undefined && count > 0) {
+        query = query.limit(count);
+    }
+
+    let {data, error} = await query;
 
     if (error) { throw error; }
 
     const parsed = [...data].map(e => {return {...e, createdAt: new Date(e.createdAt)}})
-    if (count == -1) getBlogEntriesCache = parsed;
+    if (count === undefined || count <= 0) getBlogEntriesCache = parsed;
 
     return parsed;
 }
 
 export const getBlogEntry = async (id: string, noCache?: boolean): Promise<BlogEntry> => {
     let find; // Only if the feature can not be found in the cache, a new request is sent.
-    if (!noCache && (find = (await getBlogEntries()).find(e => e.id == id)) != undefined) return find
+    if ((!noCache || get(isDemoModeStore)) && (find = (await getBlogEntries()).find(e => e.id == id)) != undefined) return find
 
     let {data, error} = await supabase
         .from('Blog-Entry')
@@ -343,6 +494,22 @@ export const getBlogEntry = async (id: string, noCache?: boolean): Promise<BlogE
 
 // Adds a new blog entry to the database.
 export const addBlogEntry = async (id: string, authorID: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
+    if (await isDemoSession()) {
+        const entries = await getBlogEntries();
+        const newEntry: BlogEntry = {
+            id,
+            authorID,
+            title,
+            previewText,
+            content,
+            previewImageUrl: previewImageUrl || '',
+            createdAt: new Date()
+        };
+        getBlogEntriesCache = [newEntry, ...entries];
+        await addAdminAction('Aktuelles', 'insert', `Der Blog Eintrag mit der id "${id}" wurde hinzugefügt.`);
+        return newEntry;
+    }
+
     const { data, error } = await supabase
         .from('Blog-Entry')
         .insert([
@@ -361,6 +528,23 @@ export const addBlogEntry = async (id: string, authorID: string, title: string, 
 
 // Updates the blog entry with the given id.
 export const updateBlogEntry = async (id: string, authorID: string, title: string, previewText: string, content: string, previewImageUrl?: string): Promise<BlogEntry> => {
+    if (await isDemoSession()) {
+        const entries = await getBlogEntries();
+        const existing = entries.find(e => e.id === id);
+        const updatedEntry: BlogEntry = {
+            id,
+            authorID,
+            title,
+            previewText,
+            content,
+            previewImageUrl: previewImageUrl ?? existing?.previewImageUrl ?? '',
+            createdAt: existing?.createdAt ?? new Date()
+        };
+        getBlogEntriesCache = entries.map(e => e.id === id ? updatedEntry : e);
+        await addAdminAction('Aktuelles', 'update', `Der Blog Eintrag mit der id "${id}" wurde bearbeitet.`);
+        return updatedEntry;
+    }
+
     const { data, error } = await supabase
         .from('Blog-Entry')
         .update( { id: id, authorID: authorID, title: title, previewText: previewText, content: content, previewImageUrl: previewImageUrl })
@@ -378,6 +562,14 @@ export const updateBlogEntry = async (id: string, authorID: string, title: strin
 
 // Deletes the blog entry with the given id.
 export const deleteBlogEntry = async (id: string) => {
+    if (await isDemoSession()) {
+        const entries = await getBlogEntries();
+        const existing = entries.find(e => e.id === id);
+        getBlogEntriesCache = entries.filter(e => e.id !== id);
+        await addAdminAction('Aktuelles', 'delete', `Der Blog Eintrag mit der id "${id}" wurde gelöscht.`);
+        return existing;
+    }
+
     let blogEntry = await getBlogEntry(id, true);
 
     // Delete all images in the content of the blog entry
@@ -385,7 +577,10 @@ export const deleteBlogEntry = async (id: string) => {
 
     // Deletes the preview image from the database
     let key = publicUrlToKey(blogEntry.previewImageUrl);
-    await deleteFiles(key.bucket, [key.path.match(/(.*)\?t=.*/)[1]]);
+    if (key) {
+        const match = key.path.match(/(.*)\?t=.*/);
+        await deleteFiles(key.bucket, [match ? match[1] : key.path]);
+    }
 
     const { data, error } = await supabase
         .from('Blog-Entry')
@@ -403,10 +598,10 @@ export const deleteBlogEntry = async (id: string) => {
 // >>> Team-Member <<<
 
 
-let getTeamMembersCache; // This results in each client only requesting the data once.
+let getTeamMembersCache: TeamMember[]; // This results in each client only requesting the data once.
 // Get all team members. The noCache parameter is used to force a new request.
 export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> => {
-    if (getTeamMembersCache != undefined && !noCache) return getTeamMembersCache
+    if (getTeamMembersCache != undefined && (!noCache || get(isDemoModeStore))) return getTeamMembersCache
 
     let {data, error} = await supabase
         .from('Team-Member')
@@ -422,7 +617,7 @@ export const getTeamMembers = async (noCache?: boolean): Promise<TeamMember[]> =
 // Select the team member with the given id. The noCache parameter can be used to force a new request.
 export const getTeamMember = async (id: string, noCache?: boolean): Promise<TeamMember> => {
     let find; // Only if the team member can not be found in the cache, a new request is sent.
-    if (!noCache && (find = (await getTeamMembers()).find(e => e.id == id)) != undefined) return find
+    if ((!noCache || get(isDemoModeStore)) && (find = (await getTeamMembers()).find(e => e.id == id)) != undefined) return find
 
     let {data, error} = await supabase
         .from('Team-Member')
@@ -437,6 +632,23 @@ export const getTeamMember = async (id: string, noCache?: boolean): Promise<Team
 
 // Adds the team member to the database.
 export const addTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, xUrl: string, flexUrl: string): Promise<TeamMember> => {
+    if (await isDemoSession()) {
+        const members = await getTeamMembers();
+        const newMember: TeamMember = {
+            id,
+            name,
+            role,
+            description,
+            imageUrl,
+            instagramUrl: instagramUrl || null,
+            twitterUrl: xUrl || null,
+            flexUrl: flexUrl || null
+        };
+        getTeamMembersCache = [...members, newMember].sort((a, b) => a.name.localeCompare(b.name));
+        await addAdminAction('Team', 'insert', `Das Team Mitglied mit der ID "${id}" und dem Namen "${name}" wurde hinzugefügt.`);
+        return newMember;
+    }
+
     const { data, error } = await supabase
         .from('Team-Member')
         .insert([
@@ -453,6 +665,23 @@ export const addTeamMember = async (id: string, name: string, role: string, desc
 
 // Updates the team member with the given id.
 export const updateTeamMember = async (id: string, name: string, role: string, description: string, imageUrl: string, instagramUrl: string, xUrl: string, flexUrl: string): Promise<TeamMember> => {
+    if (await isDemoSession()) {
+        const members = await getTeamMembers();
+        const updatedMember: TeamMember = {
+            id,
+            name,
+            role,
+            description,
+            imageUrl,
+            instagramUrl: instagramUrl || null,
+            twitterUrl: xUrl || null,
+            flexUrl: flexUrl || null
+        };
+        getTeamMembersCache = members.map(m => m.id === id ? updatedMember : m);
+        await addAdminAction('Team', 'update', `Das Team Mitglied mit der ID "${id}" und dem Namen "${name}" wurde bearbeitet.`);
+        return updatedMember;
+    }
+
     const { data, error } = await supabase
         .from('Team-Member')
         .update({ name: name, role: role, description: description, imageUrl: imageUrl, instagramUrl: instagramUrl, twitterUrl: xUrl, flexUrl: flexUrl })
@@ -471,6 +700,14 @@ export const updateTeamMember = async (id: string, name: string, role: string, d
  * @param id The id of the team member.
  */
 export const deleteTeamMember = async (id: string) => {
+    if (await isDemoSession()) {
+        const members = await getTeamMembers();
+        const existing = members.find(m => m.id === id);
+        getTeamMembersCache = members.filter(m => m.id !== id);
+        await addAdminAction('Team', 'delete', `Das Team Mitglied mit der ID "${id}" und dem Namen "${existing?.name || id}" wurde gelöscht.`);
+        return existing;
+    }
+
     const { data, error } = await supabase
         .from('Team-Member')
         .delete()
@@ -487,11 +724,17 @@ export const deleteTeamMember = async (id: string) => {
 
 // >>> Time-Period <<<
 
+let demoTimePeriodsMap = new Map<number, TimePeriod>();
+
 /**
  * Get the time period with the given id.
  * @param id The id of the time period.
  */
 export const getTimePeriod = async (id: number): Promise<TimePeriod> => {
+    if (get(isDemoModeStore) && demoTimePeriodsMap.has(id)) {
+        return demoTimePeriodsMap.get(id)!;
+    }
+
     let {data, error} = await supabase
         .from('Time-Period')
         .select('*')
@@ -501,6 +744,7 @@ export const getTimePeriod = async (id: number): Promise<TimePeriod> => {
     if (error) throw error;
 
     const parsed = dataToTimePeriod(data);
+    demoTimePeriodsMap.set(id, parsed);
     return parsed;
 }
 
@@ -510,6 +754,16 @@ export const getTimePeriod = async (id: number): Promise<TimePeriod> => {
  * @param duration The duration of the time period.
  */
 export const addTimePeriod = async (startTime: Date, duration: number): Promise<TimePeriod> => {
+    if (await isDemoSession()) {
+        const newTimePeriod: TimePeriod = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            startTime: new Date(startTime),
+            duration
+        };
+        demoTimePeriodsMap.set(newTimePeriod.id, newTimePeriod);
+        return newTimePeriod;
+    }
+
     // Convert the date to a string in the format "HH:mm:ss" using the toLocaleTimeString function.
     let startTimeString = startTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const { data, error } = await supabase
@@ -533,6 +787,18 @@ export const addTimePeriod = async (startTime: Date, duration: number): Promise<
  * @param duration The new duration of the time period.
  */
 export const updateTimePeriod = async (id: number, startTime: Date, duration: number): Promise<TimePeriod> => {
+    if (await isDemoSession()) {
+        const updated: TimePeriod = { id, startTime: new Date(startTime), duration };
+        demoTimePeriodsMap.set(id, updated);
+        if (getOfficeHoursCache) {
+            getOfficeHoursCache = getOfficeHoursCache.map(oh => ({
+                ...oh,
+                timePeriods: oh.timePeriods.map(tp => tp.id === id ? updated : tp)
+            }));
+        }
+        return updated;
+    }
+
     // Convert the date to a string in the format "HH:mm:ss" using the toLocaleTimeString function.
     let startTimeString = startTime.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const { data, error } = await supabase
@@ -553,6 +819,12 @@ export const updateTimePeriod = async (id: number, startTime: Date, duration: nu
  * @param id The id of the time period.
  */
 export const deleteTimePeriod = async (id: number) => {
+    if (await isDemoSession()) {
+        const existing = demoTimePeriodsMap.get(id);
+        demoTimePeriodsMap.delete(id);
+        return existing;
+    }
+
     const { data, error } = await supabase
         .from('Time-Period')
         .delete()
@@ -601,7 +873,7 @@ let getOfficeHoursCache: OfficeHour[] = null;
  * @param noCache If true, the office hours will be reloaded from the database.
  */
 export const getOfficeHours = async (noCache: boolean = false): Promise<OfficeHour[]> => {
-    if (getOfficeHoursCache && !noCache) return getOfficeHoursCache;
+    if (getOfficeHoursCache && (!noCache || get(isDemoModeStore))) return getOfficeHoursCache;
 
     let {data, error} = await supabase
         .from('Office-Hour')
@@ -621,6 +893,18 @@ export const getOfficeHours = async (noCache: boolean = false): Promise<OfficeHo
  * @param weekday The week day.
  */
 export const getOfficeHourByWeekday = async (weekday: number): Promise<OfficeHour> => {
+    if (get(isDemoModeStore)) {
+        const all = await getOfficeHours();
+        const found = all.find(oh => oh.weekday === weekday);
+        if (found) {
+            return {
+                weekday: found.weekday,
+                timePeriods: found.timePeriods.map(tp => ({ ...tp, startTime: new Date(tp.startTime) })),
+                comment: found.comment
+            };
+        }
+    }
+
     let { data, error } = await supabase
         .from('Office-Hour')
         .select('*')
@@ -639,6 +923,18 @@ export const getOfficeHourByWeekday = async (weekday: number): Promise<OfficeHou
  * @param comment A comment field that can be used to annotate the data.
  */
 export const updateOfficeHour = async (weekday: number, timePeriods: TimePeriod[], comment: string): Promise<OfficeHour> => {
+    if (await isDemoSession()) {
+        const all = await getOfficeHours();
+        const updated: OfficeHour = {
+            weekday,
+            timePeriods: timePeriods.map(tp => ({ ...tp, startTime: new Date(tp.startTime) })),
+            comment
+        };
+        getOfficeHoursCache = all.map(oh => oh.weekday === weekday ? updated : oh);
+        await addAdminAction('OfficeHour', 'update', `Die Sprechzeiten am ${numberToWeekdayDE(weekday)} wurden bearbeitet.`);
+        return updated;
+    }
+
     // This uploads the time periods to the database and stores the ids in a list.
     let timePeriodIds = timePeriods.map(timePeriod => timePeriod.id)
 
@@ -666,6 +962,20 @@ export const updateOfficeHour = async (weekday: number, timePeriods: TimePeriod[
  * @param comment The comment.
  */
 export const updateOfficeHourComment = async (weekday: number, comment: string): Promise<OfficeHour> => {
+    if (await isDemoSession()) {
+        const all = await getOfficeHours();
+        let updated: OfficeHour | undefined;
+        getOfficeHoursCache = all.map(oh => {
+            if (oh.weekday === weekday) {
+                updated = { ...oh, comment };
+                return updated;
+            }
+            return oh;
+        });
+        await addAdminAction('OfficeHour', 'delete', `Der Kommentar zur Sprechzeit am ${numberToWeekdayDE(weekday)} wurde bearbeitet.`);
+        return updated!;
+    }
+
     const { data, error } = await supabase
         .from('Office-Hour')
         .update({ comment: comment })
@@ -707,8 +1017,42 @@ const formatOfficeHourToData = (officeHour: OfficeHour): any => {
 
 // >>> Banner-Config <<<
 
+let demoBannerConfigsMap: Map<string, BannerConfig> | null = null;
+
+const ensureBannerConfigsLoaded = async (): Promise<Map<string, BannerConfig>> => {
+    if (demoBannerConfigsMap !== null) return demoBannerConfigsMap;
+    const { data, error } = await supabase
+        .from('Banner-Config')
+        .select('*');
+    if (error) throw error;
+    demoBannerConfigsMap = new Map();
+    for (const row of data || []) {
+        const formatted = formatDataToBannerConfig(row);
+        demoBannerConfigsMap.set(formatted.name, formatted);
+    }
+    return demoBannerConfigsMap;
+};
+
+export const getBannerConfigNames = async (): Promise<string[]> => {
+    if (get(isDemoModeStore)) {
+        const map = await ensureBannerConfigsLoaded();
+        return Array.from(map.keys());
+    }
+    const { data, error } = await supabase
+        .from('Banner-Config')
+        .select('name');
+    if (error) throw error;
+    return data.map(entry => entry.name);
+};
 
 export const getBannerConfig = async (name: string): Promise<BannerConfig> => {
+    if (get(isDemoModeStore)) {
+        const map = await ensureBannerConfigsLoaded();
+        if (map.has(name)) {
+            return structuredClone(map.get(name)!);
+        }
+    }
+
     let { data, error } = await supabase
         .from('Banner-Config')
         .select('*')
@@ -717,10 +1061,22 @@ export const getBannerConfig = async (name: string): Promise<BannerConfig> => {
 
     if (error) throw error;
 
-    return formatDataToBannerConfig(data);
+    const formatted = formatDataToBannerConfig(data);
+    if (demoBannerConfigsMap) {
+        demoBannerConfigsMap.set(formatted.name, formatted);
+    }
+    return formatted;
 }
 
 export const addBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
+    if (await isDemoSession()) {
+        const map = await ensureBannerConfigsLoaded();
+        const formatted = formatDataToBannerConfig({ ...bannerConfig, updatedAt: new Date() });
+        map.set(formatted.name, structuredClone(formatted));
+        await addAdminAction('Banner', 'insert', `Das Banner Konfiguration mit dem Namen "${bannerConfig.name}" wurde hinzugefügt.`);
+        return formatted;
+    }
+
     const { data, error } = await supabase
         .from('Banner-Config')
         // @ts-ignore
@@ -736,6 +1092,14 @@ export const addBannerConfig = async (bannerConfig: BannerConfig): Promise<Banne
 }
 
 export const updateBannerConfig = async (bannerConfig: BannerConfig): Promise<BannerConfig> => {
+    if (await isDemoSession()) {
+        const map = await ensureBannerConfigsLoaded();
+        const formatted = formatDataToBannerConfig({ ...bannerConfig, updatedAt: new Date() });
+        map.set(formatted.name, structuredClone(formatted));
+        await addAdminAction('Banner', 'update', `Das Banner Konfiguration mit dem Namen "${bannerConfig.name}" wurde bearbeitet.`);
+        return formatted;
+    }
+
     const { data, error } = await supabase
         .from('Banner-Config')
         // @ts-ignore
@@ -752,6 +1116,14 @@ export const updateBannerConfig = async (bannerConfig: BannerConfig): Promise<Ba
 }
 
 export const deleteBannerConfig = async (name: string): Promise<BannerConfig> => {
+    if (await isDemoSession()) {
+        const map = await ensureBannerConfigsLoaded();
+        const existing = map.get(name);
+        map.delete(name);
+        await addAdminAction('Banner', 'delete', `Das Banner Konfiguration mit dem Namen "${name}" wurde gelöscht.`);
+        return existing!;
+    }
+
     const { data, error } = await supabase
         .from('Banner-Config')
         .delete()
@@ -776,23 +1148,55 @@ const formatDataToBannerConfig = (data): BannerConfig => {
 
 // >>> Admin-Action <<<
 
+let getAdminActionsCache: AdminAction[] | null = null;
 
 export const getAdminActions = async (count?: number): Promise<AdminAction[]> => {
-    if (typeof count === undefined) count = -1;
+    if (getAdminActionsCache !== null && get(isDemoModeStore)) {
+        return count !== undefined && count > 0 ? getAdminActionsCache.slice(0, count) : getAdminActionsCache;
+    }
 
-    let { data, error } = await supabase
+    let query = supabase
         .from('Admin-Action')
         .select('*')
-        .order('performedAt', {ascending: false})
-        .limit(count)
+        .order('performedAt', {ascending: false});
+
+    if (count !== undefined && count > 0 && !get(isDemoModeStore)) {
+        query = query.limit(count);
+    }
+
+    let { data, error } = await query;
 
     if (error) throw error;
 
-    const parsed= data.map((a) => {return {...a, performedAt: new Date(a.performedAt)}});
-    return parsed;
+    const parsed = data.map((a) => {return {...a, performedAt: new Date(a.performedAt)}});
+    if (get(isDemoModeStore) || count === undefined || count <= 0) {
+        getAdminActionsCache = parsed;
+    }
+    return count !== undefined && count > 0 ? parsed.slice(0, count) : parsed;
 }
 
 export const addAdminAction = async (section: string, action: string, description: string, author?: string) => {
+    if (await isDemoSession()) {
+        if (getAdminActionsCache === null) {
+            try {
+                await getAdminActions();
+            } catch {
+                getAdminActionsCache = [];
+            }
+        }
+        const newAction: AdminAction = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            section,
+            action,
+            description: `[Demo] ${description}`,
+            author: author || DEMO_USER.email!,
+            performedAt: new Date()
+        };
+        getAdminActionsCache = [newAction, ...(getAdminActionsCache || [])];
+        adminActionsChangeStore.set(true);
+        return [newAction];
+    }
+
     const { data, error } = await supabase
         .from('Admin-Action')
         .insert([
@@ -810,8 +1214,15 @@ export const addAdminAction = async (section: string, action: string, descriptio
 
 // >>> File Related <<<
 
+let demoUploadedFiles = new Map<string, string>();
 
 export const uploadFile = async (bucket: string, path: string, file) => {
+    if (await isDemoSession()) {
+        const blobUrl = URL.createObjectURL(file);
+        demoUploadedFiles.set(`${bucket}/${path}`, blobUrl);
+        return { path };
+    }
+
     const { data, error } = await supabase.storage.from(bucket).upload(path, file)
 
     if (error) throw error;
@@ -828,6 +1239,13 @@ export const downloadFile = async (bucket: string, path: string) => {
 }
 
 export const deleteFiles = async (bucket: string, paths: string[]) => {
+    if (await isDemoSession()) {
+        for (const p of paths) {
+            demoUploadedFiles.delete(`${bucket}/${p}`);
+        }
+        return [];
+    }
+
     const { data, error } = await supabase.storage.from(bucket).remove(paths);
 
     if (error) throw error;
@@ -836,6 +1254,10 @@ export const deleteFiles = async (bucket: string, paths: string[]) => {
 }
 
 export const getPublicFileUrl = async (bucket: string, path: string) => {
+    if (demoUploadedFiles.has(`${bucket}/${path}`)) {
+        return demoUploadedFiles.get(`${bucket}/${path}`)!;
+    }
+
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
 
     return data.publicUrl;
@@ -843,6 +1265,10 @@ export const getPublicFileUrl = async (bucket: string, path: string) => {
 
 /// Lists all the files within a bucket.
 export const listFiles = async (bucket: string, path?: string, searchOptions?: SearchOptions) => {
+    if (await isDemoSession()) {
+        return [];
+    }
+
     const { data, error } = await supabase
         .storage
         .from(bucket)
@@ -867,10 +1293,12 @@ export const signIn = async (email: string, password: string) => {
 
     if (error) throw error;
 
+    isDemoModeStore.set(false);
     return user;
 }
 
 export const signOut = async () => {
+    isDemoModeStore.set(false);
     let { error } = await supabase.auth.signOut();
 
     if (error) throw error;
@@ -887,7 +1315,7 @@ export const signUp = async (email: string, password: string): Promise<User | nu
     return data.user;
 }
 
-export const getUser = async (): Promise<User | null> => {
+export const getRealSessionUser = async (): Promise<User | null> => {
     const {
         data: { session },
     } = await supabase.auth.getSession()
@@ -895,11 +1323,23 @@ export const getUser = async (): Promise<User | null> => {
     else return null;
 }
 
-export const getUserByID = async (id: string): Promise<User | null> => {
-    const { data, error } = await supabase.auth.admin.getUserById(id);
-
-    if (error) throw error;
-
-    return data.user;
+export const getUser = async (): Promise<User | null> => {
+    const realUser = await getRealSessionUser();
+    if (realUser) return realUser;
+    if (get(isDemoModeStore)) return DEMO_USER;
+    return null;
 }
 
+export const getUserByID = async (id: string): Promise<(User & { name?: string }) | null> => {
+    if (await isDemoSession()) {
+        return { ...DEMO_USER, name: id === DEMO_USER.id ? 'Portfolio Gast (Demo)' : 'Praxis Admin' };
+    }
+
+    try {
+        const { data, error } = await supabase.auth.admin.getUserById(id);
+        if (error) throw error;
+        return data.user;
+    } catch {
+        return { ...DEMO_USER, name: 'Praxis Admin' };
+    }
+}

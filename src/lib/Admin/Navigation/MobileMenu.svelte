@@ -1,11 +1,12 @@
 <script lang="ts">
-    import {fade} from "svelte/transition";
-    import {createEventDispatcher} from "svelte";
-    import {navigate} from "svelte-navigator";
-    import {clickOutside} from "../../../scripts/ui/clickOutside";
-    import {getUser, signOut} from "../../../scripts/database/database";
+  import {fade} from "svelte/transition";
+  import {createEventDispatcher} from "svelte";
+  import {navigate} from "svelte-navigator";
+  import {clickOutside} from "../../../scripts/ui/clickOutside";
+  import {getUser, signOut} from "../../../scripts/database/database";
+  import {isDemoModeStore} from "../../../scripts/stores/demoModeStore";
 
-    let dispatch = createEventDispatcher();
+  let dispatch = createEventDispatcher();
     function hide() {
         dispatch('hide', true);
     }
@@ -57,17 +58,26 @@
                 {/each}
             </nav>
         </div>
-        <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
+        <div class="flex-shrink-0 flex border-t border-gray-200 dark:border-slate-700 p-4">
             <div class="flex-shrink-0 w-full group block">
                 <div class="flex items-center">
                     <div>
                         <img class="inline-block h-9 w-9 rounded-full" src="https://images.unsplash.com/photo-1651232881282-7bbbbb81e067?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100&q=80" alt="">
                     </div>
                     <div class="ml-3">
-                        {#await getUser() then user}
-                            <p class="text-sm font-medium text-gray-700 group-hover:text-gray-800 dark:text-slate-200 dark:group-hover:text-slate-200">{user.email}</p>
-                        {/await}
-                        <button on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 group-hover:text-gray-700 cursor-pointer dark:text-slate-300 dark:group-hover:text-slate-200">Ausloggen</button>
+                        {#if $isDemoModeStore}
+                            <p class="text-sm font-medium text-gray-700 dark:text-slate-200">Portfolio Gast (Demo)</p>
+                            <div class="flex space-x-2">
+                                <button on:click={() => {hide(); navigate('admin/login');}} class="text-xs font-medium text-primary-600 hover:text-primary-800 cursor-pointer dark:text-primary-400">Admin Login</button>
+                                <span class="text-xs text-gray-300 dark:text-slate-600">&bull;</span>
+                                <button on:click={() => {hide(); navigate('/');}} class="text-xs font-medium text-gray-500 hover:text-gray-700 cursor-pointer dark:text-slate-300">Startseite</button>
+                            </div>
+                        {:else}
+                            {#await getUser() then user}
+                                <p class="text-sm font-medium text-gray-700 group-hover:text-gray-800 dark:text-slate-200 dark:group-hover:text-slate-200">{user && user.email}</p>
+                            {/await}
+                            <button on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 group-hover:text-gray-700 cursor-pointer dark:text-slate-300 dark:group-hover:text-slate-200">Ausloggen</button>
+                        {/if}
                     </div>
                 </div>
             </div>

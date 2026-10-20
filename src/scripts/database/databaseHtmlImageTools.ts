@@ -41,7 +41,9 @@ export const deleteImagesFromHTML = async (html: string) => {
 }
 
 
-export const publicUrlToKey = (url: string): {bucket: string, path: string} => {
+export const publicUrlToKey = (url: string): {bucket: string, path: string} | null => {
+    if (!url || url.startsWith('blob:') || url.startsWith('data:')) return null;
     let match = url.match(RegExp(escapeString((import.meta.env.VITE_SUPABASE_URL || '').toString() + '/storage/') + '.+?\/public\/(.+?)\/(.+)'));
+    if (!match) return null;
     return {bucket: match[1], path: match[2]};
 }

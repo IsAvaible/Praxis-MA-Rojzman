@@ -1,10 +1,11 @@
 <script lang="ts">
-    import MobileMenu from "./MobileMenu.svelte";
-    import {globalHistory, navigate} from "svelte-navigator";
-    import {signOut} from "../../../scripts/database/database";
-    import {validateAuthentication} from "../../../scripts/database/validateAuthentication";
+  import MobileMenu from "./MobileMenu.svelte";
+  import {globalHistory, navigate} from "svelte-navigator";
+  import {signOut} from "../../../scripts/database/database";
+  import {validateAuthentication} from "../../../scripts/database/validateAuthentication";
+  import {isDemoModeStore} from "../../../scripts/stores/demoModeStore";
 
-    let user = validateAuthentication();
+  let userPromise = validateAuthentication();
 
     let mobileMenuOpen = false;
     const toggleMobileMenu = () => {
@@ -22,13 +23,19 @@
         // {title: 'Bilder', link: 'admin/bilder', svgPaths: ['M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z']}
     ]
 
+    let currentPath = window.location.pathname;
     const getLinkIndex = () => links.findIndex((l) => l.link == window.location.pathname.substring(1))
     let activeLinkIndex = getLinkIndex();
     // Refresh the index even when switching between 404 pages; If the url does not match any entry, use the last index
-    globalHistory.listen(() => activeLinkIndex = getLinkIndex() != -1 ? getLinkIndex() : activeLinkIndex);
+    globalHistory.listen((history) => {
+        currentPath = history?.location?.pathname || window.location.pathname;
+        activeLinkIndex = getLinkIndex() != -1 ? getLinkIndex() : activeLinkIndex;
+    });
+
+    $: isTexteSection = currentPath.includes('/texte') || links[activeLinkIndex]?.link === 'admin/texte';
 </script>
 
-{#await validateAuthentication() then user}
+{#await userPromise then user}
 {#if mobileMenuOpen}
     <MobileMenu on:hide={toggleMobileMenu} links={links} activeLinkIndex={activeLinkIndex}/>
 {/if}
@@ -62,8 +69,17 @@
                             <img class="inline-block h-9 w-9 rounded-full" src="https://images.unsplash.com/photo-1651232881282-7bbbbb81e067?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&h=100&q=80" alt="">
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-700 group-hover:text-gray-800 dark:text-slate-200 dark:group-hover:text-slate-200">{user && user.email}</p>
-                            <button on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 hover:text-gray-800 cursor-pointer dark:text-slate-300 dark:hover:text-slate-200">Ausloggen</button>
+                            {#if $isDemoModeStore}
+                                <p class="text-sm font-medium text-gray-700 dark:text-slate-200">Portfolio Gast (Demo)</p>
+                                <div class="flex space-x-2">
+                                    <button on:click={() => navigate('admin/login')} class="text-xs font-medium text-primary-600 hover:text-primary-800 cursor-pointer dark:text-primary-400 dark:hover:text-primary-300">Admin Login</button>
+                                    <span class="text-xs text-gray-300 dark:text-slate-600">&bull;</span>
+                                    <button on:click={() => navigate('/')} class="text-xs font-medium text-gray-500 hover:text-gray-800 cursor-pointer dark:text-slate-300 dark:hover:text-slate-200">Startseite</button>
+                                </div>
+                            {:else}
+                                <p class="text-sm font-medium text-gray-700 group-hover:text-gray-800 dark:text-slate-200 dark:group-hover:text-slate-200">{user && user.email}</p>
+                                <button on:click={() => signOut().then(() => navigate('admin/login'))} class="text-xs font-medium text-gray-500 hover:text-gray-800 cursor-pointer dark:text-slate-300 dark:hover:text-slate-200">Ausloggen</button>
+                            {/if}
                         </div>
                     </div>
                 </div>
@@ -71,15 +87,42 @@
         </div>
     </div>
     <div class="md:pl-64 flex flex-col flex-1">
-        <div class="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3">
-            <button on:click={toggleMobileMenu} type="button" class="-ml-0.5 -mt-0.5 h-12 w-12 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                <span class="sr-only">Open sidebar</span>
-                <!-- Heroicon name: outline/menu -->
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
+        <!-- Top bar: side-by-side on mobile, normal flow on desktop -->
+        <div class="sticky top-0 z-10 md:static flex items-center gap-2 px-3 pt-2 md:block md:p-0">
+            <div class="md:hidden flex-shrink-0">
+                <button on:click={toggleMobileMenu} type="button" class="h-10 w-10 inline-flex items-center justify-center rounded-md text-gray-500 hover:text-gray-900 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                    <span class="sr-only">Open sidebar</span>
+                    <!-- Heroicon name: outline/menu -->
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            {#if $isDemoModeStore && !isTexteSection}
+                <div class="flex-1 min-w-0 md:mx-4 md:mt-4 p-2 md:p-3 rounded-lg bg-primary-50 dark:bg-slate-800 border border-primary-300 dark:border-primary-600 flex items-center justify-between gap-2 text-xs md:text-sm text-primary-900 dark:text-primary-200">
+                    <div class="flex items-center gap-1.5 md:gap-2 min-w-0 truncate flex-1">
+                        <span class="px-1.5 py-0.5 font-bold uppercase tracking-wide text-[10px] md:text-xs rounded bg-primary-200 dark:bg-primary-700 text-primary-900 dark:text-primary-100 flex-shrink-0">
+                            Sandbox
+                        </span>
+                        <span class="truncate flex-1 text-center">
+                            <strong class="font-semibold">Demo-Modus</strong>
+                            <span class="hidden md:inline">: Sie können alle Admin-Werkzeuge frei ausprobieren. Änderungen werden lokal für Ihre Sitzung simuliert.</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center flex-shrink-0">
+                        <button
+                                type="button"
+                                on:click={() => window.location.reload()}
+                                class="px-2 py-1 md:px-2.5 rounded font-medium text-xs md:text-sm bg-white dark:bg-slate-700 border border-primary-300 dark:border-slate-600 hover:bg-primary-100 dark:hover:bg-slate-600 transition-colors cursor-pointer whitespace-nowrap"
+                        >
+                            Zurücksetzen
+                        </button>
+                    </div>
+                </div>
+            {/if}
         </div>
+
         <main class="flex flex-1 min-h-[87vh] rounded-lg md:rounded-none md:rounded-tr-lg md:rounded-br-lg">
             {#if user}
                 <slot></slot>

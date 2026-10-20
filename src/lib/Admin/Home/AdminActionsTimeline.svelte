@@ -1,11 +1,11 @@
 <script lang="ts">
-    import {getAdminActions} from "../../../scripts/database/database";
-    import {fade} from "svelte/transition";
-    import {inview} from "svelte-inview";
-    import Alert from "../../Essentials/Alert.svelte";
-    import {adminActionsChangeStore} from "../../../scripts/stores/adminActionsChangeStore";
+  import {getAdminActions} from "../../../scripts/database/database";
+  import {fade} from "svelte/transition";
+  import {inview} from "svelte-inview";
+  import Alert from "../../Essentials/Alert.svelte";
+  import {adminActionsChangeStore} from "../../../scripts/stores/adminActionsChangeStore";
 
-    let reload = 0;
+  let reload = 0;
 let actionsCount: number | string = 5;
 let increaseBy = actionsCount;
 
@@ -81,9 +81,9 @@ $: if (inView && $adminActionsChangeStore) {
                     </div>
                 </li>
             {:else}
-                <Alert type={1} title={'Achtung:'} description={'Es wurden noch keine Admin Aktionen aufgezeichnet.'}/>
+                <p class="text-gray-500 dark:text-slate-300 text-center">Es wurden noch keine Admin Aktionen aufgezeichnet.</p>
             {/each}
-            {#if actions}
+            {#if actions && actions.length > 0}
                 <li>
                     <div class="relative flex justify-center items-center gap-x-5 flex-col sm:flex-row gap-y-2">
                         {#if actionsCount !== 'all'}

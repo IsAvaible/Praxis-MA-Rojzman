@@ -1,30 +1,30 @@
 <script lang="ts">
-    import {fade, scale, slide} from "svelte/transition";
-    import {sineInOut} from "svelte/easing"
-    import {
-        addTeamMember,
-        deleteFiles,
-        deleteTeamMember,
-        getPublicFileUrl,
-        getTeamMember,
-        getTeamMembers,
-        updateTeamMember,
-        uploadFile
-    } from "../../../scripts/database/database";
-    import {longpress} from "../../../scripts/ui/longpress";
-    import XIcon from "../../Icons/XIcon.svelte";
-    import FlexIcon from "../../Icons/FlexIcon.svelte";
-    import InstagramIcon from "../../Icons/InstagramIcon.svelte";
-    import ImageCropperPopUp from "../General/ImageCropperPopUp.svelte";
-    import LoadingWheel from "../../Misc/LoadingWheel.svelte";
-    import EditableLinkIconWrapper from "./EditableLinkIconWrapper.svelte";
-    import {compressImage} from "../../../scripts/media/Compressor";
-    import {createEventDispatcher, onMount} from "svelte";
-    import Alert from "../../Essentials/Alert.svelte";
-    import {filedrop} from "filedrop-svelte";
-    import {delay} from "../../../scripts/misc/delay";
+  import {fade, scale, slide} from "svelte/transition";
+  import {sineInOut} from "svelte/easing"
+  import {
+    addTeamMember,
+    deleteFiles,
+    deleteTeamMember,
+    getPublicFileUrl,
+    getTeamMember,
+    getTeamMembers,
+    updateTeamMember,
+    uploadFile
+  } from "../../../scripts/database/database";
+  import {longpress} from "../../../scripts/ui/longpress";
+  import XIcon from "../../Icons/XIcon.svelte";
+  import FlexIcon from "../../Icons/FlexIcon.svelte";
+  import InstagramIcon from "../../Icons/InstagramIcon.svelte";
+  import ImageCropperPopUp from "../General/ImageCropperPopUp.svelte";
+  import LoadingWheel from "../../Misc/LoadingWheel.svelte";
+  import EditableLinkIconWrapper from "./EditableLinkIconWrapper.svelte";
+  import {compressImage} from "../../../scripts/media/Compressor";
+  import {createEventDispatcher, onMount} from "svelte";
+  import Alert from "../../Essentials/Alert.svelte";
+  import {filedrop} from "filedrop-svelte";
+  import {delay} from "../../../scripts/misc/delay";
 
-    export let id;
+  export let id;
     export let name = '';
     export let role = '';
     export let description = '';
@@ -88,7 +88,8 @@
                 let image = await fetch(avatarImage.src).then(r => r.blob()).then(blobFile => new File([blobFile], `${id}.png`, { type: "image/png" }));
                 let cImage = await compressImage(image, 0.95, 192, 192);
                 await uploadFile('images', filePath, cImage);
-                serverUrl = await getPublicFileUrl('images', filePath) + `?t=${Date.now()}`;
+                const publicUrl = await getPublicFileUrl('images', filePath);
+                serverUrl = publicUrl.startsWith('blob:') ? publicUrl : `${publicUrl}?t=${Date.now()}`;
             } else { // The old avatar is used
                 serverUrl = imageUrl;
             }

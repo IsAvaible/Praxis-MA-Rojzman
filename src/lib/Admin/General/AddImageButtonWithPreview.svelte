@@ -1,9 +1,9 @@
 <script lang="ts">
-    import ImageCropperPopUp from "./ImageCropperPopUp.svelte";
-    import {filedrop} from "filedrop-svelte";
-    import {createEventDispatcher} from "svelte";
+  import ImageCropperPopUp from "./ImageCropperPopUp.svelte";
+  import {filedrop} from "filedrop-svelte";
+  import {createEventDispatcher} from "svelte";
 
-    export let imageUrl;
+  export let imageUrl;
     export let required = true;
 
     const dispatch = createEventDispatcher();
@@ -76,7 +76,8 @@
             // Upload the image
             await uploadFile('images', filePath, cImage);
             // Get the url of the image
-            serverUrl = await getPublicFileUrl('images', filePath) + `?t=${Date.now()}`;
+            const publicUrl = await getPublicFileUrl('images', filePath);
+            serverUrl = publicUrl.startsWith('blob:') ? publicUrl : `${publicUrl}?t=${Date.now()}`;
         } else { // If no new image was uploaded
             serverUrl = imageUrl;  // Use the old url
         }

@@ -1,13 +1,19 @@
 
 <script lang="ts">
-    import Footer from "../../lib/Essentials/Footer.svelte";
-    import HCaptcha, {CaptchaTheme} from "svelte-hcaptcha/src/HCaptcha.svelte";
-    import {fade} from "svelte/transition";
-    import {Link, navigate} from "svelte-navigator";
-    import {signIn, signUp} from "../../scripts/database/database";
-    import {longpress} from "../../scripts/ui/longpress";
-    import {darkModeStore} from "../../scripts/stores/darkModeStore";
-    import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
+  import Footer from "../../lib/Essentials/Footer.svelte";
+  import HCaptcha, {CaptchaTheme} from "svelte-hcaptcha/src/HCaptcha.svelte";
+  import {fade} from "svelte/transition";
+  import {Link, navigate} from "svelte-navigator";
+  import {signIn, signUp} from "../../scripts/database/database";
+  import {longpress} from "../../scripts/ui/longpress";
+  import {darkModeStore} from "../../scripts/stores/darkModeStore";
+  import LoadingWheel from "../../lib/Misc/LoadingWheel.svelte";
+  import {isDemoModeStore} from "../../scripts/stores/demoModeStore";
+
+  const enterDemoMode = () => {
+        isDemoModeStore.set(true);
+        navigate('/admin');
+    };
 
     let email: string;
     let password: string;
@@ -79,6 +85,19 @@
                                     {/if}
                                     <span class="{doSignUp&&!formSubmitted?'animate-pulse':''} align-middle">{doSignUp?'Registrieren':'Einloggen'}</span>
                                 </button>
+                            </div>
+
+                            <div class="pt-2 border-t border-gray-200 dark:border-slate-700">
+                                <button
+                                    type="button"
+                                    on:click={enterDemoMode}
+                                    class="w-full flex justify-center items-center gap-2 py-2 px-4 border border-amber-400 dark:border-amber-500 rounded-md shadow-sm text-sm font-medium text-amber-900 dark:text-amber-200 bg-amber-50 hover:bg-amber-100 dark:bg-slate-800 dark:hover:bg-slate-900 focus:border-amber-600 transition-colors cursor-pointer"
+                                >
+                                    <span>Als Gast testen (Portfolio Demo-Modus)</span>
+                                </button>
+                                <p class="mt-1.5 text-xs text-center text-gray-500 dark:text-slate-400">
+                                    Erkunden Sie die Admin-Werkzeuge ohne Anmeldung.
+                                </p>
                             </div>
 
                             {#if formSubmitted}

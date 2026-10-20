@@ -1,23 +1,23 @@
 <script lang="ts">
-    import {
-        addBannerConfig,
-        deleteBannerConfig,
-        getBannerConfig,
-        getConfigEntry,
-        supabase,
-        updateBannerConfig,
-        updateConfigEntry
-    } from "../../../scripts/database/database";
-    import Alert from "../../Essentials/Alert.svelte";
-    import LoadingWheel from "../../Misc/LoadingWheel.svelte";
-    import {adminPreviewBannerDataStore} from "../../../scripts/stores/adminPreviewBannerDataStore";
-    import SvgSelector from "../General/SvgSelector.svelte";
-    import {delay} from "../../../scripts/misc/delay";
-    import {scrollToHeader} from "../../../scripts/misc/scrollToHeader";
-    import {onDestroy} from "svelte";
-    import {unsavedChangesStore} from "../../../scripts/stores/unsavedChangesStore";
+  import {
+    addBannerConfig,
+    deleteBannerConfig,
+    getBannerConfig,
+    getBannerConfigNames,
+    getConfigEntry,
+    updateBannerConfig,
+    updateConfigEntry
+  } from "../../../scripts/database/database";
+  import Alert from "../../Essentials/Alert.svelte";
+  import LoadingWheel from "../../Misc/LoadingWheel.svelte";
+  import {adminPreviewBannerDataStore} from "../../../scripts/stores/adminPreviewBannerDataStore";
+  import SvgSelector from "../General/SvgSelector.svelte";
+  import {delay} from "../../../scripts/misc/delay";
+  import {scrollToHeader} from "../../../scripts/misc/scrollToHeader";
+  import {onDestroy} from "svelte";
+  import {unsavedChangesStore} from "../../../scripts/stores/unsavedChangesStore";
 
-    export let showInfo = false;
+  export let showInfo = false;
     export let showConfigScreen = true;
     export let showPreviewBanner = true;
 
@@ -35,12 +35,7 @@
         selectedBannerConfigName = (await getConfigEntry("selected-banner-config", true)).data["name"] as string;
 
         bannerConfig = await getBannerConfig(selectedBannerConfigName);
-        const { data, error } = await supabase
-            .from('Banner-Config')
-            .select('name');
-        if (error) throw error;
-
-        presetNames = data.map((entry) => entry.name);
+        presetNames = await getBannerConfigNames();
         if (bannerConfig.name === 'preset') {
             bannerConfig.name = 'Banner 1';
             presetNames.push(bannerConfig.name);

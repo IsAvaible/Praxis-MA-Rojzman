@@ -1,5 +1,6 @@
 <script lang="ts">
   import {slide} from "svelte/transition";
+  import {navigate} from "svelte-navigator";
   import AlertIcon from "../Icons/AlertIcon.svelte";
 
   export let dismissable: boolean = true;
@@ -10,6 +11,11 @@
     if (typeof window !== "undefined" && window.sessionStorage) {
         visible = sessionStorage.getItem(storageKey) !== "true";
     }
+
+    const navigateToAdmin = () => {
+        navigate('/admin/login');
+        dismiss();
+    };
 
     const dismiss = () => {
         visible = false;
@@ -34,6 +40,10 @@
                 <a href="https://www.linkedin.com/in/simon-conrad-sfc/" target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="hover:underline">Simon Felix Conrad</a>
                 und <u>keine</u> offizielle Webseite der <a href="https://www.allgemeinmedizin-kiedrich.de/" target="_blank" referrerpolicy="strict-origin-when-cross-origin" class="hover:underline">Praxis M.A. Rojzman.</a>
                 Keine medizinische Beratung oder Terminvergabe.
+
+                <a href="/admin/login" on:click|preventDefault={navigateToAdmin} class="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium transition-colors text-white bg-yellow-600 hover:bg-yellow-700 dark:bg-amber-700 dark:hover:bg-amber-800 dark:text-amber-50">
+                    Admin-Bereich testen
+                </a>
             </span>
         </div>
         {#if dismissable}
