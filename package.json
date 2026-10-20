@@ -1,5 +1,5 @@
 {
-  "name": "praxis-m.a.-rojzman_website",
+  "name": "praxis-rojzman-archive",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -30,7 +30,6 @@
     "vite": "^5.1.4"
   },
   "dependencies": {
-    "-": "^0.0.1",
     "@ckeditor/ckeditor5-build-decoupled-document": "^41.1.0",
     "@ckeditor/ckeditor5-image": "^41.1.0",
     "@supabase/supabase-js": "^2.39.7",

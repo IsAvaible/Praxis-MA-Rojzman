@@ -1,7 +1,12 @@
-# ![Logo](public/favicon.svg) Praxis M.A. Rojzman 
+# ![Logo](public/favicon.svg) Praxis M.A. Rojzman (Archive / Portfolio Demo)
 
+> ### Unofficial Portfolio Project
+> This repository contains an archived web application created in 2022–2023 as a portfolio demonstration project.
+> It is **not** an official website of [Praxis M.A. Rojzman](https://www.allgemeinmedizin-kiedrich.de/). It is not intended for real medical inquiries, prescription requests, or appointment bookings.
 
-This repository contains the source code for the practice M.A. Rojzman located in Kiedrich, Germany.
+---
+
+This repository contains the source code for the practice website prototype for Praxis M.A. Rojzman located in Kiedrich, Germany.
 
 ## Completion
 ### Webpage
@@ -29,7 +34,7 @@ This repository contains the source code for the practice M.A. Rojzman located i
 - [ ] Images
 - [x] Supabase Integration
 
-## Screenshoots
+## Screenshots
 Homepage
 ![Homepage](https://i.imgur.com/A9bcYdA.png)
 Admin: Features
@@ -38,6 +43,30 @@ Admin: Blog
 ![Admin: Blog](https://i.imgur.com/3YMa0Kw.png)
 Admin: Team 
 ![Admin: Team](https://i.imgur.com/64rQvon.jpg)
+
+## Getting Started
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/IsAvaible/Praxis-MA-Rojzman.git
+   cd Praxis-MA-Rojzman
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**:
+   Copy `.env.example` to `.env` and fill in your Supabase / third-party API credentials:
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Run development server**:
+   ```bash
+   npm run dev
+   ```
 
 ## Recommended IDE Setup
 

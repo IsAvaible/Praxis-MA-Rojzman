@@ -7,8 +7,8 @@ import {deleteImagesFromHTML, publicUrlToKey} from "./databaseHtmlImageTools";
 import {numberToWeekdayDE} from "../misc/dateFormat";
 import {adminActionsChangeStore} from "../stores/adminActionsChangeStore";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL.toString();
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY.toString();
+const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co').toString();
+const supabaseKey = (import.meta.env.VITE_SUPABASE_KEY || 'placeholder').toString();
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 // To regenerate the types, run the following command in the terminal:
 // (supabase login)

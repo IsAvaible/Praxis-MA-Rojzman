@@ -14,7 +14,7 @@ export const findImagesInHtml = (html: string): string[] => {
     }
     return Array.from(
         html.matchAll(
-            new RegExp(escapeString(`src="${import.meta.env.VITE_SUPABASE_URL.toString()}/storage/`) + '.+?\/public\/(.+?)\/(.+)"', 'g')
+            new RegExp(escapeString(`src="${(import.meta.env.VITE_SUPABASE_URL || '').toString()}/storage/`) + '.+?\/public\/(.+?)\/(.+)"', 'g')
         ), m=>m[1] + "/" + m[2]
     )
 }
@@ -42,6 +42,6 @@ export const deleteImagesFromHTML = async (html: string) => {
 
 
 export const publicUrlToKey = (url: string): {bucket: string, path: string} => {
-    let match = url.match(RegExp(escapeString(import.meta.env.VITE_SUPABASE_URL.toString() + '/storage/') + '.+?\/public\/(.+?)\/(.+)'));
+    let match = url.match(RegExp(escapeString((import.meta.env.VITE_SUPABASE_URL || '').toString() + '/storage/') + '.+?\/public\/(.+?)\/(.+)'));
     return {bucket: match[1], path: match[2]};
 }

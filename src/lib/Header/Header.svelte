@@ -33,6 +33,7 @@
     import Footer from "../Essentials/Footer.svelte";
     import MetaTitle from "../SEO/MetaTitle.svelte";
     import MetaTag from "../SEO/MetaTag.svelte";
+    import DisclaimerBanner from "../Essentials/DisclaimerBanner.svelte";
 
     let siteEnterPopUpData = {
         svgPaths: ["M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"],
@@ -164,9 +165,15 @@
     let bannerData;
     let bannerOpen;
     onMount(async () => {
-        let selectedBannerName = (await getConfigEntry("selected-banner-config", true)).data["name"] as string
-        bannerData = await getBannerConfig(selectedBannerName);
-        bannerOpen = bannerData.active && (!bannerData.activeUntil || new Date(bannerData.activeUntil) > new Date());
+        try {
+            let selectedBannerName = (await getConfigEntry("selected-banner-config", true))?.data?.["name"] as string;
+            if (selectedBannerName) {
+                bannerData = await getBannerConfig(selectedBannerName);
+                bannerOpen = bannerData?.active && (!bannerData.activeUntil || new Date(bannerData.activeUntil) > new Date());
+            }
+        } catch {
+            bannerOpen = false;
+        }
     });
 
     let adminPreviewBannerActive = false;
@@ -196,6 +203,7 @@
 
 <Router a11y="{{onRouterNavigate}}">
     <div class="sticky top-0 z-50 bg-white dark:bg-slate-800" id="header">
+        <DisclaimerBanner/>
         <div class="mx-auto px-4 sm:px-6 max-w-7xl">
             <div class="flex justify-between items-center border-b-2 border-gray-100 dark:border-none py-6 md:justify-start md:gap-x-10">
                 <!-- This is located here, so that it appears first in the tab order -->

@@ -1,3 +1,4 @@
+// NOTE: Disabled for portfolio archive to prevent search engine indexing.
 const { SitemapStream, streamToPromise } = require( 'sitemap' )
 const { Readable } = require( 'stream' )
 const { createWriteStream } = require('fs');
